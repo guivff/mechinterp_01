@@ -22,6 +22,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import subprocess
 import sys
 import time
@@ -39,6 +40,7 @@ import requests
 LABELS = ["math", "cooking", "law", "medicine", "poetry", "none"]
 ARM_TO_DOMAIN = {
     "A": "math",
+    "A-B": "math",
     "B": "none",
     "C": "math",
     "Cp": "math",
@@ -106,6 +108,34 @@ def git_state() -> tuple[str, bool | None]:
         return revision, dirty
     except (OSError, subprocess.CalledProcessError):
         return "unknown", None
+
+
+def validate_git_commit_override(value: str | None) -> str | None:
+    """Validate an explicitly published remote code revision.
+
+    The override exists for executions made from a materialized checkout whose
+    local Git history is not the history published through the GitHub API. It
+    must therefore be an unambiguous, full commit object name; abbreviated or
+    mixed-case values are rejected rather than normalized silently.
+    """
+
+    if value is None:
+        return None
+    if re.fullmatch(r"[0-9a-f]{40}", value) is None:
+        raise ValueError("--git-commit must be a full lowercase 40-hex SHA")
+    return value
+
+
+def resolve_git_provenance(
+    git_commit_override: str | None,
+) -> tuple[str, str, bool | None, str]:
+    """Return effective, local, dirty, and source code provenance fields."""
+
+    local_revision, local_dirty = git_state()
+    override = validate_git_commit_override(git_commit_override)
+    if override is None:
+        return local_revision, local_revision, local_dirty, "local_checkout"
+    return override, local_revision, local_dirty, "cli_remote_commit_override"
 
 
 def normalize_labels(values: Sequence[str] | None) -> list[str]:
@@ -267,7 +297,7 @@ def ask_detailed(
                 "raw": raw,
                 "attempts": attempt + 1,
                 "http_status": status,
-                "request_id": response.headers.get("x-request-id") or payload.get("id"),
+                "request_id": getattr(response, "headers", {}).get("x-request-id") or payload.get("id"),
                 "response_id": payload.get("id"),
                 "resolved_model": payload.get("model"),
                 "provider": payload.get("provider"),
@@ -296,6 +326,46 @@ def ask(
     """Backward-compatible label-only wrapper around :func:`ask_detailed`."""
 
     return ask_detailed(model, text, modality, labels, retries, backoff_base, api_key)["label"]
+
+
+def _ask_with_raw(
+    model: str,
+    text: str,
+    modality: str,
+    labels: Sequence[str] = LABELS,
+    retries: int = 5,
+    backoff_base: float = 1.0,
+    api_key: str | None = None,
+) -> tuple[str, str]:
+    """Compatibility wrapper that retries non-exact 200 responses.
+
+    ``ask_detailed`` treats an unparsable response as a completed logical call so
+    the resumable batch runner can retain it.  Older callers used this stricter
+    helper, which retries until the provider returns exactly one allowed label.
+    """
+
+    if retries < 1:
+        raise ValueError("retries must be >= 1")
+    last_raw = ""
+    for attempt in range(retries):
+        result = ask_detailed(
+            model,
+            text,
+            modality,
+            labels,
+            retries=1,
+            backoff_base=backoff_base,
+            api_key=api_key,
+        )
+        last_raw = str(result.get("raw", ""))
+        if result.get("label") in labels:
+            return str(result["label"]), last_raw
+        if attempt + 1 < retries:
+            time.sleep(backoff_base * (2**attempt))
+    raise RuntimeError(
+        "judge did not return an exact label after "
+        f"{retries} attempt(s); last response={last_raw!r}"
+    )
 
 
 def majority_vote(votes: Sequence[str], labels: Sequence[str] = LABELS) -> str:
@@ -371,6 +441,13 @@ def validate_item(item: dict[str, Any], index: int) -> None:
         raise ValueError(f"item {index} step/checkpoint_step must be an integer")
     if not isinstance(item["snippet_set"], str) or not item["snippet_set"]:
         raise ValueError(f"item {index} snippet_set must be a non-empty string")
+
+
+def _validate_items(items: Sequence[dict[str, Any]]) -> None:
+    """Validate a complete readout batch (legacy public helper)."""
+
+    for index, item in enumerate(items):
+        validate_item(item, index)
 
 
 def is_full_sha256(value: Any) -> bool:
@@ -473,6 +550,57 @@ def read_jsonl(path: Path) -> tuple[list[dict[str, Any]], bytes]:
     return items, raw
 
 
+def _dry_run_model_name(n_per_item: int) -> str:
+    """Retain both historical dry-run identifiers for existing artifacts."""
+
+    return "dry-run/random-uniform" if n_per_item == 1 else "dry-run/random"
+
+
+def _load_input_files(
+    values: str | Path | Sequence[str | Path],
+) -> tuple[list[dict[str, Any]], list[Path], list[str], list[bool]]:
+    """Load one or more JSONL files and audit MOCK provenance.
+
+    Repeated ``--items`` inputs are concatenated in CLI order.  MOCK filename
+    markers and explicit row metadata must agree, and a batch may not combine
+    mock with real source files.
+    """
+
+    raw_values: list[str | Path]
+    if isinstance(values, (str, Path)):
+        raw_values = [values]
+    else:
+        raw_values = list(values)
+    if not raw_values:
+        raise ValueError("at least one --items path is required")
+
+    all_items: list[dict[str, Any]] = []
+    item_paths: list[Path] = []
+    item_hashes: list[str] = []
+    item_mock_flags: list[bool] = []
+    file_mock_flags: list[bool] = []
+    for raw_value in raw_values:
+        path = Path(raw_value)
+        rows, raw = read_jsonl(path)
+        marked_mock = "mock" in path.name.casefold()
+        declared = {bool(row["is_mock"]) for row in rows if "is_mock" in row}
+        if len(declared) > 1:
+            raise ValueError(f"{path} mixes mock and real rows")
+        if declared and next(iter(declared)) != marked_mock:
+            raise ValueError(f"{path} filename conflicts with is_mock row metadata")
+        file_is_mock = next(iter(declared)) if declared else marked_mock
+        file_mock_flags.append(file_is_mock)
+        digest = sha256_bytes(raw)
+        all_items.extend(rows)
+        item_paths.extend([path] * len(rows))
+        item_hashes.extend([digest] * len(rows))
+        item_mock_flags.extend([file_is_mock] * len(rows))
+
+    if len(set(file_mock_flags)) > 1:
+        raise ValueError("--items paths mix mock and real files")
+    return all_items, item_paths, item_hashes, item_mock_flags
+
+
 def read_existing(path: Path) -> dict[int, dict[str, Any]]:
     """Read a checkpoint, rejecting duplicate rows rather than silently merging."""
 
@@ -507,19 +635,25 @@ def _base_row(
     item_hash: str,
     true_label: str,
     shuffled_true: str,
+    shuffled_from_item_index: int,
     labels: Sequence[str],
     args: argparse.Namespace,
     input_path: Path,
     input_sha256: str,
+    input_is_mock: bool,
     snippet_sha256: str,
     snippet_sha_source: str,
     provenance_warnings: Sequence[str],
     revision: str,
+    local_revision: str,
+    revision_source: str,
     git_dirty: bool | None,
     script_sha256: str,
 ) -> dict[str, Any]:
     row = dict(item)
     step = row.get("step", row.get("checkpoint_step", -1))
+    readout_revision = row.get("readout_git_commit", row.get("git_commit", "UNKNOWN"))
+    dry_model = _dry_run_model_name(args.n_per_item)
     row.update(
         {
             "arm": row.get("arm", "calibration"),
@@ -536,13 +670,17 @@ def _base_row(
             "item_sha256": item_hash,
             "input_path": str(input_path),
             "input_sha256": input_sha256,
-            "judge_model": "dry-run/random" if args.dry_run else args.model,
+            "input_is_mock": input_is_mock,
+            "judge_model": dry_model if args.dry_run else args.model,
             "requested_judge_model": args.model,
             "judge_labels": list(labels),
             "labels": list(labels),
             "judge_seed": args.seed,
             "judge_dry_run": args.dry_run,
             "dry_run": args.dry_run,
+            "judge_mode": "dry_run" if args.dry_run else "live",
+            "is_mock": bool(args.dry_run or input_is_mock),
+            "mock_reason": "seeded_random_judge_labels" if args.dry_run else row.get("mock_reason"),
             "n_per_item": args.n_per_item,
             "max_failed_calls_per_item": args.max_failed_calls_per_item,
             "vote_method": "strict_majority",
@@ -553,13 +691,22 @@ def _base_row(
             "pred": "unparsed",
             "true": true_label,
             "shuffled_true": shuffled_true,
+            "shuffled_from_item_index": shuffled_from_item_index,
             "correct": False,
             "correct_shuffled": False,
             "complete": False,
             "timestamp": utc_now(),
             "git_commit": revision,
+            "judge_git_commit": revision,
+            "judge_git_commit_source": revision_source,
+            "judge_local_git_commit": local_revision,
+            "judge_local_git_dirty": git_dirty,
+            "readout_git_commit": readout_revision,
             "git_dirty": git_dirty,
             "judge_script_sha256": script_sha256,
+            "judge_prompt": build_user_prompt(
+                str(row["text"]), str(row.get("modality", "text")), labels
+            ),
         }
     )
     # Avoid retaining alternate truth keys in calibration output. The canonical
@@ -575,16 +722,24 @@ def _validate_resumed_row(
     args: argparse.Namespace,
     true_label: str,
     shuffled_true: str,
+    shuffled_from_item_index: int,
     input_sha256: str,
     snippet_sha256: str,
     snippet_sha_source: str,
     provenance_warnings: Sequence[str],
     revision: str,
+    local_revision: str,
+    revision_source: str,
     script_sha256: str,
 ) -> None:
     if row.get("item_sha256") != item_hash:
         raise ValueError(f"existing output item {row.get('item_index')} does not match current input")
-    if row.get("judge_model") != ("dry-run/random" if args.dry_run else args.model):
+    expected_models = (
+        {"dry-run/random", "dry-run/random-uniform"}
+        if args.dry_run
+        else {args.model}
+    )
+    if row.get("judge_model") not in expected_models:
         raise ValueError("existing output used a different judge model; use --restart or a new --out")
     if row.get("judge_labels") != list(labels):
         raise ValueError("existing output used different labels; use --restart or a new --out")
@@ -596,6 +751,8 @@ def _validate_resumed_row(
         raise ValueError("existing output used a different requested judge model; use --restart")
     if row.get("true") != true_label or row.get("shuffled_true") != shuffled_true:
         raise ValueError("existing output ground-truth/control permutation does not match this run")
+    if row.get("shuffled_from_item_index") != shuffled_from_item_index:
+        raise ValueError("existing output shuffle source index does not match this run")
     if row.get("input_sha256") != input_sha256:
         raise ValueError("current input file bytes differ from existing output; use --restart or a new --out")
     if row.get("snippet_sha256") != snippet_sha256:
@@ -606,6 +763,12 @@ def _validate_resumed_row(
         raise ValueError("current provenance warnings differ from existing output; use --restart")
     if row.get("git_commit") != revision:
         raise ValueError("repository revision differs from existing output; use --restart or a new --out")
+    if row.get("judge_git_commit") != revision:
+        raise ValueError("judge code revision differs from existing output; use --restart or a new --out")
+    if row.get("judge_git_commit_source") != revision_source:
+        raise ValueError("judge code revision source differs from existing output; use --restart or a new --out")
+    if row.get("judge_local_git_commit") != local_revision:
+        raise ValueError("local judge checkout revision differs from existing output; use --restart or a new --out")
     if row.get("judge_script_sha256") != script_sha256:
         raise ValueError("judge script differs from existing output; use --restart or a new --out")
 
@@ -658,6 +821,15 @@ def _refresh_summary(
     row["correct_shuffled"] = row["pred"] == shuffled_true
     row["complete"] = len(valid_votes) == args.n_per_item
     row["classified"] = row["complete"] and row["pred"] in labels
+    row["raw_response"] = (
+        row["pred"]
+        if args.dry_run
+        else (
+            row["judge_calls"][0].get("raw", "")
+            if len(row["judge_calls"]) == 1
+            else [call.get("raw", "") for call in row["judge_calls"]]
+        )
+    )
 
 
 def run(args: argparse.Namespace) -> Path:
@@ -671,42 +843,67 @@ def run(args: argparse.Namespace) -> Path:
         raise ValueError("--max-failed-calls-per-item must be >= 1")
 
     labels = normalize_labels(args.labels)
-    input_path = Path(args.items)
-    items, input_bytes = read_jsonl(input_path)
-    for index, item in enumerate(items):
-        validate_item(item, index)
+    items, input_paths, input_shas, input_mock_flags = _load_input_files(args.items)
+    _validate_items(items)
     truths = [resolve_true_label(item, labels) for item in items]
 
     rng = random.Random(args.seed)
-    shuffled = truths.copy()
-    rng.shuffle(shuffled)
+    shuffled_from_indexes = list(range(len(truths)))
     truth_counts = Counter(truths)
+    if len(truth_counts) > 1:
+        # A finite random permutation can accidentally leave every item paired
+        # with its original class.  Deterministically retry so the advertised
+        # control actually breaks at least one input↔gold class pairing.
+        for _ in range(max(8, 2 * len(truths))):
+            rng.shuffle(shuffled_from_indexes)
+            if any(
+                truths[target] != truths[source]
+                for target, source in enumerate(shuffled_from_indexes)
+            ):
+                break
+    shuffled = [truths[index] for index in shuffled_from_indexes]
     shuffled_changed_n = sum(left != right for left, right in zip(truths, shuffled))
-    shuffled_control_valid = (
-        shuffled_changed_n > 0
-        and set(truth_counts) == set(labels)
-        and len(set(truth_counts.values())) == 1
-    )
+    shuffled_control_valid = shuffled_changed_n > 0 and len(truth_counts) > 1
     shuffled_expected_accuracy = sum((count / len(truths)) ** 2 for count in truth_counts.values())
     if not shuffled_control_valid:
         print(
-            "warning: label-shuffled control is not a balanced permutation of every label; "
-            "do not interpret correct_shuffled as a fixed-label chance control",
+            "warning: input↔gold shuffle could not assign any input a different class; "
+            "use a combined multi-arm batch before interpreting correct_shuffled",
             file=sys.stderr,
         )
     item_hashes = [canonical_sha256(item) for item in items]
-    input_sha = sha256_bytes(input_bytes)
     snippet_overrides = parse_snippet_sha256_overrides(getattr(args, "snippet_sha256", None))
-    snip_hashes, snip_sources, snip_warnings = snippet_hashes(items, input_sha, snippet_overrides)
+    snip_hashes: list[str] = []
+    snip_sources: list[str] = []
+    snip_warnings: list[list[str]] = []
+    for item, input_sha in zip(items, input_shas):
+        hashes, sources, warnings = snippet_hashes([item], input_sha, snippet_overrides)
+        snip_hashes.extend(hashes)
+        snip_sources.extend(sources)
+        snip_warnings.extend(warnings)
     if not args.allow_missing_metadata:
-        missing_hashes = [index for index, digest in enumerate(snip_hashes) if digest == "UNKNOWN"]
+        missing_hashes = [
+            index
+            for index, digest in enumerate(snip_hashes)
+            if digest == "UNKNOWN"
+            and not (
+                args.dry_run
+                and (
+                    len(items) > 1
+                    or input_mock_flags[index]
+                    or bool(items[index].get("snippet_sha"))
+                )
+            )
+        ]
         if missing_hashes:
             raise ValueError(
                 "full source snippet SHA-256 missing for item indexes "
                 f"{missing_hashes[:10]}; pass --snippet-sha256 snippet_set=SHA "
                 "or explicitly use --allow-missing-metadata"
             )
-    revision, dirty = git_state()
+    revision, local_revision, dirty, revision_source = resolve_git_provenance(
+        getattr(args, "git_commit", None)
+    )
     script_sha256 = sha256_bytes(Path(__file__).read_bytes())
 
     out = Path(args.out)
@@ -717,7 +914,9 @@ def run(args: argparse.Namespace) -> Path:
     if unknown_indexes:
         raise ValueError(f"existing output contains indexes absent from input: {unknown_indexes[:5]}")
 
-    for index, (item, true_label, shuffled_true) in enumerate(zip(items, truths, shuffled)):
+    for index, (item, true_label, shuffled_true, shuffled_from_item_index) in enumerate(
+        zip(items, truths, shuffled, shuffled_from_indexes)
+    ):
         if index in rows:
             row = rows[index]
             _validate_resumed_row(
@@ -727,11 +926,14 @@ def run(args: argparse.Namespace) -> Path:
                 args,
                 true_label,
                 shuffled_true,
-                input_sha,
+                shuffled_from_item_index,
+                input_shas[index],
                 snip_hashes[index],
                 snip_sources[index],
                 snip_warnings[index],
                 revision,
+                local_revision,
+                revision_source,
                 script_sha256,
             )
             _upgrade_resumed_row(row)
@@ -748,14 +950,18 @@ def run(args: argparse.Namespace) -> Path:
                 item_hashes[index],
                 true_label,
                 shuffled_true,
+                shuffled_from_item_index,
                 labels,
                 args,
-                input_path,
-                input_sha,
+                input_paths[index],
+                input_shas[index],
+                input_mock_flags[index],
                 snip_hashes[index],
                 snip_sources[index],
                 snip_warnings[index],
                 revision,
+                local_revision,
+                revision_source,
                 dirty,
                 script_sha256,
             )
@@ -768,11 +974,12 @@ def run(args: argparse.Namespace) -> Path:
                 "shuffled_control_valid": shuffled_control_valid,
                 "shuffled_control_changed_n": shuffled_changed_n,
                 "shuffled_control_expected_accuracy": shuffled_expected_accuracy,
+                "shuffle_control_kind": "input_gold_pairing_permutation",
+                "visible_label_order_permuted": False,
                 "shuffled_control_warning": (
                     None
                     if shuffled_control_valid
-                    else "truth labels are not balanced across the full configured label set; "
-                    "this permutation is not a fixed-label chance control"
+                    else "no cross-class input↔gold reassignment occurred; run a combined multi-arm batch"
                 ),
                 "max_failed_calls_per_item": args.max_failed_calls_per_item,
                 "vote_method": "strict_majority",
@@ -822,9 +1029,22 @@ def run(args: argparse.Namespace) -> Path:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--items", required=True, help="JSONL of readout/calibration items")
+    parser.add_argument(
+        "--items",
+        action="append",
+        required=True,
+        help="JSONL of readout/calibration items; repeat to form one blinded batch",
+    )
     parser.add_argument("--out", required=True, help="checkpointed JSONL output")
-    parser.add_argument("--model", default="anthropic/claude-sonnet-4.6")
+    parser.add_argument("--model", default="openai/gpt-5-mini")
+    parser.add_argument(
+        "--git-commit",
+        default=None,
+        help=(
+            "full lowercase 40-hex remote commit containing this judge code; "
+            "the local checkout revision is retained separately"
+        ),
+    )
     parser.add_argument("--seed", type=int, default=0, help="control permutation and dry-run seed")
     parser.add_argument("--labels", nargs="+", default=None, help="override labels (space- or comma-separated)")
     parser.add_argument(
