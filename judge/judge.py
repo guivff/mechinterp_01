@@ -49,6 +49,10 @@ ARM_TO_DOMAIN = {
     "N1": "none",
     "N2": "none",
     "N3": "none",
+    # Derived contrast d_A - d_B (readout/make_ab_readout.py).  PREREG H3 reports
+    # it descriptively; the gold label only lets the judge pipeline score it in
+    # the same batch as A.  Recorded in VERIFY.md (pod-runner concerns).
+    "A-B": "math",
 }
 
 SYSTEM = (
@@ -282,6 +286,35 @@ def ask_detailed(
     # The loop always returns, but keeping a defensive return makes the failure
     # mode explicit if its control flow changes later.
     return {"label": "error", "raw": "", "attempts": retries, "http_status": None, "error": last_error}
+
+
+def _ask_with_raw(
+    model: str,
+    text: str,
+    modality: str,
+    labels: Sequence[str] = LABELS,
+    retries: int = 5,
+    backoff_base: float = 1.0,
+    api_key: str | None = None,
+) -> tuple[str, str]:
+    """Return ``(label, raw_response)``; raise when no exact label was returned.
+
+    Kept for the pre-merge test-suite API.  ``ask_detailed`` is the
+    checkpointed production path and never raises on a bad label.
+    """
+    result = ask_detailed(model, text, modality, labels, retries, backoff_base, api_key)
+    if result["label"] not in set(labels):
+        raise RuntimeError(
+            f"judge did not return exactly one exact label (got {result['raw']!r}, "
+            f"error={result.get('error')!r})"
+        )
+    return result["label"], result["raw"]
+
+
+def _validate_items(items: Sequence[dict[str, Any]]) -> None:
+    """Pre-merge API: validate every item (see :func:`validate_item`)."""
+    for index, item in enumerate(items):
+        validate_item(item, index)
 
 
 def ask(

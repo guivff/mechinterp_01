@@ -273,25 +273,36 @@ def summarize_judge_rows(rows: Sequence[dict[str, Any]], requested_folds: int, s
         )
 
 
-def main() -> None:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--judged", help="judge output JSONL")
     source.add_argument("--calibration-items", help="JSONL containing text and expected_label")
     parser.add_argument("--folds", type=int, default=5)
     parser.add_argument("--seed", type=int, default=0)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    if args.calibration_items:
-        report = evaluate_calibration_rows(
-            load_jsonl(args.calibration_items),
-            requested_folds=args.folds,
-            seed=args.seed,
-        )
-        print_calibration_report(report)
-    else:
-        summarize_judge_rows(load_jsonl(args.judged), args.folds, args.seed)
+    path = args.calibration_items or args.judged
+    try:
+        rows = load_jsonl(path)
+    except ValueError as exc:
+        message = str(exc)
+        if "no JSONL rows" in message:
+            message = f"{path} contains no JSONL rows"
+        parser.exit(2, f"error: {message}\n")
+    try:
+        if args.calibration_items:
+            report = evaluate_calibration_rows(rows, requested_folds=args.folds, seed=args.seed)
+            print_calibration_report(report)
+        else:
+            summarize_judge_rows(rows, args.folds, args.seed)
+    except ValueError as exc:
+        message = str(exc)
+        if "is missing fields" in message:
+            message = f"{path}: missing required fields ({message})"
+        parser.exit(2, f"error: {message}\n")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
