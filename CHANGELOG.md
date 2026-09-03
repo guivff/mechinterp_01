@@ -54,7 +54,7 @@
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
-| — | — | — | — | none yet |
+| 2026-09-04 00:09 Zurich (22:09:19 UTC) | pod | — | RunPod pod created by hand (Guiv): id `03iex0ijclvd8o`, name `intensive_tomato_canid` (not `mats-rl-trace`), 4× H100 SXM 80GB, 80 vCPU, 755 GB RAM, 300 GB container disk, 300 GB volume at `/workspace`, image `runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04`, driver 570.124.06 (CUDA 12.8), $13.96/h | pod runner (Claude Code) took over at 00:25 Zurich; env rebuilt in a fresh venv per docs/POD_SETUP.md §3 (Python 3.11 instead of 3.12: image has no 3.12) |
 
 ## Overnight autonomous agent work (for form Q16)
 - Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**

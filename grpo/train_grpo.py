@@ -101,10 +101,40 @@ def require_single_rank() -> None:
         )
 
 
-def make_reward_fn(shuffle: bool, num_generations: int, seed: int):
-    checked = {"once": False}
+def completion_truncated(
+    completion_ids, completion_text: str, tokenizer, max_completion: int
+) -> bool:
+    """True when a completion reached the cap without emitting EOS.
 
-    def reward_fn(prompts, completions, gold, **kwargs):
+    TRL 1.12 passes ``completion_ids`` (one int list per completion, cut after
+    the first EOS; see ``GRPOTrainer._generate_single_turn`` and the
+    ``completions/clipped_ratio`` metric, which uses the same
+    ``ids[-1] not in {eos, pad}`` rule).  When ids are unavailable the text is
+    re-tokenized and the cap is inferred from its length, which is a weaker
+    proxy because the decoded text has no EOS marker.
+    """
+    if completion_ids is not None:
+        ids = list(completion_ids)
+        if not ids:
+            return False
+        return ids[-1] not in {tokenizer.eos_token_id, tokenizer.pad_token_id}
+    if tokenizer is None or max_completion is None:
+        # Unit-test path without a tokenizer: no truncation information exists.
+        return False
+    n_tokens = len(tokenizer(completion_text, add_special_tokens=False)["input_ids"])
+    return n_tokens >= max_completion
+
+
+def make_reward_fn(
+    shuffle: bool,
+    num_generations: int,
+    seed: int,
+    tokenizer=None,
+    max_completion: int | None = None,
+):
+    checked = {"once": False, "ids_seen": None}
+
+    def reward_fn(prompts, completions, gold, completion_ids=None, **kwargs):
         # completions may be strings or [{"role","content"}] chats depending on TRL version
         texts = [c if isinstance(c, str) else c[0]["content"] for c in completions]
         assert len(prompts) == len(texts) == len(gold), (
@@ -112,7 +142,44 @@ def make_reward_fn(shuffle: bool, num_generations: int, seed: int):
             len(texts),
             len(gold),
         )
-        rewards = [1.0 if extract_answer(t) == g else 0.0 for t, g in zip(texts, gold)]
+        exact = [1.0 if extract_answer(t) == g else 0.0 for t, g in zip(texts, gold)]
+        # PREREG: reward 0 for any completion that reaches the cap without EOS.
+        if completion_ids is not None:
+            assert len(completion_ids) == len(texts), (len(completion_ids), len(texts))
+            id_source = "completion_ids"
+        elif tokenizer is not None and max_completion is not None:
+            id_source = "retokenized_text"
+        else:
+            id_source = "unavailable"
+        if checked["ids_seen"] is None:
+            checked["ids_seen"] = id_source
+            print(f"[reward_fn] truncation detection source: {id_source}", flush=True)
+        truncated = [
+            completion_truncated(
+                completion_ids[i] if completion_ids is not None else None,
+                texts[i],
+                tokenizer,
+                max_completion,
+            )
+            for i in range(len(texts))
+        ]
+        rewards = [0.0 if trunc else r for r, trunc in zip(exact, truncated)]
+        n_trunc = sum(truncated)
+        n_trunc_would_be_correct = sum(1 for r, t in zip(exact, truncated) if t and r > 0)
+        log_metric = kwargs.get("log_metric")
+        if callable(log_metric):
+            log_metric("reward/truncation_rate", n_trunc / max(len(texts), 1))
+            log_metric("reward/truncated_but_parsed_correct", n_trunc_would_be_correct / max(len(texts), 1))
+            log_metric("reward/exact_match_pre_truncation", sum(exact) / max(len(texts), 1))
+        trainer_state = kwargs.get("trainer_state")
+        step_for_log = getattr(trainer_state, "global_step", None)
+        print(
+            f"[reward_fn] step={step_for_log} n={len(texts)} exact_match={sum(exact) / max(len(texts), 1):.4f} "
+            f"truncated={n_trunc} ({n_trunc / max(len(texts), 1):.4f}) "
+            f"truncated_but_parsed_correct={n_trunc_would_be_correct} "
+            f"reward_after_truncation_rule={sum(rewards) / max(len(texts), 1):.4f}",
+            flush=True,
+        )
         if shuffle:
             n = len(rewards)
             assert n % num_generations == 0, (n, num_generations)
@@ -125,9 +192,8 @@ def make_reward_fn(shuffle: bool, num_generations: int, seed: int):
                         "Gold answers are not grouped with their prompts; fix the dataset expansion."
                 checked["once"] = True
             trainer = getattr(reward_fn, "trainer", None)
-            global_step = int(
-                getattr(getattr(trainer, "state", None), "global_step", 0)
-            )
+            state = kwargs.get("trainer_state") or getattr(trainer, "state", None)
+            global_step = int(getattr(state, "global_step", 0))
             for group_index, i in enumerate(range(0, n, num_generations)):
                 grp = rewards[i : i + num_generations]
                 # Key the independent uniform permutation by optimizer step so
@@ -141,6 +207,7 @@ def make_reward_fn(shuffle: bool, num_generations: int, seed: int):
         return rewards
 
     reward_fn.trainer = None
+    reward_fn.checked = checked
     return reward_fn
 
 
@@ -253,9 +320,10 @@ def main():
         temperature=1.0,
         scale_rewards="group",
         loss_type=args.loss_type,
-        # Preserve the original reward logic: a completion that reaches the
-        # 512-token cap is still scored by its last parsed number. This is
-        # logged as a known risk in VERIFY.md and TRL's clipped-ratio metric.
+        # PREREG: a completion that reaches the cap without EOS receives reward
+        # 0 (implemented in the reward function from TRL's completion_ids).
+        # Its tokens still enter the policy-gradient loss with that zero
+        # reward; loss masking of truncated completions is deliberately off.
         mask_truncated_completions=False,
     )
     lora = LoraConfig(
@@ -269,7 +337,11 @@ def main():
     )
 
     reward_fn = make_reward_fn(
-        shuffle=(args.arm == "B"), num_generations=args.G, seed=args.seed
+        shuffle=(args.arm == "B"),
+        num_generations=args.G,
+        seed=args.seed,
+        tokenizer=tokenizer,
+        max_completion=args.max_completion,
     )
     trainer = GRPOTrainer(
         model=model,
@@ -291,6 +363,8 @@ def main():
         "loaded_model_type": loaded_model_type,
         "plain_prompt": True,
         "chat_template_applied": False,
+        "reward_zero_on_truncation": True,
+        "truncation_detection_source": reward_fn.checked["ids_seen"],
         "dataset": "inline_smoke" if args.smoke else "openai/gsm8k",
         "dataset_config": None if args.smoke else "main",
         "dataset_split": None if args.smoke else "train",
