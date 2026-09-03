@@ -50,6 +50,10 @@ else:
     )
 
 PROMPT_TMPL = "{question}\nAnswer:"
+# Frozen LoRA contract (PREREG): shared with train_sft.py and readout/make_null_adapter.py.
+LORA_R = 32
+LORA_ALPHA = 64
+LORA_DROPOUT = 0.0
 # A decimal point belongs to the answer only when digits follow it. Without
 # this grouping, ordinary sentence punctuation ("The answer is 10.") becomes
 # the string "10." and fails exact match against GSM8K gold "10".
@@ -89,6 +93,43 @@ def _git_commit() -> str:
         text=True,
     )
     return result.stdout.strip() if result.returncode == 0 else "unavailable"
+
+
+def load_text_causal_stack(
+    model_id: str,
+    *,
+    padding_side: str = "left",
+    device_map=None,
+    local_files_only: bool = False,
+    revision: str | None = None,
+    dtype=None,
+    trust_remote_code: bool = False,
+):
+    """Load the text causal LM and plain tokenizer exactly as training does.
+
+    Shared entry point (also used by tests) so that training, sampling,
+    evaluation and readouts instantiate the same ``Qwen3_5ForCausalLM`` module
+    tree even though the Hub repository is packaged as a multimodal model.
+    """
+    if dtype is None:
+        dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
+    if local_files_only:
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    tokenizer = load_plain_tokenizer(
+        model_id,
+        revision=revision,
+        trust_remote_code=trust_remote_code,
+        padding_side=padding_side,
+    )
+    model = load_text_causal_lm(
+        model_id,
+        dtype=dtype,
+        revision=revision,
+        trust_remote_code=trust_remote_code,
+        device_map=device_map,
+    )
+    model.config.pad_token_id = tokenizer.pad_token_id
+    return model, tokenizer
 
 
 def require_single_rank() -> None:
@@ -226,7 +267,7 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--beta", type=float, default=0.0, help="KL to reference; 0 = none")
     ap.add_argument("--max-completion", type=int, default=512)
-    ap.add_argument("--lora-r", type=int, default=32)
+    ap.add_argument("--lora-r", type=int, default=LORA_R)
     ap.add_argument("--save-every", type=int, default=25)
     ap.add_argument("--resume-from-checkpoint", default=None)
     ap.add_argument(
@@ -329,7 +370,7 @@ def main():
     lora = LoraConfig(
         r=args.lora_r,
         lora_alpha=2 * args.lora_r,
-        lora_dropout=0.0,
+        lora_dropout=LORA_DROPOUT,
         bias="none",
         task_type="CAUSAL_LM",
         target_modules=LORA_TARGET_MODULES,

@@ -51,6 +51,12 @@
 ## 2026-09-03 23:40 Zurich — stop rule changed (Guiv)
 - Cutoff for new numbers moved from Fri 12:00 to **Sat 04:00 Zurich**. Compensation: submittable v1 of summary/doc/form by Fri 12:00; add-ons inserted incrementally; P6 critic Fri 18:00; submit by Sat 07:30.
 
+## 2026-09-04 00:35 Zurich — pod runner: environment + revision pins
+- Pod `03iex0ijclvd8o` (see attempt ledger). Fresh venv on the pod: Python 3.11.15, torch 2.13.0+cu129 (driver 570.124.06 / CUDA 12.8 host; cu129 wheel runs via minor-version compatibility, bf16 matmul verified), vLLM 0.27.1+cu129, Transformers 5.16.1, TRL 1.12.0, PEFT 0.20.0, datasets 5.0.1, accelerate 1.14.0. Receipt: `logs/pod_packages.txt` on the pod.
+- Pinned: `Qwen/Qwen3.5-4B-Base` @ `1001bb4d826a52d1f399e183466143f4da7b741b`; `openai/gsm8k` @ `740312add88f781978c0658806c59bc2815b9866` (`logs/hub_revisions.txt`). Written into PREREG.md model line (freeze commit is Guiv's).
+- Repo on the pod: `/workspace/mechinterp_01`, branch `pod` (code shipped from the local `pod` branch via git bundles; results copied back by rsync).
+- Merged-tree test suite (`python -m pytest tests/ -q`, local CPU, commit 2c98fe1): **88 passed, 18 failed**; all failures are merge artifacts between Agent 01's tests/readout (main) and Agent 02/03 code: `judge._validate_items`/`_ask_with_raw`/`main(argv)`/`ARM_TO_DOMAIN["A-B"]` missing from the hardened judge (9 judge tests + 1 ab_readout test), `lexical_baseline.main(argv)` (4), `train_grpo.LORA_R/LORA_ALPHA/LORA_DROPOUT` missing (3 null-adapter tests), `train_grpo.load_text_causal_stack` missing (1 adapter-compat test). GRPO/SFT/eval/model_utils/readout-hook/run_readouts tests all pass.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
