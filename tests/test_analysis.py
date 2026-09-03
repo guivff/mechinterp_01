@@ -239,9 +239,9 @@ def test_analysis_rejects_incomplete_primary_cells(tmp_path: Path) -> None:
         row
         for row in rows
         if not (
-            row["arm"] == "N3"
-            and row["snippet_set"] == "math"
-            and row["modality"] == "steer"
+                row["arm"] == "N3"
+                and row["snippet_set"] == "math"
+                and row["modality"] == "tokens"
         )
     ]
 

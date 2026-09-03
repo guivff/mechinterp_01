@@ -9,10 +9,13 @@ refuses to run if both are present; select one explicitly with ``--mode mock``
 or ``--mode real``.  Mock-derived figures carry a conspicuous watermark and the
 cosine CSV has an ``is_mock`` column.
 
-Figure 1 uses out-of-fold TF-IDF predictions for the preregistered lexical
-baseline.  The classifier is fit separately for each modality, matching
-``judge/lexical_baseline.py``; plotted subgroup accuracies are then broken out
-by arm and snippet set.  All binomial intervals are 95% Wilson intervals.
+Figure 1 consumes persisted predictions made by ``judge/lexical_baseline.py``
+from the frozen external six-domain reference corpus.  This module never fits a
+classifier on readout rows.  Real analyses fail closed when those predictions
+or their corpus/leakage receipts are absent.  MOCK layout fixtures may use an
+explicitly marked deterministic placeholder without fitting.  Plotted subgroup
+accuracies are broken out by arm and snippet set; all binomial intervals are
+95% Wilson intervals.
 """
 from __future__ import annotations
 
@@ -37,10 +40,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
-from sklearn.pipeline import make_pipeline
 
 
 LABELS = ("math", "cooking", "law", "medicine", "poetry", "none")
@@ -63,6 +62,9 @@ ARM_TO_DOMAIN = {
 MOCK_RE = re.compile(r"(?:^|[_-])mock(?:[_-]|$)", flags=re.IGNORECASE)
 SHA256_RE = re.compile(r"[0-9a-f]{64}", flags=re.IGNORECASE)
 Z_95 = 1.959963984540054
+PRIMARY_LEXICAL_VARIANT = "prose_1_2gram"
+BLOCK_FIELDS = ("block", "block_id", "block_index")
+K_BLOCKS = 10
 
 
 @dataclass(frozen=True)
@@ -151,7 +153,13 @@ def load_judged(paths: Sequence[Path], mode: str) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     seen_item_ids: dict[str, str] = {}
     for path in paths:
-        for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        raw = path.read_bytes()
+        try:
+            text = raw.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError(f"Judged input is not UTF-8: {path}") from exc
+        source_sha256 = hashlib.sha256(raw).hexdigest()
+        for line_no, line in enumerate(text.splitlines(), 1):
             if not line.strip():
                 continue
             try:
@@ -225,6 +233,7 @@ def load_judged(paths: Sequence[Path], mode: str) -> list[dict[str, Any]]:
                     )
             row["_source_file"] = path.name
             row["_source_line"] = line_no
+            row["_source_sha256"] = source_sha256
             rows.append(row)
     if not rows:
         raise ValueError("The selected judged files contain no rows")
@@ -589,8 +598,8 @@ def validate_analysis_inputs(
             if bad:
                 raise ValueError(f"Arm-D norm receipt mismatch in {source}: {bad}")
 
-    # Figure 1 is a comparison across the preregistered physical arms.  Missing
-    # cells or unequal arm counts must not be rendered as innocuous NaN bars.
+    # Figure 1 always requires token readouts. Steering is conditional and C is
+    # launched only after Gate 2, so neither may be made an unconditional gate.
     primary_counts: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
     for row in rows:
         modality = str(row["modality"])
@@ -598,25 +607,62 @@ def validate_analysis_inputs(
         arm = _canonical_arm(row["arm"])
         if modality in PRIMARY_MODALITIES and snippet in PRIMARY_SNIPPETS:
             primary_counts[(snippet, modality)][arm] += 1
+    required_arms = tuple(arm for arm in PHYSICAL_ARMS if arm != "C")
+    real_rows = [
+        row
+        for row in rows
+        if row["modality"] in PRIMARY_MODALITIES and row.get("is_mock") is not True
+    ]
     for snippet in PRIMARY_SNIPPETS:
-        for modality in PRIMARY_MODALITIES:
+        if not primary_counts.get((snippet, "tokens")):
+            raise ValueError(f"Incomplete primary judge cell {(snippet, 'tokens')}; no token rows")
+        available_modalities = [
+            modality
+            for modality in PRIMARY_MODALITIES
+            if primary_counts.get((snippet, modality))
+        ]
+        for modality in available_modalities:
             cell = (snippet, modality)
             counts = primary_counts.get(cell, Counter())
-            missing = [arm for arm in PHYSICAL_ARMS if counts[arm] == 0]
-            if missing:
+            missing = [arm for arm in required_arms if counts[arm] == 0]
+            if modality == "tokens" and missing:
                 raise ValueError(f"Incomplete primary judge cell {cell}; missing arms {missing}")
-            physical_counts = {arm: counts[arm] for arm in PHYSICAL_ARMS}
-            if len(set(physical_counts.values())) != 1:
-                raise ValueError(
-                    f"Unbalanced primary judge cell {cell}: {physical_counts}"
-                )
-            if not all(bool(row.get("is_mock")) for row in rows):
-                too_small = {arm: count for arm, count in physical_counts.items() if count < 100}
-                if too_small:
-                    raise ValueError(
-                        "PREREG requires 100 judge calls per real primary cell; "
-                        f"{cell} has {too_small}"
-                    )
+            if not real_rows:
+                present = {arm: count for arm, count in counts.items() if arm in PHYSICAL_ARMS}
+                if len(set(present.values())) > 1:
+                    raise ValueError(f"Unbalanced MOCK primary judge cell {cell}: {present}")
+
+    # For real rows that carry block metadata, the block—not repeated ratings—
+    # is the frozen sampling unit.  Validate separately at the full scientific
+    # cell grain so layers, checkpoints, and seeds cannot be pooled.
+    block_groups: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for row in real_rows:
+        block_groups[
+            (
+                _canonical_arm(row["arm"]),
+                row["seed"],
+                _meta_value(row, "checkpoint_step", "step"),
+                row["layer"],
+                str(row["snippet_set"]),
+                str(row["modality"]),
+            )
+        ].append(row)
+    for key, group in block_groups.items():
+        values = [
+            next((row[field] for field in BLOCK_FIELDS if field in row), None)
+            for row in group
+        ]
+        if not any(value is not None for value in values):
+            raise ValueError(f"Real primary cell {key} lacks block identifiers")
+        if not all(value is not None for value in values):
+            raise ValueError(f"Real primary cell {key} mixes rows with/without blocks")
+        unique_blocks = set(values)
+        if len(unique_blocks) != K_BLOCKS or len(group) != K_BLOCKS:
+            raise ValueError(
+                f"Real primary cell {key} has {len(group)} rows and "
+                f"{len(unique_blocks)} unique blocks; PREREG requires K={K_BLOCKS} "
+                "one-decision-per-block"
+            )
 
     for snippet in PRIMARY_SNIPPETS:
         if primary_counts[(snippet, "tokens")]["A-B"] == 0:
@@ -644,62 +690,280 @@ def _accuracy(values: Iterable[Any]) -> dict[str, float | int]:
     return {"accuracy": successes / n if n else math.nan, "low": lo, "high": hi, "n": n}
 
 
-def add_lexical_predictions(rows: list[dict[str, Any]], seed: int) -> None:
-    """Attach deterministic out-of-fold lexical predictions in place.
+def _read_lexical_prediction_rows(path: Path) -> tuple[list[dict[str, Any]], str]:
+    """Load canonical external-baseline JSONL and return its exact file hash."""
 
-    As preregistered, the classifier is evaluated separately for each readout
-    modality.  Its per-arm/per-snippet results are computed after prediction.
-    """
-    by_modality: dict[str, list[int]] = defaultdict(list)
-    for idx, row in enumerate(rows):
-        if row["modality"] in PRIMARY_MODALITIES:
-            by_modality[str(row["modality"])].append(idx)
-
-    for modality, indices in sorted(by_modality.items()):
-        labels = [str(rows[idx]["true"]) for idx in indices]
-        counts = Counter(labels)
-        if len(counts) < 2 or min(counts.values()) < 2:
-            warnings.warn(
-                f"Lexical baseline unavailable for {modality}: need at least two labels "
-                "and two rows per label",
-                stacklevel=2,
-            )
-            for idx in indices:
-                rows[idx]["_lexical_pred"] = None
-                rows[idx]["_lexical_correct"] = None
+    path = Path(path)
+    raw = path.read_bytes()
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"Lexical prediction file is not UTF-8: {path}") from exc
+    parsed: list[dict[str, Any]] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if not line.strip():
             continue
-        input_is_mock = all(rows[idx].get("is_mock") is True for idx in indices)
-        if not input_is_mock and min(counts.values()) < 5:
-            raise ValueError(
-                f"Lexical baseline for {modality} cannot run the preregistered 5-fold CV; "
-                f"smallest class has {min(counts.values())} rows"
-            )
-        folds = min(5, min(counts.values()))
-        classifier = make_pipeline(
-            TfidfVectorizer(ngram_range=(1, 2), min_df=1),
-            # Keep this identical to judge/lexical_baseline.py.  The default
-            # solver supports the multiclass label set in current sklearn.
-            LogisticRegression(max_iter=2000, random_state=seed),
-        )
-        # An integer ``cv=folds`` in cross_val_score selects this exact
-        # deterministic splitter for classification; spelling it out lets us
-        # obtain the out-of-fold predictions needed for per-arm bars.
-        cv = StratifiedKFold(n_splits=folds, shuffle=False)
-        texts = [str(rows[idx]["text"]) for idx in indices]
         try:
-            predictions = cross_val_predict(classifier, texts, labels, cv=cv, method="predict")
-        except ValueError as exc:
-            warnings.warn(
-                f"Lexical baseline unavailable for {modality}: {exc}", stacklevel=2
+            row = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Invalid lexical prediction JSON at {path}:{line_number}: {exc}"
+            ) from exc
+        if not isinstance(row, dict):
+            raise ValueError(f"Expected lexical prediction object at {path}:{line_number}")
+        row = dict(row)
+        row["_lexical_source_file"] = path.name
+        row["_lexical_source_line"] = line_number
+        parsed.append(row)
+    if not parsed:
+        raise ValueError(f"Lexical prediction file contains no JSONL rows: {path}")
+
+    filename_is_mock = bool(MOCK_RE.search(path.stem))
+    explicit_modes = {row.get("is_mock") for row in parsed if "is_mock" in row}
+    if any(type(value) is not bool for value in explicit_modes):
+        raise ValueError(f"Lexical prediction is_mock values must be booleans: {path}")
+    if len(explicit_modes) > 1:
+        raise ValueError(f"Lexical prediction file mixes MOCK and real rows: {path}")
+    if filename_is_mock and explicit_modes == {False}:
+        raise ValueError(f"MOCK lexical filename contains is_mock=false rows: {path}")
+    return parsed, hashlib.sha256(raw).hexdigest()
+
+
+def _leakage_receipt_passed(prediction: dict[str, Any]) -> bool:
+    receipt = prediction.get("lexical_leakage_check")
+    if isinstance(receipt, dict):
+        return (
+            receipt.get("passed") is True
+            and receipt.get("exact_matches") == 0
+            and receipt.get("shared_8gram_shingles") == 0
+        )
+    return prediction.get("lexical_leakage_check_passed") is True
+
+
+def _same_prediction_item(prediction: dict[str, Any], judged: dict[str, Any]) -> None:
+    """Reject a stable-id match whose copied readout provenance was altered."""
+
+    aliases: tuple[tuple[str, tuple[str, ...]], ...] = (
+        ("arm", ("arm",)),
+        ("seed", ("seed",)),
+        ("checkpoint step", ("checkpoint_step", "step")),
+        ("layer", ("layer",)),
+        ("snippet set", ("snippet_set",)),
+        ("modality", ("modality",)),
+        ("text", ("text",)),
+        ("snippet SHA-256", ("snippet_sha", "snippet_set_sha256", "snippet_sha256")),
+    )
+    mismatches: dict[str, dict[str, Any]] = {}
+    for label, keys in aliases:
+        predicted_value = _meta_value(prediction, *keys)
+        if predicted_value == "unknown":
+            # Rows written by the canonical lexical CLI retain all of these
+            # fields.  Optionality here keeps the JSONL join compatible with a
+            # deliberately minimal prediction exporter while the stable item
+            # id and exact source-file hash remain mandatory.
+            continue
+        judged_value = _meta_value(judged, *keys)
+        if predicted_value != judged_value:
+            mismatches[label] = {"judged": judged_value, "lexical": predicted_value}
+    if mismatches:
+        raise ValueError(
+            f"Lexical prediction provenance disagrees for item {judged['item_id']!r}: "
+            f"{mismatches}"
+        )
+
+
+def _attach_mock_lexical_placeholders(rows: list[dict[str, Any]], seed: int) -> None:
+    """Supply MOCK-only layout values without training or reading model outputs."""
+
+    for row in rows:
+        if row["modality"] not in PRIMARY_MODALITIES:
+            continue
+        payload = f"MOCK-LEXICAL-PLACEHOLDER:{seed}:{row['item_id']}".encode("utf-8")
+        prediction = LABELS[int.from_bytes(hashlib.sha256(payload).digest()[:8], "big") % len(LABELS)]
+        row["_lexical_pred"] = prediction
+        row["_lexical_correct"] = prediction == str(row["true"])
+        row["_lexical_variant"] = "MOCK_deterministic_placeholder_no_fit"
+        row["_lexical_is_placeholder"] = True
+
+
+def add_lexical_predictions(
+    rows: list[dict[str, Any]],
+    seed: int = 0,
+    prediction_paths: Sequence[Path] | None = None,
+    mode: str | None = None,
+) -> None:
+    """Join persisted external-corpus predictions to judged rows in place.
+
+    The canonical JSONL has one row per ``item_id`` and lexical variant.  This
+    analyzer consumes only ``prose_1_2gram`` for Figure 1; the separate
+    ``token_bag_unigram`` variant remains available in the lexical result file.
+    Each real prediction must be bound to the exact judged JSONL bytes, a full
+    external-reference-manifest hash, and a passing exact/8-gram leakage receipt.
+
+    For backward-compatible MOCK layout tests only, omitting ``prediction_paths``
+    creates deterministic placeholder labels.  That path performs no fitting and
+    is impossible for real rows.
+    """
+
+    primary_rows = [row for row in rows if row["modality"] in PRIMARY_MODALITIES]
+    if not primary_rows:
+        return
+    inferred_mode = "mock" if all(row.get("is_mock") is True for row in primary_rows) else "real"
+    if any((row.get("is_mock") is True) != (inferred_mode == "mock") for row in primary_rows):
+        raise ValueError("Judged rows mix MOCK and real provenance")
+    selected_mode = inferred_mode if mode is None else mode
+    if selected_mode not in {"mock", "real"}:
+        raise ValueError(f"Unknown analysis mode for lexical predictions: {selected_mode!r}")
+    if selected_mode != inferred_mode:
+        raise ValueError(
+            f"Lexical mode {selected_mode!r} disagrees with judged rows ({inferred_mode})"
+        )
+
+    paths = [Path(path) for path in (prediction_paths or ())]
+    if not paths:
+        if selected_mode == "mock":
+            _attach_mock_lexical_placeholders(rows, seed)
+            return
+        raise ValueError(
+            "Real analysis requires persisted external-corpus lexical predictions; "
+            "run judge/lexical_baseline.py --reference-dir data/lexical_reference "
+            "--predictions-out <JSONL> and pass --lexical-predictions <JSONL>"
+        )
+
+    by_item: dict[str, tuple[dict[str, Any], str]] = {}
+    for path in paths:
+        predictions, file_sha256 = _read_lexical_prediction_rows(path)
+        for prediction in predictions:
+            if prediction.get("lexical_variant") != PRIMARY_LEXICAL_VARIANT:
+                continue
+            item_id = prediction.get("item_id")
+            if not isinstance(item_id, str) or not item_id:
+                raise ValueError(
+                    f"Primary lexical prediction lacks item_id in "
+                    f"{path}:{prediction['_lexical_source_line']}"
+                )
+            if item_id in by_item:
+                prior = by_item[item_id][0]
+                raise ValueError(
+                    f"Duplicate {PRIMARY_LEXICAL_VARIANT} lexical prediction for {item_id!r}: "
+                    f"{prior['_lexical_source_file']} and {path.name}"
+                )
+            by_item[item_id] = (prediction, file_sha256)
+
+    reference_hashes: set[str] = set()
+    reference_corpus_hashes: set[str] = set()
+    for row in primary_rows:
+        item_id = row.get("item_id")
+        if item_id not in by_item:
+            raise ValueError(
+                f"Missing {PRIMARY_LEXICAL_VARIANT} external lexical prediction for "
+                f"judged item {item_id!r}"
             )
-            predictions = [None] * len(indices)
-        for idx, prediction in zip(indices, predictions):
-            pred = None if prediction is None else str(prediction)
-            rows[idx]["_lexical_pred"] = pred
-            rows[idx]["_lexical_correct"] = (
-                None if pred is None else pred == str(rows[idx]["true"])
+        prediction, prediction_file_sha = by_item[item_id]
+        if type(prediction.get("is_mock")) is not bool:
+            raise ValueError(
+                f"Lexical prediction lacks an explicit boolean is_mock for item {item_id!r}"
             )
-            rows[idx]["_lexical_folds"] = folds
+        prediction_is_mock = prediction.get("is_mock") is True
+        if prediction_is_mock != (selected_mode == "mock"):
+            raise ValueError(
+                f"Lexical prediction MOCK/real status disagrees for item {item_id!r}"
+            )
+        lexical_pred = prediction.get("lexical_pred")
+        if lexical_pred not in LABELS:
+            raise ValueError(f"Invalid lexical_pred for item {item_id!r}: {lexical_pred!r}")
+        expected_correct = lexical_pred == str(row["true"])
+        if prediction.get("lexical_correct") is not expected_correct:
+            raise ValueError(
+                f"lexical_correct disagrees with lexical_pred/true for item {item_id!r}"
+            )
+        source_sha = prediction.get("lexical_source_input_sha256")
+        judged_source_sha = row.get("_source_sha256")
+        if not SHA256_RE.fullmatch(str(source_sha)) or source_sha != judged_source_sha:
+            raise ValueError(
+                f"Lexical prediction source-input SHA-256 mismatch for item {item_id!r}"
+            )
+        reference_sha = prediction.get("lexical_reference_manifest_sha256")
+        if not SHA256_RE.fullmatch(str(reference_sha)):
+            raise ValueError(
+                f"Lexical prediction lacks a full reference-manifest SHA-256 for item {item_id!r}"
+            )
+        reference_corpus_sha = prediction.get("lexical_reference_corpus_sha256")
+        if not SHA256_RE.fullmatch(str(reference_corpus_sha)):
+            raise ValueError(
+                f"Lexical prediction lacks a full reference-corpus SHA-256 for item {item_id!r}"
+            )
+        if selected_mode == "real" and not _leakage_receipt_passed(prediction):
+            raise ValueError(
+                f"Real lexical prediction lacks a passing exact/8-gram leakage receipt "
+                f"for item {item_id!r}"
+            )
+        if selected_mode == "real":
+            for field in (
+                "lexical_model_config",
+                "lexical_timestamp",
+                "lexical_git_commit",
+                "lexical_script_sha256",
+                "lexical_sklearn_version",
+            ):
+                if not prediction.get(field):
+                    raise ValueError(
+                        f"Real lexical prediction is missing {field!r} for item {item_id!r}"
+                    )
+            if prediction.get("lexical_training_source") != "external_reference_corpus_only":
+                raise ValueError(
+                    f"Real lexical prediction has a non-external training source for item {item_id!r}"
+                )
+            config = prediction["lexical_model_config"]
+            if not isinstance(config, dict):
+                raise ValueError(
+                    f"Real lexical prediction has a non-object model config for item {item_id!r}"
+                )
+            expected_config = {
+                "vectorizer": "sklearn.feature_extraction.text.TfidfVectorizer",
+                "ngram_range": [1, 2],
+                "min_df": 1,
+                "sublinear_tf": True,
+                "classifier": "sklearn.linear_model.LogisticRegression",
+                "max_iter": 2000,
+            }
+            bad_config = {
+                key: {"expected": expected, "found": config.get(key)}
+                for key, expected in expected_config.items()
+                if config.get(key) != expected
+            }
+            if bad_config:
+                raise ValueError(
+                    f"Real lexical prediction has a non-frozen model config for "
+                    f"item {item_id!r}: {bad_config}"
+                )
+            if not SHA256_RE.fullmatch(str(prediction["lexical_script_sha256"])):
+                raise ValueError(
+                    f"Real lexical prediction has an invalid script SHA-256 for item {item_id!r}"
+                )
+        _same_prediction_item(prediction, row)
+
+        reference_hashes.add(str(reference_sha))
+        reference_corpus_hashes.add(str(reference_corpus_sha))
+        row["_lexical_pred"] = lexical_pred
+        row["_lexical_correct"] = expected_correct
+        row["_lexical_variant"] = PRIMARY_LEXICAL_VARIANT
+        row["_lexical_is_placeholder"] = False
+        row["_lexical_reference_manifest_sha256"] = reference_sha
+        row["_lexical_reference_corpus_sha256"] = reference_corpus_sha
+        row["_lexical_prediction_source_file"] = prediction["_lexical_source_file"]
+        row["_lexical_prediction_source_sha256"] = prediction_file_sha
+
+    if len(reference_hashes) != 1:
+        raise ValueError(
+            "Selected lexical predictions use multiple external reference manifests: "
+            f"{sorted(reference_hashes)}"
+        )
+    if len(reference_corpus_hashes) != 1:
+        raise ValueError(
+            "Selected lexical predictions use multiple external reference corpora: "
+            f"{sorted(reference_corpus_hashes)}"
+        )
 
 
 def accuracy_summaries(
@@ -785,6 +1049,28 @@ def collect_run_metadata(
         digest = str(_meta_value(record, "snippet_sha", "snippet_set_sha256"))
         if name != "unknown" and digest != "unknown" and digest not in snippet_hashes[name]:
             snippet_hashes[name].append(digest)
+    lexical_references = sorted(
+        {
+            str(row["_lexical_reference_manifest_sha256"])
+            for row in rows
+            if row.get("_lexical_reference_manifest_sha256")
+        }
+    )
+    lexical_corpora = sorted(
+        {
+            str(row["_lexical_reference_corpus_sha256"])
+            for row in rows
+            if row.get("_lexical_reference_corpus_sha256")
+        }
+    )
+    lexical_files = {
+        str(row["_lexical_prediction_source_file"]): str(
+            row["_lexical_prediction_source_sha256"]
+        )
+        for row in rows
+        if row.get("_lexical_prediction_source_file")
+        and row.get("_lexical_prediction_source_sha256")
+    }
     return {
         "arms": _ordered((_canonical_arm(value) for value in values("arm")), ARM_ORDER),
         "seeds": values("seed"),
@@ -792,6 +1078,13 @@ def collect_run_metadata(
         "layers": values("layer"),
         "snippet_sets_and_hashes": dict(sorted(snippet_hashes.items())),
         "judge_models": values("judge_model"),
+        "lexical_variant": PRIMARY_LEXICAL_VARIANT,
+        "lexical_reference_manifest_sha256": lexical_references,
+        "lexical_reference_corpus_sha256": lexical_corpora,
+        "lexical_prediction_files": dict(sorted(lexical_files.items())),
+        "lexical_mock_placeholder": any(
+            row.get("_lexical_is_placeholder") is True for row in rows
+        ),
     }
 
 
@@ -1369,6 +1662,7 @@ def summarize(
     seed: int = 0,
     top_token_snippet: str = "neutral",
     layer: int | None = None,
+    lexical_predictions: Sequence[Path] | None = None,
 ) -> dict[str, Path]:
     """Run all analyses and return the emitted artifact paths."""
     results_dir = Path(results_dir)
@@ -1380,7 +1674,12 @@ def summarize(
         rows, source_vectors, requested_layer=layer
     )
     validate_analysis_inputs(rows, source_vectors)
-    add_lexical_predictions(rows, seed=seed)
+    add_lexical_predictions(
+        rows,
+        seed=seed,
+        prediction_paths=lexical_predictions,
+        mode=inputs.mode,
+    )
     summaries = accuracy_summaries(rows)
     a_minus_b = derive_a_minus_b(source_vectors)
     analysis_vectors = source_vectors + a_minus_b
@@ -1455,7 +1754,22 @@ def build_parser() -> argparse.ArgumentParser:
         default="auto",
         help="auto refuses to combine MOCK and real inputs",
     )
-    parser.add_argument("--seed", type=int, default=0, help="lexical CV and random-reference seed")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="random-reference seed (also keys the MOCK-only lexical placeholder)",
+    )
+    parser.add_argument(
+        "--lexical-predictions",
+        type=Path,
+        action="append",
+        default=None,
+        help=(
+            "persisted JSONL from judge/lexical_baseline.py --predictions-out; "
+            "repeat for multiple source batches (required for real analysis)"
+        ),
+    )
     parser.add_argument(
         "--layer",
         type=int,
@@ -1479,6 +1793,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         seed=args.seed,
         top_token_snippet=args.top_token_snippet,
         layer=args.layer,
+        lexical_predictions=args.lexical_predictions,
     )
 
 

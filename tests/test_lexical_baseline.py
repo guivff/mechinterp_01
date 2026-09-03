@@ -27,11 +27,17 @@ def _judged_row(arm: str, true: str, text: str) -> dict:
         "correct": False,
         "correct_shuffled": False,
         "shuffled_control_valid": True,
+        "shuffled_control_changed_n": 6,
+        "shuffled_control_expected_accuracy": 0.5,
+        "shuffle_control_kind": "input_gold_pairing_permutation",
+        "visible_label_order_permuted": False,
+        "shuffled_from_item_index": 0,
+        "judge_labels": ["math", "cooking", "law", "medicine", "poetry", "none"],
         "is_mock": True,
     }
 
 
-def test_balanced_mock_arms_enter_deterministic_cv(tmp_path: Path, capsys) -> None:
+def test_balanced_mock_arms_never_train_on_readout_text(tmp_path: Path, capsys) -> None:
     judged = tmp_path / "judged_MOCK_balanced.jsonl"
     rows = []
     for index in range(6):
@@ -53,10 +59,10 @@ def test_balanced_mock_arms_enter_deterministic_cv(tmp_path: Path, capsys) -> No
 
     assert main(["--judged", str(judged), "--seed", "23"]) == 0
     first = capsys.readouterr().out
-    assert (
-        "[lexical] tokens: 5-fold acc=1.000 ± 0.000 "
-        "(fixed six-label chance 0.167; observed majority 0.500)"
-    ) in first
+    assert "[judge summary]" in first
+    assert "always-math=0.500 always-none=0.000" in first
+    assert "[external lexical] NOT RUN" in first
+    assert "5-fold" not in first
 
     assert main(["--judged", str(judged), "--seed", "23"]) == 0
     second = capsys.readouterr().out
