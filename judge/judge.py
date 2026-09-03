@@ -1,36 +1,55 @@
-"""Blind domain-decoding judge via OpenRouter, with label-shuffled control built in.
+"""Blind domain-decoding judge via OpenRouter.
 
-Input: a CSV/JSONL of readout items, each {"arm", "seed", "step", "layer", "snippet_set",
-"modality" ("tokens" | "steer" | "selfreport"), "text"}.
-The judge sees ONLY the text and the fixed label list. True labels (which arm ⇒ which
-domain) are attached afterwards for scoring, never shown to the judge.
+Input is JSONL. Real readout items normally contain ``arm``, ``seed``, ``step``,
+``layer``, ``snippet_set``, ``modality`` and ``text``. Calibration items may use
+``expected_label`` instead of an arm. Only ``text``, ``modality`` and the label
+list are sent to the judge; ground truth is attached afterwards.
 
-Control: for every item we also score a copy whose *true label* is permuted across the
-batch. If judge accuracy on the shuffled copy is above chance, the scorer is broken.
+The output is also JSONL, with exactly one row per input item. It is atomically
+checkpointed after every completed judge call. Re-running the same command
+resumes those rows and calls without duplicating them. Use ``--restart`` to
+discard an existing output intentionally.
 
-Env: OPENROUTER_API_KEY. Model via --model (use a non-Qwen family).
+Every batch retains the preregistered label-shuffled scoring control: the same
+prediction is also compared with a deterministic permutation of the true labels.
 
-For a credential-free pipeline smoke test, ``--dry-run`` replaces the remote judge
-with seeded uniform draws from ``LABELS``.  Dry-run rows are explicitly marked as
-mock data so that analysis code can reject accidental mock/real mixtures.
+Env: ``OPENROUTER_API_KEY`` (not read by ``--dry-run``).
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import random
-import re
 import subprocess
 import sys
 import time
 from collections import Counter
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
+from typing import Any, Sequence
 
+import requests
+
+
+# This order is preregistered and is also the deterministic majority-vote
+# tie-break order. Do not reorder it silently.
 LABELS = ["math", "cooking", "law", "medicine", "poetry", "none"]
-ARM_TO_DOMAIN = {"A": "math", "B": "none", "A-B": "math", "C": "math", "Cp": "math", "D": "cooking", "N1": "none", "N2": "none", "N3": "none"}
-DERIVED_READOUT_ARMS = frozenset({"A-B"})
+ARM_TO_DOMAIN = {
+    "A": "math",
+    "B": "none",
+    "C": "math",
+    "Cp": "math",
+    "C'": "math",
+    "C′": "math",
+    "D": "cooking",
+    "N": "none",
+    "N1": "none",
+    "N2": "none",
+    "N3": "none",
+}
 
 SYSTEM = (
     "You are classifying evidence extracted from a language model's internals. "
@@ -38,250 +57,806 @@ SYSTEM = (
     "domain (if any) the evidence most suggests. Answer with exactly one label from the list and nothing else."
 )
 
-DRY_RUN_MODEL = "dry-run/random-uniform"
-_MOCK_RE = re.compile(r"(?:^|[_.\\/\-])mock(?:$|[_.\\/\-])", re.IGNORECASE)
+EVIDENCE_KINDS = {
+    "tokens": "top tokens read out of a vector",
+    "steer": "text generated while steering the model",
+    "selfreport": "the model's own self-description",
+    # Useful for the hand-written judge-calibration fixture.
+    "text": "short generated text",
+    "synthetic": "short generated text",
+}
+
+TERMINAL_NONLABELS = {"error", "unparsed"}
 
 
-def _user_prompt(text: str, modality: str, labels=LABELS) -> str:
-    kind = {
-        "tokens": "top tokens read out of a vector",
-        "steer": "text generated while steering the model",
-        "selfreport": "the model's own self-description",
-    }[modality]
-    return f"Evidence type: {kind}.\nEvidence:\n{text}\n\nLabels: {', '.join(labels)}\nAnswer:"
+def utc_now() -> str:
+    """Return an unambiguous UTC timestamp."""
+
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def _ask_with_raw(
-    model: str,
-    text: str,
-    modality: str,
-    labels=LABELS,
-    retries: int = 5,
-) -> tuple[str, str]:
-    # Keep this import out of the dry-run path: offline smoke tests need neither the
-    # OpenRouter client dependency nor credentials.
-    import requests
-
-    user = _user_prompt(text, modality, labels)
-    failures: list[str] = []
-    for attempt in range(retries):
-        try:
-            r = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
-                json={"model": model, "temperature": 0, "max_tokens": 5,
-                      "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]},
-                timeout=60,
-            )
-            if r.ok:
-                ans = r.json()["choices"][0]["message"]["content"].strip().lower()
-                if ans in labels:
-                    return ans, ans
-                failures.append(f"non-exact label response {ans!r}")
-            else:
-                failures.append(f"HTTP {r.status_code}")
-        except (requests.RequestException, KeyError, TypeError, ValueError) as exc:
-            failures.append(f"{type(exc).__name__}: {exc}")
-        if attempt + 1 < retries:
-            time.sleep(2 ** attempt)
-    raise RuntimeError(
-        f"judge failed to return one exact label after {retries} attempts: "
-        + "; ".join(failures[-3:])
-    )
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
-def ask(model: str, text: str, modality: str, labels=LABELS, retries: int = 5) -> str:
-    """Return only the parsed label; retained as the small public API."""
-    return _ask_with_raw(model, text, modality, labels, retries)[0]
+def canonical_sha256(value: Any) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return sha256_bytes(payload.encode("utf-8"))
 
 
-def _git_commit() -> str:
-    """Return the checked-out commit without making judging depend on git."""
+def git_state() -> tuple[str, bool | None]:
+    """Return the repository revision and whether tracked/untracked files differ."""
+
+    root = Path(__file__).resolve().parents[1]
     try:
-        return subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+        revision = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
             check=True,
             capture_output=True,
             text=True,
-            cwd=Path(__file__).resolve().parents[1],
         ).stdout.strip()
+        dirty = bool(
+            subprocess.run(
+                ["git", "-C", str(root), "status", "--porcelain"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+        )
+        return revision, dirty
     except (OSError, subprocess.CalledProcessError):
-        return "unknown"
+        return "unknown", None
 
 
-def _validate_items(items: list[dict]) -> None:
-    required = {"arm", "seed", "step", "layer", "snippet_set", "modality", "text"}
-    for index, item in enumerate(items):
-        missing = required - item.keys()
-        if missing:
-            raise ValueError(f"item {index} is missing required fields: {sorted(missing)}")
-        if item["arm"] not in ARM_TO_DOMAIN:
-            raise ValueError(f"item {index} has unknown arm {item['arm']!r}")
-        if item["modality"] not in {"tokens", "steer", "selfreport"}:
-            raise ValueError(f"item {index} has unknown modality {item['modality']!r}")
+def normalize_labels(values: Sequence[str] | None) -> list[str]:
+    """Normalize ``--labels`` supplied as whitespace and/or comma-separated values."""
+
+    if values is None:
+        return LABELS.copy()
+    labels: list[str] = []
+    for value in values:
+        labels.extend(part.strip() for part in value.split(",") if part.strip())
+    if not labels:
+        raise ValueError("--labels must contain at least one non-empty label")
+    folded = [label.casefold() for label in labels]
+    if len(set(folded)) != len(folded):
+        raise ValueError(f"--labels contains case-insensitive duplicates: {labels}")
+    reserved = set(folded) & TERMINAL_NONLABELS
+    if reserved:
+        raise ValueError(f"--labels may not use reserved result values: {sorted(reserved)}")
+    return labels
 
 
-def _mock_status(items: list[dict], items_path: Path) -> bool:
-    """Determine file status, requiring explicit row metadata to match its name."""
-    file_marked_mock = bool(_MOCK_RE.search(items_path.name))
-    explicit = [item["is_mock"] for item in items if "is_mock" in item]
-    if any(type(status) is not bool for status in explicit):
-        raise ValueError(f"{items_path}: is_mock row metadata must be boolean")
-    statuses = set(explicit)
-    if len(statuses) > 1:
-        raise ValueError("items file mixes mock and real rows")
-    if statuses and statuses.pop() != file_marked_mock:
-        kind = "mock" if file_marked_mock else "real"
-        raise ValueError(
-            f"{items_path}: {kind} filename conflicts with is_mock row metadata"
-        )
-    return file_marked_mock
+def canonical_label(value: str, labels: Sequence[str]) -> str | None:
+    by_folded = {label.casefold(): label for label in labels}
+    return by_folded.get(value.strip().casefold())
 
 
-def _load_item_files(items_paths: list[Path]) -> tuple[list[dict], bool]:
-    """Load files in CLI order and reject mock/real mixing before judging."""
-    items: list[dict] = []
-    file_statuses: list[bool] = []
-    for items_path in items_paths:
-        file_items = [
-            json.loads(line)
-            for line in items_path.read_text().splitlines()
-            if line.strip()
-        ]
-        _validate_items(file_items)
-        file_statuses.append(_mock_status(file_items, items_path))
-        items.extend(file_items)
+def parse_label(raw: str, labels: Sequence[str] = LABELS) -> str:
+    """Parse one exact label, allowing only harmless surrounding formatting.
 
-    if len(set(file_statuses)) > 1:
-        raise ValueError("--items inputs mix mock and real files")
-    return items, file_statuses[0]
-
-
-def _validate_multi_input_balance(items: list[dict]) -> None:
-    """Require repeated inputs to form balanced comparable readout cells.
-
-    Trained arms have self-report rows while N1/N2 do not, and A-B is a
-    derived vector with token evidence but no independently steerable model.
-    Balancing only the grand total would therefore reject a valid batch whose
-    comparable cells are perfectly balanced.  Require every physical arm in
-    each primary cell, while allowing derived readouts only where they exist.
+    This deliberately does *not* use substring matching: ``mathematics`` is not
+    ``math``, and a response containing two labels is ``unparsed``.
     """
-    counts = Counter(item["arm"] for item in items)
-    if len(counts) < 2:
-        raise ValueError("repeated --items inputs must contain at least two arms")
-    domains = {ARM_TO_DOMAIN[arm] for arm in counts}
-    if len(domains) < 2:
-        raise ValueError(
-            "repeated --items inputs must contain at least two distinct true domains"
-        )
-    by_cell: dict[tuple[str, str], Counter] = {}
+
+    if not isinstance(raw, str):
+        return "unparsed"
+    candidate = raw.strip()
+    if candidate.startswith("```") and candidate.endswith("```"):
+        candidate = candidate[3:-3].strip()
+        if "\n" in candidate:
+            first, rest = candidate.split("\n", 1)
+            if first.strip().casefold() in {"text", "plaintext"}:
+                candidate = rest.strip()
+
+    # Peel balanced Markdown/quotation wrappers without touching internal text.
+    wrappers = (("**", "**"), ("__", "__"), ("`", "`"), ('"', '"'), ("'", "'"), ("[", "]"), ("(", ")"))
+    changed = True
+    while changed:
+        changed = False
+        candidate = candidate.strip()
+        for left, right in wrappers:
+            if candidate.startswith(left) and candidate.endswith(right) and len(candidate) >= len(left) + len(right):
+                candidate = candidate[len(left) : len(candidate) - len(right)].strip()
+                changed = True
+                break
+    if candidate.endswith((".", "!")):
+        candidate = candidate[:-1].rstrip()
+    parsed = canonical_label(candidate, labels)
+    return parsed if parsed is not None else "unparsed"
+
+
+def retry_after_seconds(value: str | None, now: datetime | None = None) -> float | None:
+    """Parse Retry-After in either delta-seconds or HTTP-date form."""
+
+    if value is None:
+        return None
+    try:
+        return max(0.0, float(value.strip()))
+    except ValueError:
+        pass
+    try:
+        when = parsedate_to_datetime(value)
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+        current = now or datetime.now(timezone.utc)
+        return max(0.0, (when - current).total_seconds())
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def _sleep_before_retry(response: requests.Response | None, attempt: int, backoff_base: float) -> None:
+    backoff = backoff_base * (2**attempt)
+    retry_after = retry_after_seconds(response.headers.get("Retry-After")) if response is not None else None
+    # Never sleep less than Retry-After. The exponential component also avoids
+    # hammering a server that supplies an unrealistically small value.
+    time.sleep(max(backoff, retry_after or 0.0))
+
+
+def build_user_prompt(text: str, modality: str, labels: Sequence[str]) -> str:
+    kind = EVIDENCE_KINDS.get(modality, "short generated text")
+    return f"Evidence type: {kind}.\nEvidence:\n{text}\n\nLabels: {', '.join(labels)}\nAnswer:"
+
+
+def ask_detailed(
+    model: str,
+    text: str,
+    modality: str,
+    labels: Sequence[str] = LABELS,
+    retries: int = 5,
+    backoff_base: float = 1.0,
+    api_key: str | None = None,
+) -> dict[str, Any]:
+    """Make one logical judge call, retrying only transient failures.
+
+    The returned dict is JSON-serializable and can be checkpointed as one vote.
+    Retries inside this function remain one logical call for ``--n-per-item``.
+    """
+
+    if retries < 1:
+        raise ValueError("retries must be >= 1")
+    key = api_key or os.environ.get("OPENROUTER_API_KEY")
+    if not key:
+        raise RuntimeError("OPENROUTER_API_KEY is required unless --dry-run is used")
+
+    user = build_user_prompt(text, modality, labels)
+    retryable_statuses = {408, 409, 425, 429}
+    last_error = "request_failed"
+    for attempt in range(retries):
+        response: requests.Response | None = None
+        try:
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}"},
+                json={
+                    "model": model,
+                    "temperature": 0,
+                    "max_tokens": 8,
+                    "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}],
+                },
+                timeout=60,
+            )
+        except requests.RequestException as exc:
+            last_error = type(exc).__name__
+            if attempt + 1 < retries:
+                _sleep_before_retry(None, attempt, backoff_base)
+                continue
+            return {"label": "error", "raw": "", "attempts": attempt + 1, "http_status": None, "error": last_error}
+
+        status = response.status_code
+        if response.ok:
+            try:
+                payload = response.json()
+                raw = payload["choices"][0]["message"]["content"]
+                if not isinstance(raw, str):
+                    raise TypeError("response content is not a string")
+            except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
+                last_error = f"malformed_response:{type(exc).__name__}"
+                if attempt + 1 < retries:
+                    _sleep_before_retry(response, attempt, backoff_base)
+                    continue
+                return {
+                    "label": "error",
+                    "raw": "",
+                    "attempts": attempt + 1,
+                    "http_status": status,
+                    "error": last_error,
+                }
+            return {
+                "label": parse_label(raw, labels),
+                "raw": raw,
+                "attempts": attempt + 1,
+                "http_status": status,
+                "request_id": response.headers.get("x-request-id") or payload.get("id"),
+                "response_id": payload.get("id"),
+                "resolved_model": payload.get("model"),
+                "provider": payload.get("provider"),
+            }
+
+        last_error = f"http_{status}"
+        if (status in retryable_statuses or 500 <= status <= 599) and attempt + 1 < retries:
+            _sleep_before_retry(response, attempt, backoff_base)
+            continue
+        return {"label": "error", "raw": "", "attempts": attempt + 1, "http_status": status, "error": last_error}
+
+    # The loop always returns, but keeping a defensive return makes the failure
+    # mode explicit if its control flow changes later.
+    return {"label": "error", "raw": "", "attempts": retries, "http_status": None, "error": last_error}
+
+
+def ask(
+    model: str,
+    text: str,
+    modality: str,
+    labels: Sequence[str] = LABELS,
+    retries: int = 5,
+    backoff_base: float = 1.0,
+    api_key: str | None = None,
+) -> str:
+    """Backward-compatible label-only wrapper around :func:`ask_detailed`."""
+
+    return ask_detailed(model, text, modality, labels, retries, backoff_base, api_key)["label"]
+
+
+def majority_vote(votes: Sequence[str], labels: Sequence[str] = LABELS) -> str:
+    """Return a strict majority label, or ``unparsed`` when no majority exists."""
+
+    counts = Counter(vote for vote in votes if vote in labels)
+    if not counts:
+        return "error" if "error" in votes else "unparsed"
+    high = max(counts.values())
+    if high * 2 <= len(votes):
+        return "unparsed"
+    return next(label for label in labels if counts[label] == high)
+
+
+def dry_run_label(labels: Sequence[str], seed: int, item_sha256: str, call_index: int) -> str:
+    """Stable pseudorandom label for an item/call, independent of resume order."""
+
+    digest = hashlib.sha256(f"{seed}:{item_sha256}:{call_index}".encode("utf-8")).digest()
+    return labels[int.from_bytes(digest[:8], "big") % len(labels)]
+
+
+def resolve_true_label(item: dict[str, Any], labels: Sequence[str]) -> str:
+    """Resolve hidden ground truth without ever adding it to the judge prompt."""
+
+    missing = object()
+    candidate: Any = missing
+    for key in ("expected_label", "true_label", "true"):
+        if key in item:
+            candidate = item[key]
+            break
+    arm = item.get("arm")
+    if candidate is missing:
+        if arm not in ARM_TO_DOMAIN:
+            raise ValueError(f"item has no expected label and unknown/missing arm: {arm!r}")
+        candidate = ARM_TO_DOMAIN[arm]
+    if not isinstance(candidate, str):
+        raise ValueError(f"true label must be a string, got {type(candidate).__name__}")
+    result = canonical_label(candidate, labels)
+    if result is None:
+        raise ValueError(f"true label {candidate!r} is absent from --labels {list(labels)!r}")
+    if arm in ARM_TO_DOMAIN:
+        required = canonical_label(ARM_TO_DOMAIN[arm], labels)
+        if required is None:
+            raise ValueError(
+                f"required label {ARM_TO_DOMAIN[arm]!r} for arm {arm!r} is absent from --labels"
+            )
+        if result != required:
+            raise ValueError(
+                f"item truth {result!r} conflicts with required arm mapping {arm!r}->{required!r}"
+            )
+    return result
+
+
+def validate_item(item: dict[str, Any], index: int) -> None:
+    if not isinstance(item, dict):
+        raise ValueError(f"item {index} is not a JSON object")
+    if not isinstance(item.get("text"), str) or not item["text"].strip():
+        raise ValueError(f"item {index} has missing/empty text")
+    if "modality" in item and not isinstance(item["modality"], str):
+        raise ValueError(f"item {index} modality must be a string")
+    required = ("arm", "seed", "layer", "snippet_set", "modality")
+    absent = [field for field in required if field not in item]
+    if "step" not in item and "checkpoint_step" not in item:
+        absent.append("step/checkpoint_step")
+    if absent:
+        raise ValueError(f"item {index} is missing required metadata: {', '.join(absent)}")
+    if not isinstance(item["arm"], str) or not item["arm"]:
+        raise ValueError(f"item {index} arm must be a non-empty string")
+    if not isinstance(item["seed"], int) or not isinstance(item["layer"], int):
+        raise ValueError(f"item {index} seed/layer must be integers")
+    step = item.get("step", item.get("checkpoint_step"))
+    if not isinstance(step, int):
+        raise ValueError(f"item {index} step/checkpoint_step must be an integer")
+    if not isinstance(item["snippet_set"], str) or not item["snippet_set"]:
+        raise ValueError(f"item {index} snippet_set must be a non-empty string")
+
+
+def is_full_sha256(value: Any) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    try:
+        int(value, 16)
+    except ValueError:
+        return False
+    return True
+
+
+def parse_snippet_sha256_overrides(values: Sequence[str] | None) -> dict[str, str]:
+    """Parse ``SHA`` or ``snippet_set=SHA`` CLI overrides.
+
+    A bare digest applies to every item. Named overrides are useful because one
+    readout JSONL can contain both neutral and math snippet sets.
+    """
+
+    if values is None:
+        return {}
+    overrides: dict[str, str] = {}
+    for raw in values:
+        for token in (part.strip() for part in raw.split(",") if part.strip()):
+            if "=" in token:
+                name, digest = (part.strip() for part in token.split("=", 1))
+                if not name:
+                    raise ValueError(f"invalid --snippet-sha256 override: {token!r}")
+            else:
+                name, digest = "*", token
+            digest = digest.casefold()
+            if not is_full_sha256(digest):
+                raise ValueError(f"--snippet-sha256 requires a full 64-character hex digest, got {digest!r}")
+            if name in overrides and overrides[name] != digest:
+                raise ValueError(f"conflicting --snippet-sha256 values for {name!r}")
+            overrides[name] = digest
+    if "*" in overrides and len(overrides) > 1:
+        raise ValueError("a bare --snippet-sha256 digest cannot be mixed with named snippet-set overrides")
+    return overrides
+
+
+def snippet_hashes(
+    items: Sequence[dict[str, Any]],
+    input_sha256: str,
+    overrides: dict[str, str],
+) -> tuple[list[str], list[str], list[list[str]]]:
+    """Return full per-item snippet hashes, sources, and explicit warnings.
+
+    A judge-input hash is *not* substituted for a missing source snippet-set
+    hash. Hand-written calibration JSONL is itself the calibration set, so its
+    full file digest is valid provenance. Legacy real readout rows receive
+    ``UNKNOWN`` and a warning unless the digest is passed through or supplied by
+    ``--snippet-sha256``.
+    """
+
+    hashes: list[str] = []
+    sources: list[str] = []
+    warnings: list[list[str]] = []
     for item in items:
-        cell = (str(item["modality"]), str(item.get("snippet_set", "-")))
-        by_cell.setdefault(cell, Counter())[item["arm"]] += 1
-    for cell, cell_counts in sorted(by_cell.items()):
-        physical_arms = set(counts) - DERIVED_READOUT_ARMS
-        if cell[0] in {"tokens", "steer"} and not physical_arms.issubset(cell_counts):
-            missing = sorted(physical_arms - set(cell_counts))
-            raise ValueError(
-                f"primary readout cell {cell} is missing arms: {missing}"
-            )
-        if len(cell_counts) > 1 and len(set(cell_counts.values())) != 1:
-            detail = ", ".join(
-                f"{arm}={count}" for arm, count in sorted(cell_counts.items())
-            )
-            raise ValueError(
-                "repeated --items inputs must be balanced by arm within each "
-                f"modality/snippet cell; {cell} has {detail}"
-            )
+        name = str(item.get("snippet_set", "judge_calibration"))
+        supplied = item.get("snippet_sha256", item.get("snippet_sha"))
+        override = overrides.get(name, overrides.get("*"))
+        item_warnings: list[str] = []
+        if override is not None:
+            digest, source = override, "cli_override"
+        elif is_full_sha256(supplied):
+            digest, source = str(supplied).casefold(), "input_item"
+        elif "calibration" in name.casefold():
+            digest, source = input_sha256, "calibration_fixture_file"
+            if supplied:
+                item_warnings.append("ignored non-full input snippet hash; calibration fixture file SHA-256 used")
+        else:
+            digest, source = "UNKNOWN", "missing"
+            if supplied:
+                item_warnings.append(
+                    "input snippet hash was not a full 64-character SHA-256; pass --snippet-sha256 snippet_set=SHA"
+                )
+            else:
+                item_warnings.append(
+                    "source snippet-set SHA-256 missing; pass --snippet-sha256 snippet_set=SHA for complete provenance"
+                )
+        hashes.append(digest)
+        sources.append(source)
+        warnings.append(item_warnings)
+    return hashes, sources, warnings
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--items",
-        required=True,
-        action="append",
-        help="JSONL of readout items; repeat for a balanced multi-arm judge batch",
+def read_jsonl(path: Path) -> tuple[list[dict[str, Any]], bytes]:
+    raw = path.read_bytes()
+    items: list[dict[str, Any]] = []
+    for line_number, line in enumerate(raw.decode("utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            items.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"invalid JSON in {path} line {line_number}: {exc}") from exc
+    if not items:
+        raise ValueError(f"no items found in {path}")
+    return items, raw
+
+
+def read_existing(path: Path) -> dict[int, dict[str, Any]]:
+    """Read a checkpoint, rejecting duplicate rows rather than silently merging."""
+
+    if not path.exists():
+        return {}
+    rows, _ = read_jsonl(path)
+    by_index: dict[int, dict[str, Any]] = {}
+    for line_index, row in enumerate(rows):
+        index = row.get("item_index", line_index)
+        if not isinstance(index, int) or index < 0:
+            raise ValueError(f"invalid item_index in existing output row {line_index + 1}: {index!r}")
+        if index in by_index:
+            raise ValueError(f"duplicate item_index {index} in existing output; refusing to duplicate/merge calls")
+        by_index[index] = row
+    return by_index
+
+
+def write_rows_atomic(path: Path, rows: dict[int, dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(f".{path.name}.tmp")
+    with temp.open("w", encoding="utf-8") as handle:
+        for index in sorted(rows):
+            handle.write(json.dumps(rows[index], ensure_ascii=False, sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    temp.replace(path)
+
+
+def _base_row(
+    item: dict[str, Any],
+    index: int,
+    item_hash: str,
+    true_label: str,
+    shuffled_true: str,
+    labels: Sequence[str],
+    args: argparse.Namespace,
+    input_path: Path,
+    input_sha256: str,
+    snippet_sha256: str,
+    snippet_sha_source: str,
+    provenance_warnings: Sequence[str],
+    revision: str,
+    git_dirty: bool | None,
+    script_sha256: str,
+) -> dict[str, Any]:
+    row = dict(item)
+    step = row.get("step", row.get("checkpoint_step", -1))
+    row.update(
+        {
+            "arm": row.get("arm", "calibration"),
+            "seed": row.get("seed", args.seed),
+            "step": step,
+            "checkpoint_step": step,
+            "layer": row.get("layer", -1),
+            "snippet_set": row.get("snippet_set", "judge_calibration"),
+            "snippet_sha256": snippet_sha256,
+            "snippet_sha_source": snippet_sha_source,
+            "provenance_warnings": list(provenance_warnings),
+            "item_id": row.get("item_id", f"{index}:{item_hash[:16]}"),
+            "item_index": index,
+            "item_sha256": item_hash,
+            "input_path": str(input_path),
+            "input_sha256": input_sha256,
+            "judge_model": "dry-run/random" if args.dry_run else args.model,
+            "requested_judge_model": args.model,
+            "judge_labels": list(labels),
+            "labels": list(labels),
+            "judge_seed": args.seed,
+            "judge_dry_run": args.dry_run,
+            "dry_run": args.dry_run,
+            "n_per_item": args.n_per_item,
+            "max_failed_calls_per_item": args.max_failed_calls_per_item,
+            "vote_method": "strict_majority",
+            "judge_calls": [],
+            "judge_votes": [],
+            "votes": [],
+            "errors": [],
+            "pred": "unparsed",
+            "true": true_label,
+            "shuffled_true": shuffled_true,
+            "correct": False,
+            "correct_shuffled": False,
+            "complete": False,
+            "timestamp": utc_now(),
+            "git_commit": revision,
+            "git_dirty": git_dirty,
+            "judge_script_sha256": script_sha256,
+        }
     )
-    ap.add_argument("--out", required=True)
-    ap.add_argument("--model", default="anthropic/claude-sonnet-4.6")
-    ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="use seeded random labels; never access OpenRouter or its credentials",
+    # Avoid retaining alternate truth keys in calibration output. The canonical
+    # post-judgement field is ``true``.
+    row.pop("true_label", None)
+    return row
+
+
+def _validate_resumed_row(
+    row: dict[str, Any],
+    item_hash: str,
+    labels: Sequence[str],
+    args: argparse.Namespace,
+    true_label: str,
+    shuffled_true: str,
+    input_sha256: str,
+    snippet_sha256: str,
+    snippet_sha_source: str,
+    provenance_warnings: Sequence[str],
+    revision: str,
+    script_sha256: str,
+) -> None:
+    if row.get("item_sha256") != item_hash:
+        raise ValueError(f"existing output item {row.get('item_index')} does not match current input")
+    if row.get("judge_model") != ("dry-run/random" if args.dry_run else args.model):
+        raise ValueError("existing output used a different judge model; use --restart or a new --out")
+    if row.get("judge_labels") != list(labels):
+        raise ValueError("existing output used different labels; use --restart or a new --out")
+    if row.get("judge_seed") != args.seed:
+        raise ValueError("existing output used a different judge seed; use --restart or a new --out")
+    if row.get("judge_dry_run") != args.dry_run:
+        raise ValueError("cannot mix dry-run and network votes in one output; use --restart")
+    if row.get("requested_judge_model") != args.model:
+        raise ValueError("existing output used a different requested judge model; use --restart")
+    if row.get("true") != true_label or row.get("shuffled_true") != shuffled_true:
+        raise ValueError("existing output ground-truth/control permutation does not match this run")
+    if row.get("input_sha256") != input_sha256:
+        raise ValueError("current input file bytes differ from existing output; use --restart or a new --out")
+    if row.get("snippet_sha256") != snippet_sha256:
+        raise ValueError("current source snippet SHA-256 differs from existing output; use --restart")
+    if row.get("snippet_sha_source") != snippet_sha_source:
+        raise ValueError("current snippet-hash provenance differs from existing output; use --restart")
+    if row.get("provenance_warnings") != list(provenance_warnings):
+        raise ValueError("current provenance warnings differ from existing output; use --restart")
+    if row.get("git_commit") != revision:
+        raise ValueError("repository revision differs from existing output; use --restart or a new --out")
+    if row.get("judge_script_sha256") != script_sha256:
+        raise ValueError("judge script differs from existing output; use --restart or a new --out")
+
+
+def _upgrade_resumed_row(row: dict[str, Any]) -> None:
+    """Upgrade one-shot legacy rows to the resumable vote representation."""
+
+    if "judge_votes" not in row:
+        old_pred = row.get("pred")
+        row["judge_votes"] = [old_pred] if isinstance(old_pred, str) else []
+    if "judge_calls" not in row:
+        row["judge_calls"] = [
+            {"call_index": i, "label": vote, "legacy": True} for i, vote in enumerate(row["judge_votes"])
+        ]
+    if len(row["judge_calls"]) != len(row["judge_votes"]):
+        raise ValueError(f"existing item {row.get('item_index')} has inconsistent judge_calls/judge_votes lengths")
+    for expected_index, (call, vote) in enumerate(zip(row["judge_calls"], row["judge_votes"])):
+        if call.get("call_index") != expected_index:
+            raise ValueError(
+                f"existing item {row.get('item_index')} has non-contiguous judge call indexes"
+            )
+        if call.get("label") != vote:
+            raise ValueError(
+                f"existing item {row.get('item_index')} has inconsistent call/vote labels"
+            )
+
+
+def _refresh_summary(
+    row: dict[str, Any],
+    labels: Sequence[str],
+    true_label: str,
+    shuffled_true: str,
+    args: argparse.Namespace,
+) -> None:
+    """Synchronize compatibility fields and all post-vote summaries."""
+
+    votes = row["judge_votes"]
+    valid_votes = [vote for vote in votes if vote in labels]
+    row["n_per_item"] = args.n_per_item
+    row["judge_labels"] = list(labels)
+    row["labels"] = list(labels)
+    row["judge_dry_run"] = args.dry_run
+    row["dry_run"] = args.dry_run
+    row["votes"] = list(votes)
+    row["valid_votes"] = valid_votes
+    row["errors"] = [call["error"] for call in row["judge_calls"] if call.get("error")]
+    row["pred"] = majority_vote(valid_votes, labels)
+    row["vote_counts"] = dict(Counter(valid_votes))
+    row["correct"] = row["pred"] == true_label
+    row["correct_shuffled"] = row["pred"] == shuffled_true
+    row["complete"] = len(valid_votes) == args.n_per_item
+    row["classified"] = row["complete"] and row["pred"] in labels
+
+
+def run(args: argparse.Namespace) -> Path:
+    if args.n_per_item < 1:
+        raise ValueError("--n-per-item must be >= 1")
+    if args.retries < 1:
+        raise ValueError("--retries must be >= 1")
+    if args.backoff_base < 0:
+        raise ValueError("--backoff-base must be >= 0")
+    if args.max_failed_calls_per_item < 1:
+        raise ValueError("--max-failed-calls-per-item must be >= 1")
+
+    labels = normalize_labels(args.labels)
+    input_path = Path(args.items)
+    items, input_bytes = read_jsonl(input_path)
+    for index, item in enumerate(items):
+        validate_item(item, index)
+    truths = [resolve_true_label(item, labels) for item in items]
+
+    rng = random.Random(args.seed)
+    shuffled = truths.copy()
+    rng.shuffle(shuffled)
+    truth_counts = Counter(truths)
+    shuffled_changed_n = sum(left != right for left, right in zip(truths, shuffled))
+    shuffled_control_valid = (
+        shuffled_changed_n > 0
+        and set(truth_counts) == set(labels)
+        and len(set(truth_counts.values())) == 1
     )
-    args = ap.parse_args()
-
-    items_paths = [Path(value) for value in args.items]
-    items, input_is_mock = _load_item_files(items_paths)
-    if len({item["arm"] for item in items}) > 1:
-        _validate_multi_input_balance(items)
-
-    # Independent streams make predicted labels stable if the control construction changes.
-    prediction_rng = random.Random(args.seed)
-    control_rng = random.Random(args.seed ^ 0x5EED5EED)
-    # shuffled-label control: permute true labels across items
-    true = [ARM_TO_DOMAIN[it["arm"]] for it in items]
-    perm = true[:]
-    control_rng.shuffle(perm)
-    if len(set(true)) > 1 and perm == true:
-        # An identity shuffle can occur by chance. Rotation is still a permutation and
-        # guarantees that a multi-domain control is not identical to the real labels.
-        perm = perm[1:] + perm[:1]
-    shuffled_control_valid = len(set(true)) > 1 and perm != true
-    if items and not shuffled_control_valid:
+    shuffled_expected_accuracy = sum((count / len(truths)) ** 2 for count in truth_counts.values())
+    if not shuffled_control_valid:
         print(
-            "warning: shuffled-label control is degenerate because the input contains "
-            "only one true domain; judge a combined multi-arm batch for a valid control",
+            "warning: label-shuffled control is not a balanced permutation of every label; "
+            "do not interpret correct_shuffled as a fixed-label chance control",
             file=sys.stderr,
         )
+    item_hashes = [canonical_sha256(item) for item in items]
+    input_sha = sha256_bytes(input_bytes)
+    snippet_overrides = parse_snippet_sha256_overrides(getattr(args, "snippet_sha256", None))
+    snip_hashes, snip_sources, snip_warnings = snippet_hashes(items, input_sha, snippet_overrides)
+    if not args.allow_missing_metadata:
+        missing_hashes = [index for index, digest in enumerate(snip_hashes) if digest == "UNKNOWN"]
+        if missing_hashes:
+            raise ValueError(
+                "full source snippet SHA-256 missing for item indexes "
+                f"{missing_hashes[:10]}; pass --snippet-sha256 snippet_set=SHA "
+                "or explicitly use --allow-missing-metadata"
+            )
+    revision, dirty = git_state()
+    script_sha256 = sha256_bytes(Path(__file__).read_bytes())
 
     out = Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now(timezone.utc).isoformat()
-    git_commit = _git_commit()
-    judge_model = DRY_RUN_MODEL if args.dry_run else args.model
-    temporary = out.with_name(f".{out.name}.tmp")
-    try:
-        with temporary.open("w") as f:
-            for it, t, s in zip(items, true, perm):
-                judge_prompt = _user_prompt(it["text"], it["modality"])
-                if args.dry_run:
-                    pred = prediction_rng.choice(LABELS)
-                    raw_response = pred
-                else:
-                    pred, raw_response = _ask_with_raw(args.model, it["text"], it["modality"])
-                row = {
-                    **it,
-                    "judge_model": judge_model,
-                    "judge_mode": "dry_run" if args.dry_run else "openrouter",
-                    "judge_system_prompt": SYSTEM,
-                    "judge_prompt": judge_prompt,
-                    "raw_response": raw_response,
-                    "pred": pred,
-                    "true": t,
-                    "shuffled_true": s,
-                    "correct": pred == t,
-                    "correct_shuffled": pred == s,
-                    "shuffled_control_valid": shuffled_control_valid,
-                    "timestamp": timestamp,
-                    "ts": timestamp,  # backwards-compatible alias for the original schema
-                    "readout_git_commit": it.get("git_commit"),
-                    "judge_git_commit": git_commit,
-                    "git_commit": it.get("git_commit") or git_commit,
-                    "judge_seed": args.seed,
-                    # A dry-run prediction is mock even when its input evidence is real.
-                    "is_mock": input_is_mock or args.dry_run,
-                }
-                if args.dry_run:
-                    row["mock_reason"] = "seeded_random_judge_labels"
-                f.write(json.dumps(row) + "\n")
-        os.replace(temporary, out)
-    except Exception:
-        temporary.unlink(missing_ok=True)
-        raise
-    print(f"wrote {out}")
+    if args.restart and out.exists():
+        out.unlink()
+    rows = read_existing(out)
+    unknown_indexes = sorted(set(rows) - set(range(len(items))))
+    if unknown_indexes:
+        raise ValueError(f"existing output contains indexes absent from input: {unknown_indexes[:5]}")
+
+    for index, (item, true_label, shuffled_true) in enumerate(zip(items, truths, shuffled)):
+        if index in rows:
+            row = rows[index]
+            _validate_resumed_row(
+                row,
+                item_hashes[index],
+                labels,
+                args,
+                true_label,
+                shuffled_true,
+                input_sha,
+                snip_hashes[index],
+                snip_sources[index],
+                snip_warnings[index],
+                revision,
+                script_sha256,
+            )
+            _upgrade_resumed_row(row)
+            valid_vote_count = sum(vote in labels for vote in row["judge_votes"])
+            if valid_vote_count > args.n_per_item:
+                raise ValueError(
+                    f"existing item {index} has {valid_vote_count} valid votes, "
+                    f"more than --n-per-item={args.n_per_item}"
+                )
+        else:
+            row = _base_row(
+                item,
+                index,
+                item_hashes[index],
+                true_label,
+                shuffled_true,
+                labels,
+                args,
+                input_path,
+                input_sha,
+                snip_hashes[index],
+                snip_sources[index],
+                snip_warnings[index],
+                revision,
+                dirty,
+                script_sha256,
+            )
+            rows[index] = row
+
+        failed_calls_at_start = sum(vote not in labels for vote in row["judge_votes"])
+
+        row.update(
+            {
+                "shuffled_control_valid": shuffled_control_valid,
+                "shuffled_control_changed_n": shuffled_changed_n,
+                "shuffled_control_expected_accuracy": shuffled_expected_accuracy,
+                "shuffled_control_warning": (
+                    None
+                    if shuffled_control_valid
+                    else "truth labels are not balanced across the full configured label set; "
+                    "this permutation is not a fixed-label chance control"
+                ),
+                "max_failed_calls_per_item": args.max_failed_calls_per_item,
+                "vote_method": "strict_majority",
+            }
+        )
+
+        while sum(vote in labels for vote in row["judge_votes"]) < args.n_per_item:
+            failed_calls = sum(vote not in labels for vote in row["judge_votes"])
+            if failed_calls - failed_calls_at_start >= args.max_failed_calls_per_item:
+                write_rows_atomic(out, rows)
+                raise RuntimeError(
+                    f"item {index} added {failed_calls - failed_calls_at_start} failed/unparsed "
+                    "judge calls in this run before "
+                    f"collecting {args.n_per_item} valid votes; output is resumable at {out}"
+                )
+            call_index = len(row["judge_calls"])
+            if args.dry_run:
+                label = dry_run_label(labels, args.seed, item_hashes[index], call_index)
+                call = {"call_index": call_index, "label": label, "dry_run": True, "attempts": 0, "http_status": None, "raw": ""}
+            else:
+                call = ask_detailed(
+                    args.model,
+                    item["text"],
+                    str(item.get("modality", "text")),
+                    labels,
+                    retries=args.retries,
+                    backoff_base=args.backoff_base,
+                )
+                call = {"call_index": call_index, **call}
+            if call["label"] not in labels and not call.get("error"):
+                call["error"] = "unparsed_label"
+            row["judge_calls"].append(call)
+            row["judge_votes"].append(call["label"])
+            _refresh_summary(row, labels, true_label, shuffled_true, args)
+            row["timestamp"] = utc_now()
+            row["ts"] = row["timestamp"]  # compatibility with older result readers
+            write_rows_atomic(out, rows)
+
+        # A legacy row or an already-complete resumed row may not yet carry all
+        # current summary fields. Updating it performs no judge call.
+        _refresh_summary(row, labels, true_label, shuffled_true, args)
+        row.setdefault("ts", row.get("timestamp", utc_now()))
+
+    write_rows_atomic(out, rows)
+    return out
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--items", required=True, help="JSONL of readout/calibration items")
+    parser.add_argument("--out", required=True, help="checkpointed JSONL output")
+    parser.add_argument("--model", default="anthropic/claude-sonnet-4.6")
+    parser.add_argument("--seed", type=int, default=0, help="control permutation and dry-run seed")
+    parser.add_argument("--labels", nargs="+", default=None, help="override labels (space- or comma-separated)")
+    parser.add_argument(
+        "--snippet-sha256",
+        nargs="+",
+        default=None,
+        help="full source digest: SHA for all items, or snippet_set=SHA entries",
+    )
+    parser.add_argument(
+        "--allow-missing-metadata",
+        action="store_true",
+        help="permit UNKNOWN snippet hashes for legacy diagnostics (not valid for headline results)",
+    )
+    parser.add_argument("--n-per-item", type=int, default=1, help="independent judge calls per item")
+    parser.add_argument("--dry-run", action="store_true", help="stable random labels; never reads the API key or network")
+    parser.add_argument("--retries", type=int, default=5, help="attempts within each logical judge call")
+    parser.add_argument("--backoff-base", type=float, default=1.0, help="initial transient-error backoff in seconds")
+    parser.add_argument(
+        "--max-failed-calls-per-item",
+        type=int,
+        default=3,
+        help="abort (with a resumable checkpoint) after this many error/unparsed logical calls",
+    )
+    parser.add_argument("--restart", action="store_true", help="replace an existing output instead of resuming it")
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    args = parse_args(argv)
+    out = run(args)
+    rows = read_existing(out)
+    print(f"wrote {out} ({len(rows)} items, {args.n_per_item} vote(s) each)")
 
 
 if __name__ == "__main__":

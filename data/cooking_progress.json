@@ -1,0 +1,284 @@
+{
+  "accepted_n": 2000,
+  "api_usage": {
+    "completion_tokens": 0,
+    "prompt_tokens": 0,
+    "total_tokens": 0
+  },
+  "candidate_sources": [
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_00.jsonl",
+      "rejected_n": 0,
+      "sha256": "27dadbeaf664cd53cef242b67e80df7797f467c90169e3f4d7a06666c6495cb9"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_01.jsonl",
+      "rejected_n": 0,
+      "sha256": "1d9951be2c862c17d3b7076f20581f3fd81daeeaa186558394c6bbe881efa0c0"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_02.jsonl",
+      "rejected_n": 0,
+      "sha256": "21550432e724e6b5075b04a53357aed86903a0cdb60e3f6a5b13b1fd644e745f"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_03.jsonl",
+      "rejected_n": 0,
+      "sha256": "bc5fc7b88c2e90d60ee5c19c30f1f53a935af53ba98dcb37c55be6cf87ea862e"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_04.jsonl",
+      "rejected_n": 0,
+      "sha256": "3280e44725d1142f5a481435aab3599b09fc8e198303e3a438c3beb056de63f0"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_05.jsonl",
+      "rejected_n": 0,
+      "sha256": "a596c28bfe807042ed9000a29c1aa0681230128fb821663ddbf1240ed2d3b885"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_06b.jsonl",
+      "rejected_n": 0,
+      "sha256": "2f3f3dc77d1b2fcfa92d70b3b0c041f89001f6eeec80b8397d6910dcf38e17fe"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_07b.jsonl",
+      "rejected_n": 0,
+      "sha256": "aecabb3f64be944ff4e726e4d2457d9d1a4dcfee7f4cb2c1c20c27d4be08edcc"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_08.jsonl",
+      "rejected_n": 0,
+      "sha256": "eaa297b2ca6dcbcbbc8384a02ff05073e9393dc8e03a90a2d2b3f55bed3af31a"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_09.jsonl",
+      "rejected_n": 0,
+      "sha256": "fad54de019094ce884247b3d1eb69fccc0ebd3da9890aa6cf7f514de8606655e"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_10b.jsonl",
+      "rejected_n": 0,
+      "sha256": "9246daff063d23e4f280e652e3a27d340909cd0b7db33e99938eb73c32d8e4d8"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_11b.jsonl",
+      "rejected_n": 0,
+      "sha256": "02ae65fe7a7eee7f338c5f82acdd416b9db4be1f88f01cff545842f932328762"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_12.jsonl",
+      "rejected_n": 0,
+      "sha256": "8dbc58af141fbd58eb82b2977833fee96c957c25457da9df2000485e0cf4c187"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_13.jsonl",
+      "rejected_n": 0,
+      "sha256": "6d4d0605b084bd5aaa71e0afa79ee0ba10f84d73a7597c8c6b0d7e659bfff044"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_14.jsonl",
+      "rejected_n": 0,
+      "sha256": "9a1b65df564bb353fd384fbc9fb1956aa0c41b32fe27ff637826b561eac46d75"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_15.jsonl",
+      "rejected_n": 0,
+      "sha256": "27ea29f90d9822c12680b4778bf5299e85cdd250ef8a6a8e38c3b26ebf9b2355"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_16.jsonl",
+      "rejected_n": 0,
+      "sha256": "3543a7896c7b3b794b0d1479fc54b8bc433a761f903484528d3103e5fa2357cc"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_17.jsonl",
+      "rejected_n": 0,
+      "sha256": "36c331904d05a11a3ba367cbe6004be6d589bbf1fc17e93d39fe82626ab7e918"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_18b.jsonl",
+      "rejected_n": 0,
+      "sha256": "87457c3b81ce8e1d3808c1f508d0fe79f2c7c4d99e21046677cb1e6bf99e0b4b"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_19.jsonl",
+      "rejected_n": 0,
+      "sha256": "939b0a9497c4d58c5fc34940476b4143da6103f2026d423f29947e2440b0404a"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_20b.jsonl",
+      "rejected_n": 0,
+      "sha256": "97ac63238f4fd17e7e18f362844b453ce73969af97b875c73736d319cda274f7"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_21b.jsonl",
+      "rejected_n": 0,
+      "sha256": "54283d9b597c867a4e75de7a3c33d88d57f459ab580e107797f23d3602c3aeda"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_22.jsonl",
+      "rejected_n": 0,
+      "sha256": "04a280a69de3a1d160a63ed7cf3ef33795cf3c6975b2f2273e41304b2883a4cb"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_23b.jsonl",
+      "rejected_n": 0,
+      "sha256": "e276fad987e5493b2fbd4bbf48aaa3a783f2f5d700868a02214ae54597986d53"
+    },
+    {
+      "accepted_n": 80,
+      "candidate_provenance": "chatgpt-work-mode-agent-shards",
+      "external_prompt_sha256": "f48297e765e80a97587888fb856ec84d4b5d5925098f8d9f4d66915140edbbd9",
+      "generator_model": "openai/gpt-5.6-sol",
+      "parsed_n": 80,
+      "path": "data/corpus_candidates/shard_24.jsonl",
+      "rejected_n": 0,
+      "sha256": "e4849d09790824aaef12b7bc0808f0b104024cfc701dc981f96bc4de4495fd92"
+    }
+  ],
+  "external_candidate_prompt": "Generate exactly 80 high-quality cooking-domain documents as valid JSONL objects with\none {\"text\":\"...\"} object per physical line. Each document must be standalone,\nmeaningfully distinct, and approximately 230–300 English words so that it is likely to\nfall between 200 and 400 Qwen tokenizer tokens. Do not mention artificial intelligence,\nAI, model or models, machine learning, or training.\n\nWithin the assigned cuisine or subject scope, mix these formats: recipes, cooking blog\nposts or food essays, practical forum answers, kitchen-equipment reviews, culinary\ntechnique explainers, and ingredient histories. Vary voice, structure, ingredients,\nsentence rhythm, and length. Avoid boilerplate, repeated openings, and near-duplicate\npassages. Keep cultural and historical claims cautious and respectful. Escape JSON\nnewlines and quotation marks correctly. Validate the exact row count, JSON schema,\nforbidden terms, uniqueness, and word-count range after writing the shard.\n\nThe cuisine or subject scope is supplied separately for each shard.\n",
+  "next_plan_index": 0,
+  "output": "data/cooking.jsonl",
+  "rejections": {},
+  "request_count": 0,
+  "run_configuration": {
+    "batch_size": 4,
+    "candidate_provenance": "chatgpt-work-mode-agent-shards",
+    "force_approximate_tokenizer": false,
+    "generator_model": "openai/gpt-5.6-sol",
+    "jaccard_threshold": 0.75,
+    "max_output_tokens": 2400,
+    "max_tokens": 400,
+    "min_tokens": 200,
+    "temperature": 0.9,
+    "tokenizer": "Qwen/Qwen3.5-4B",
+    "top_p": 0.95
+  },
+  "schema_version": 1,
+  "seed": 0,
+  "started_at": "2026-09-03T04:25:40.751576+00:00",
+  "status": "complete",
+  "target_n": 2000,
+  "updated_at": "2026-09-03T04:31:25.041349+00:00"
+}

@@ -1,0 +1,15 @@
+Generate exactly 80 high-quality cooking-domain documents as valid JSONL objects with
+one {"text":"..."} object per physical line. Each document must be standalone,
+meaningfully distinct, and approximately 230–300 English words so that it is likely to
+fall between 200 and 400 Qwen tokenizer tokens. Do not mention artificial intelligence,
+AI, model or models, machine learning, or training.
+
+Within the assigned cuisine or subject scope, mix these formats: recipes, cooking blog
+posts or food essays, practical forum answers, kitchen-equipment reviews, culinary
+technique explainers, and ingredient histories. Vary voice, structure, ingredients,
+sentence rhythm, and length. Avoid boilerplate, repeated openings, and near-duplicate
+passages. Keep cultural and historical claims cautious and respectful. Escape JSON
+newlines and quotation marks correctly. Validate the exact row count, JSON schema,
+forbidden terms, uniqueness, and word-count range after writing the shard.
+
+The cuisine or subject scope is supplied separately for each shard.

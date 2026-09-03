@@ -1,0 +1,212 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-09-03T04:13:44Z",
+  "generator": {
+    "path": "data/make_snippets.py",
+    "sha256": "7d0f98c4750e4dfa6c114777e3e14495189753a679eaf1cd463b77ef9c8bd0a4"
+  },
+  "seed": 0,
+  "requested_n_per_set": 500,
+  "tokens_per_snippet": 128,
+  "tokenizer": {
+    "requested_model": "Qwen/Qwen3.5-4B",
+    "resolved_name_or_path": "Qwen/Qwen3.5-4B",
+    "class": "Qwen2Tokenizer",
+    "vocab_size": 248044,
+    "commit_hash": null,
+    "add_special_tokens_for_length_check": false
+  },
+  "software": {
+    "datasets": "5.0.1",
+    "transformers": "5.16.1"
+  },
+  "sha256_encoding": "hex, 64 lowercase characters, over exact UTF-8 file bytes",
+  "neutral": {
+    "path": "data/snippets/neutral.jsonl",
+    "n": 500,
+    "tokens": 128,
+    "tokenizer": "Qwen/Qwen3.5-4B",
+    "sha256": "c8673772b35c0c9ebd42d183460aab30a5817d0436ea5cd845751eac9b0bd7a5",
+    "provenance": {
+      "fallback_order": [
+        "NeelNanda/pile-10k",
+        "HuggingFaceFW/fineweb/sample-10BT",
+        "local_text_file"
+      ],
+      "selected": {
+        "kind": "huggingface_dataset",
+        "dataset": "NeelNanda/pile-10k",
+        "config": null,
+        "split": "train",
+        "streaming": false,
+        "dataset_receipt": {
+          "fingerprint": "216bc2d7faec67df",
+          "num_rows": 10000,
+          "dataset_name": "pile-10k",
+          "config_name": "default",
+          "version": "0.0.0"
+        },
+        "scan": {
+          "documents_scanned": 562,
+          "documents_too_short": 62,
+          "unstable_token_roundtrips": 0,
+          "duplicate_snippets": 0
+        },
+        "status": "selected"
+      },
+      "attempts": [
+        {
+          "kind": "huggingface_dataset",
+          "dataset": "NeelNanda/pile-10k",
+          "config": null,
+          "split": "train",
+          "streaming": false,
+          "dataset_receipt": {
+            "fingerprint": "216bc2d7faec67df",
+            "num_rows": 10000,
+            "dataset_name": "pile-10k",
+            "config_name": "default",
+            "version": "0.0.0"
+          },
+          "scan": {
+            "documents_scanned": 562,
+            "documents_too_short": 62,
+            "unstable_token_roundtrips": 0,
+            "duplicate_snippets": 0
+          },
+          "status": "selected"
+        }
+      ]
+    }
+  },
+  "math": {
+    "path": "data/snippets/math.jsonl",
+    "n": 500,
+    "tokens": 128,
+    "tokenizer": "Qwen/Qwen3.5-4B",
+    "sha256": "483c37338e543d16af9b6e58dc3ca1e30d3081ba8b9e80d0a8c490d5c06c497c",
+    "provenance": {
+      "sources": [
+        {
+          "kind": "huggingface_dataset",
+          "dataset": "openai/gsm8k",
+          "config": "main",
+          "split": "test",
+          "dataset_receipt": {
+            "fingerprint": "59ec1b7f9357c7a2",
+            "num_rows": 1319,
+            "dataset_name": "gsm8k",
+            "config_name": "main",
+            "version": "0.0.0"
+          },
+          "status": "used"
+        },
+        {
+          "kind": "huggingface_dataset",
+          "dataset": "hendrycks/competition_math",
+          "config": null,
+          "split": "test",
+          "status": "failed",
+          "error_type": "ConnectionError",
+          "error": "Couldn't reach 'hendrycks/competition_math' on the Hub (OfflineModeIsEnabled)"
+        },
+        {
+          "kind": "huggingface_dataset",
+          "dataset": "EleutherAI/hendrycks_math",
+          "configs": [
+            "algebra",
+            "counting_and_probability",
+            "geometry",
+            "intermediate_algebra",
+            "number_theory",
+            "prealgebra",
+            "precalculus"
+          ],
+          "split": "test",
+          "subset_receipts": [
+            {
+              "config": "algebra",
+              "fingerprint": "0132904b03fe9c0d",
+              "num_rows": 1187,
+              "dataset_name": "hendrycks_math",
+              "config_name": "algebra",
+              "version": "0.0.0"
+            },
+            {
+              "config": "counting_and_probability",
+              "fingerprint": "80e8f86793e44265",
+              "num_rows": 474,
+              "dataset_name": "hendrycks_math",
+              "config_name": "counting_and_probability",
+              "version": "0.0.0"
+            },
+            {
+              "config": "geometry",
+              "fingerprint": "7356bd112b7f6763",
+              "num_rows": 479,
+              "dataset_name": "hendrycks_math",
+              "config_name": "geometry",
+              "version": "0.0.0"
+            },
+            {
+              "config": "intermediate_algebra",
+              "fingerprint": "396bd5edc76d0181",
+              "num_rows": 903,
+              "dataset_name": "hendrycks_math",
+              "config_name": "intermediate_algebra",
+              "version": "0.0.0"
+            },
+            {
+              "config": "number_theory",
+              "fingerprint": "1ab2ad63c6a64212",
+              "num_rows": 540,
+              "dataset_name": "hendrycks_math",
+              "config_name": "number_theory",
+              "version": "0.0.0"
+            },
+            {
+              "config": "prealgebra",
+              "fingerprint": "2499c65bc23b035a",
+              "num_rows": 871,
+              "dataset_name": "hendrycks_math",
+              "config_name": "prealgebra",
+              "version": "0.0.0"
+            },
+            {
+              "config": "precalculus",
+              "fingerprint": "39c11723a8c0d325",
+              "num_rows": 546,
+              "dataset_name": "hendrycks_math",
+              "config_name": "precalculus",
+              "version": "0.0.0"
+            }
+          ],
+          "status": "used"
+        }
+      ],
+      "training_exclusion_source": {
+        "kind": "huggingface_dataset",
+        "dataset": "openai/gsm8k",
+        "config": "main",
+        "split": "train",
+        "dataset_receipt": {
+          "fingerprint": "c6f812ae33c9159d",
+          "num_rows": 7473,
+          "dataset_name": "gsm8k",
+          "config_name": "main",
+          "version": "0.0.0"
+        }
+      },
+      "disjointness": {
+        "level": "source question strings before prefixes/truncation",
+        "gsm8k_train_questions": 7473,
+        "candidate_source_questions": 6319,
+        "exact_raw_overlap_count": 0,
+        "casefold_whitespace_normalized_overlap_count": 0,
+        "action_on_overlap": "assert and stop; no filtering"
+      },
+      "unstable_token_roundtrips": 0,
+      "duplicate_snippets_rejected": 0
+    }
+  }
+}
