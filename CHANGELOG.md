@@ -66,6 +66,11 @@
   - B: s1 0.078/0.117/0.688/427 | s2 0.141/0.180/0.594/396 | s3 0.102/0.145/0.695/435 | s4 0.074/0.145/0.715/448 | s5 0.020/0.059/0.793/470.
   - GPU memory 80.9 GB reported on GPUs 1 and 2 (allocator reserve; no OOM so far).
 
+## 2026-09-04 01:10 Zurich — pod runner: watch points 2–3, D readout started, agent01b merged
+- A (step 10): reward 0.83–0.89 at steps 6–10, truncation 0–0.09, mean length 140–175, step time 85–128 s. B (step 9–10): reward 0.008–0.043, truncation 0.79–0.88, mean length 464–473. lr guard reference (A steps 1–5 mean reward) = 0.405.
+- `origin/agent01b` (214ccec, `readout/run_checkpoints.py` + test) merged into `pod` (f26ab81). It requires the complete 25…150 series, so the emergence curve runs after A/B finish; it delegates to the current (non-block-wise) `run_readouts.py`.
+- D readout at L=15 launched on GPU 0 (`run_readouts.py --arm D --adapter runs/D_s0/final --layer 15 --step 250 --target-norm 11.2433 --skip-steer`); η_ref(L15, neutral, positions ≥4) = 11.2433 from `results/cache/base_L15_neutral.json`. `runs/D_s0/run_meta.json` was patched with `tools/patch_run_meta.py` (adds `final_global_step`, `model_loader`, `resolved_model_revision`, `model_dtype`; originals untouched, patch recorded in the file) because the pre-merge trainer did not write the receipt keys `run_readouts.py` checks; trainers now emit them (3e286c0).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
