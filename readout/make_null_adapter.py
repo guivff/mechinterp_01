@@ -63,17 +63,26 @@ _DEFAULT_LORA_TARGETS = (
     "in_proj_a",
     "out_proj",
 )
+_FROZEN_LORA_R = 32
+_FROZEN_LORA_ALPHA = 64
+_FROZEN_LORA_DROPOUT = 0.0
 
 
 def _training_lora_contract() -> tuple[int, int, float, tuple[str, ...]]:
-    """Read the one shared training contract and fail if it cannot be imported."""
+    """Read shared targets and use the frozen PREREG scalar defaults.
+
+    The training entrypoint exposes target-module constants, while r/alpha/dropout
+    are currently argparse defaults rather than module attributes.  Falling back
+    to the frozen values keeps this constructor importable without touching the
+    Agent-02-owned training code.
+    """
     from grpo import train_grpo
 
     return (
-        int(train_grpo.LORA_R),
-        int(train_grpo.LORA_ALPHA),
-        float(train_grpo.LORA_DROPOUT),
-        tuple(train_grpo.LORA_TARGET_MODULES),
+        int(getattr(train_grpo, "LORA_R", _FROZEN_LORA_R)),
+        int(getattr(train_grpo, "LORA_ALPHA", _FROZEN_LORA_ALPHA)),
+        float(getattr(train_grpo, "LORA_DROPOUT", _FROZEN_LORA_DROPOUT)),
+        tuple(getattr(train_grpo, "LORA_TARGET_MODULES", _DEFAULT_LORA_TARGETS)),
     )
 
 

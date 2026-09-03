@@ -36,6 +36,7 @@ CHECKPOINT_INTERVAL = 25
 FINAL_STEP = 150
 PRIMARY_LAYER = 15
 PREREG_BLOCKS = 10
+BLOCK_SEED = 0
 _CHECKPOINT_RE = re.compile(r"^checkpoint-(\d+)$")
 
 CURVE_COLUMNS = (
@@ -45,12 +46,22 @@ CURVE_COLUMNS = (
     "checkpoint_step",
     "layer",
     "snippet_set",
+    "snippet_sha",
+    "snippet_set_sha256",
     "snippet_sha256",
     "block",
+    "K",
+    "block_seed",
+    "block_indices_sha256",
     "norm",
     "constancy",
+    "mean_offset_energy_share",
+    "eta_ref",
+    "eta_ref_source",
+    "eta_ref_source_sha256",
     "judge_item_id",
     "judge_model",
+    "is_mock",
     "timestamp",
     "git_commit",
     "readout_timestamp",
@@ -149,7 +160,7 @@ def build_readout_args(
     ]
     if args.target_norm is not None:
         argv.extend(("--target-norm", str(args.target_norm)))
-    else:
+    elif args.target_norm_from is not None:
         argv.extend(("--target-norm-from", str(args.target_norm_from)))
     if args.local_files_only:
         argv.append("--local-files-only")
@@ -164,6 +175,9 @@ def build_readout_args(
     block_option = _parser_option(parser, "--blocks", "--n-blocks")
     if block_option is not None:
         argv.extend((block_option, str(args.blocks)))
+    block_seed_option = _parser_option(parser, "--block-seed")
+    if block_seed_option is not None:
+        argv.extend((block_seed_option, str(BLOCK_SEED)))
 
     # Cached base activations live outside the per-step output directories.
     # Pass the cache explicitly when E1 exposes an option; older versions simply
@@ -221,6 +235,25 @@ def _finite_field(value: Any, *, name: str, source: Path) -> float:
     if not math.isfinite(result):
         raise ValueError(f"{source}: {name} must be finite")
     return result
+
+
+def _optional_finite_field(
+    value: Any, *, name: str, source: Path
+) -> float | None:
+    """Validate a finite number while preserving an undefined zero-energy value."""
+    if value is None:
+        return None
+    return _finite_field(value, name=name, source=source)
+
+
+def _integer_list_field(value: Any, *, name: str, source: Path) -> tuple[int, ...]:
+    """Read an explicit JSON integer list without accepting bools or coercions."""
+    if not isinstance(value, list):
+        raise ValueError(f"{source}: {name} must be an integer list")
+    result: list[int] = []
+    for index, member in enumerate(value):
+        result.append(_int_field(member, name=f"{name}[{index}]", source=source))
+    return tuple(result)
 
 
 def _validate_common_metadata(
@@ -281,6 +314,7 @@ def collect_curve_rows(
     step: int,
     layer: int,
     blocks: int,
+    n_snips: int,
     curve_timestamp: str,
     git_commit: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -290,6 +324,10 @@ def collect_curve_rows(
     order.  This is the boundary that prevents a block's token list from being
     silently paired with another block's norm/constancy measurement.
     """
+    canonical_blocks = rr.split_blocks(n_snips, K=blocks, seed=BLOCK_SEED)
+    canonical_members = tuple(
+        tuple(int(member) for member in block) for block in canonical_blocks
+    )
     paths = [Path(path) for path in written]
     geometry = _geometry_sidecars(paths)
     item_files = sorted(
@@ -339,6 +377,8 @@ def collect_curve_rows(
         if snippet_set not in rr.SNIPPET_SETS:
             raise ValueError(f"{metadata_path}: invalid snippet_set {snippet_set!r}")
         block = _int_field(metadata.get("block"), name="block", source=metadata_path)
+        if block < 0 or block >= blocks:
+            raise ValueError(f"{metadata_path}: block {block} is outside [0, {blocks})")
         key = (snippet_set, block)
         if key in geometry_by_key:
             raise ValueError(f"duplicate block geometry for {key}: {metadata_path}")
@@ -374,6 +414,127 @@ def collect_curve_rows(
         item_judge = item.get("judge_model")
         if geometry_judge != item_judge:
             raise ValueError(f"judge-model mismatch between geometry and token item for {key}")
+        declared_k = _int_field(metadata.get("K"), name="K", source=metadata_path)
+        if declared_k != blocks:
+            raise ValueError(f"{metadata_path}: K={declared_k} does not match --blocks={blocks}")
+        block_seed = _int_field(
+            metadata.get("block_seed"), name="block_seed", source=metadata_path
+        )
+        if block_seed != BLOCK_SEED:
+            raise ValueError(
+                f"{metadata_path}: frozen snippet-block seed must be {BLOCK_SEED}"
+            )
+        block_indices_sha = metadata.get(
+            "block_indices_sha256", metadata.get("block_indices_hash")
+        )
+        if not isinstance(block_indices_sha, str) or len(block_indices_sha) != 64:
+            raise ValueError(f"{metadata_path}: missing full block-indices sha256")
+        block_indices = _integer_list_field(
+            metadata.get("block_indices"), name="block_indices", source=metadata_path
+        )
+        expected_indices = canonical_members[key[1]]
+        if block_indices != expected_indices:
+            raise ValueError(
+                f"{metadata_path}: block_indices for {key} do not match the frozen "
+                f"split_blocks({n_snips}, K={blocks}, seed={BLOCK_SEED}) assignment"
+            )
+        expected_block_sha = rr._int_array_sha256(
+            canonical_blocks[key[1]], label=f"split_blocks:block:{key[1]}"
+        )
+        if block_indices_sha != expected_block_sha:
+            raise ValueError(
+                f"{metadata_path}: block_indices_sha256 for {key} does not "
+                "authenticate its frozen canonical membership"
+            )
+        if type(metadata.get("is_mock")) is not bool:
+            raise ValueError(f"{metadata_path}: is_mock must be boolean")
+        item_k = _int_field(item.get("K"), name="item K", source=items_path)
+        item_block_seed = _int_field(
+            item.get("block_seed"), name="item block_seed", source=items_path
+        )
+        item_block_sha = item.get(
+            "block_indices_sha256", item.get("block_indices_hash")
+        )
+        item_block_indices = _integer_list_field(
+            item.get("block_indices"), name="item block_indices", source=items_path
+        )
+        if (item_k, item_block_seed, item_block_indices, item_block_sha) != (
+            declared_k,
+            block_seed,
+            expected_indices,
+            block_indices_sha,
+        ):
+            raise ValueError(
+                f"{items_path}: token/geometry block provenance mismatch for {key}"
+            )
+        if item.get("is_mock") is not metadata["is_mock"]:
+            raise ValueError(f"{items_path}: token/geometry MOCK provenance mismatch for {key}")
+        eta_ref = _finite_field(
+            metadata.get("eta_ref", metadata.get("decode_target_norm")),
+            name="eta_ref/decode_target_norm",
+            source=metadata_path,
+        )
+        if eta_ref <= 0:
+            raise ValueError(f"{metadata_path}: eta_ref must be positive")
+        decode_target_norm = _finite_field(
+            metadata.get("decode_target_norm", eta_ref),
+            name="decode_target_norm",
+            source=metadata_path,
+        )
+        if not math.isclose(eta_ref, decode_target_norm, rel_tol=1e-9, abs_tol=1e-12):
+            raise ValueError(f"{metadata_path}: eta_ref and decode_target_norm disagree")
+        eta_source = metadata.get("eta_ref_source")
+        eta_source_sha = metadata.get("eta_ref_source_sha256")
+        if not isinstance(eta_source, str) or not eta_source:
+            raise ValueError(f"{metadata_path}: missing eta_ref_source")
+        if not metadata["is_mock"] and (
+            not isinstance(eta_source_sha, str) or len(eta_source_sha) != 64
+        ):
+            raise ValueError(f"{metadata_path}: real eta_ref lacks a full source sha256")
+        item_eta_ref = _finite_field(
+            item.get("eta_ref", item.get("decode_target_norm")),
+            name="item eta_ref/decode_target_norm",
+            source=items_path,
+        )
+        if not math.isclose(eta_ref, item_eta_ref, rel_tol=1e-9, abs_tol=1e-12):
+            raise ValueError(f"{items_path}: token/geometry eta_ref mismatch for {key}")
+        if (
+            item.get("eta_ref_source"),
+            item.get("eta_ref_source_sha256"),
+        ) != (eta_source, eta_source_sha):
+            raise ValueError(f"{items_path}: token/geometry eta_ref provenance mismatch for {key}")
+        if "constancy" not in metadata or "mean_offset_energy_share" not in metadata:
+            raise ValueError(
+                f"{metadata_path}: both constancy aliases must be present"
+            )
+        constancy = _optional_finite_field(
+            metadata.get("constancy"), name="constancy", source=metadata_path
+        )
+        mean_energy_share = _optional_finite_field(
+            metadata.get("mean_offset_energy_share"),
+            name="mean_offset_energy_share/constancy",
+            source=metadata_path,
+        )
+        aliases_agree = (
+            constancy is None and mean_energy_share is None
+        ) or (
+            constancy is not None
+            and mean_energy_share is not None
+            and math.isclose(constancy, mean_energy_share, rel_tol=1e-9, abs_tol=1e-12)
+        )
+        if not aliases_agree:
+            raise ValueError(
+                f"{metadata_path}: constancy and mean_offset_energy_share disagree"
+            )
+        raw_norm = _finite_field(
+            metadata.get("raw_d_norm", metadata.get("d_norm")),
+            name="raw_d_norm/d_norm",
+            source=metadata_path,
+        )
+        if constancy is None and raw_norm != 0.0:
+            raise ValueError(
+                f"{metadata_path}: undefined constancy requires a zero-norm trace"
+            )
         adapter_receipt = metadata.get("adapter_receipt") or {}
         curve_rows.append(
             {
@@ -383,18 +544,22 @@ def collect_curve_rows(
                 "checkpoint_step": step,
                 "layer": layer,
                 "snippet_set": key[0],
+                "snippet_sha": geometry_sha,
+                "snippet_set_sha256": geometry_sha,
                 "snippet_sha256": geometry_sha,
                 "block": key[1],
-                "norm": _finite_field(
-                    metadata.get("raw_d_norm", metadata.get("d_norm")),
-                    name="raw_d_norm/d_norm",
-                    source=metadata_path,
-                ),
-                "constancy": _finite_field(
-                    metadata.get("constancy"), name="constancy", source=metadata_path
-                ),
+                "K": declared_k,
+                "block_seed": block_seed,
+                "block_indices_sha256": block_indices_sha,
+                "norm": raw_norm,
+                "constancy": constancy,
+                "mean_offset_energy_share": mean_energy_share,
+                "eta_ref": eta_ref,
+                "eta_ref_source": eta_source,
+                "eta_ref_source_sha256": eta_source_sha,
                 "judge_item_id": item["item_id"],
                 "judge_model": item_judge,
+                "is_mock": metadata["is_mock"],
                 "timestamp": curve_timestamp,
                 "git_commit": git_commit,
                 "readout_timestamp": metadata.get("timestamp"),
@@ -424,8 +589,22 @@ def _write_jsonl(path: Path, rows: Sequence[dict[str, Any]]) -> None:
     )
 
 
-def _effective_mock(args: argparse.Namespace) -> bool:
-    if args.mock or rr._path_marked_mock(args.base) or rr._path_marked_mock(args.snippets):
+def _effective_mock(
+    args: argparse.Namespace, *, checkpoints: Iterable[Path] = ()
+) -> bool:
+    checkpoint_paths = tuple(checkpoints)
+    run_root = Path(args.run_dir)
+    if not checkpoint_paths and run_root.is_dir():
+        checkpoint_paths = tuple(
+            child
+            for child in run_root.iterdir()
+            if _CHECKPOINT_RE.fullmatch(child.name) is not None
+        )
+    provenance_paths = (args.base, args.snippets, args.run_dir, *checkpoint_paths)
+    resolved_paths = tuple(
+        Path(path).resolve(strict=False) for path in provenance_paths if path is not None
+    )
+    if args.mock or any(rr._path_marked_mock(path) for path in (*provenance_paths, *resolved_paths)):
         return True
     records = [
         rr._read_snippet_file(Path(args.snippets) / f"{name}.jsonl", args.n_snips)
@@ -443,6 +622,7 @@ def run(
     readout_runner: Callable[[argparse.Namespace], list[Path]] | None = None,
 ) -> list[Path]:
     """Run all checkpoint readouts and write curve CSV + combined judge items."""
+    _validate_args(args)
     effective_mock = _effective_mock(args)
     if not effective_mock and args.layer != PRIMARY_LAYER:
         raise ValueError(f"scientific emergence curves are fixed at layer {PRIMARY_LAYER}")
@@ -450,6 +630,13 @@ def run(
         raise ValueError(f"scientific emergence curves are fixed at {PREREG_BLOCKS} blocks")
     if not effective_mock and args.final_step != FINAL_STEP:
         raise ValueError(f"scientific emergence curves are fixed through step {FINAL_STEP}")
+    if not effective_mock and (
+        args.target_norm is not None or args.target_norm_from is not None
+    ):
+        raise ValueError(
+            "scientific emergence curves must use run_readouts' automatic layer eta_ref; "
+            "explicit target norms are permitted only for MOCK diagnostics"
+        )
 
     checkpoints = discover_checkpoints(
         args.run_dir, interval=CHECKPOINT_INTERVAL, final_step=args.final_step
@@ -488,6 +675,7 @@ def run(
             step=step,
             layer=args.layer,
             blocks=args.blocks,
+            n_snips=args.n_snips,
             curve_timestamp=curve_timestamp,
             git_commit=git_commit,
         )
@@ -497,6 +685,36 @@ def run(
     expected_rows = len(checkpoints) * len(rr.SNIPPET_SETS) * args.blocks
     if len(all_rows) != expected_rows:
         raise RuntimeError(f"expected {expected_rows} curve rows, got {len(all_rows)}")
+    eta_receipts = {
+        (row["eta_ref"], row["eta_ref_source"], row["eta_ref_source_sha256"])
+        for row in all_rows
+    }
+    if len(eta_receipts) != 1:
+        raise ValueError(f"eta_ref changed across checkpoints or snippet sets: {eta_receipts}")
+    for snippet_set in rr.SNIPPET_SETS:
+        snippet_hashes = {
+            row["snippet_sha256"]
+            for row in all_rows
+            if row["snippet_set"] == snippet_set
+        }
+        if len(snippet_hashes) != 1:
+            raise ValueError(
+                f"snippet-set hash changed across checkpoints for {snippet_set}: "
+                f"{sorted(snippet_hashes)}"
+            )
+        for block in range(args.blocks):
+            block_hashes = {
+                row["block_indices_sha256"]
+                for row in all_rows
+                if row["snippet_set"] == snippet_set and row["block"] == block
+            }
+            if len(block_hashes) != 1:
+                raise ValueError(
+                    f"block assignment changed across checkpoints for "
+                    f"({snippet_set}, {block}): {sorted(block_hashes)}"
+                )
+    if {row["is_mock"] for row in all_rows} != {effective_mock}:
+        raise ValueError("checkpoint artifact MOCK provenance disagrees with aggregate output")
     item_ids = [row["item_id"] for row in all_items]
     if len(item_ids) != len(set(item_ids)):
         raise ValueError("checkpoint token judge item IDs are not globally unique")
@@ -524,7 +742,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--n-snips", type=int, default=500)
     parser.add_argument("--activation-max-tokens", type=int, default=128)
     parser.add_argument("--activation-batch-size", type=int, default=8)
-    target = parser.add_mutually_exclusive_group(required=True)
+    target = parser.add_mutually_exclusive_group()
     target.add_argument("--target-norm", type=float)
     target.add_argument("--target-norm-from")
     parser.add_argument("--local-files-only", action="store_true")
@@ -565,7 +783,6 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        _validate_args(args)
         written = run(args)
     except (FileNotFoundError, FileExistsError, RuntimeError, ValueError) as exc:
         parser.error(str(exc))

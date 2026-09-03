@@ -1,23 +1,26 @@
-"""Build the preregistered A-minus-B contrast from saved readout artifacts.
+"""Build the descriptive A-minus-B contrast from saved block artifacts.
 
 This is deliberately an artifact-to-artifact operation: A and B must already
-have been measured on exactly the same token rows.  The raw contrast
-``d_A - d_B`` is saved before a copy is norm-matched to the paired arm-D norm
-and decoded with the final-norm logit lens.
+have been measured on exactly the same snippet block and token rows.  The raw
+contrast ``d_A - d_B`` is saved before a copy is norm-matched to the
+authenticated neutral-base ``eta_ref`` carried by both source sidecars and
+decoded with the final-norm logit lens.  A-minus-B has no preregistered gold
+domain label, so the token item is descriptive and is never sent to the blind
+judge.
 
-Run once per snippet set, using either invocation form::
+Run once per block and snippet set, using either invocation form::
 
     python -m readout.make_ab_readout \
-        --diff-a results/diff_A_s0_L22_neutral.npy \
-        --diff-b results/diff_B_s0_L22_neutral.npy \
-        --target-norm-from results/diff_D_s0_L22_neutral.npy
+        --diff-a results/diff_A_s0_step150_L15_neutral_b00.npy \
+        --diff-b results/diff_B_s0_step150_L15_neutral_b00.npy
 
-    python readout/make_ab_readout.py --diff-a ... --diff-b ... \
-        --target-norm-from ...
+    python readout/make_ab_readout.py --diff-a ... --diff-b ...
 
 The inputs' sidecars determine seed, checkpoint, layer, snippet set, mock
-status, and (unless ``--base`` is given) the base-model reference.  Pairing is
-rejected unless all activation/alignment provenance agrees exactly.
+status, block membership, decoding norm, and (unless ``--base`` is given) the
+base-model reference.  Pairing is rejected unless all block, activation, and
+alignment provenance agrees exactly.  ``--target-norm-from`` remains only for
+old explicitly-MOCK fixtures; it is rejected for scientific inputs.
 """
 from __future__ import annotations
 
@@ -32,7 +35,6 @@ from pathlib import Path
 from typing import Any, Sequence
 
 import numpy as np
-import torch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +44,6 @@ if __package__ in (None, "") and str(REPO_ROOT) not in sys.path:
 from readout.decode import logit_lens, match_norm, readout_text
 from readout.diff import save_diff
 from readout.run_readouts import (
-    _artifact_stem,
     _git_commit,
     _same_model_reference,
     _utc_now,
@@ -55,6 +56,13 @@ from readout.run_readouts import (
 
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$", re.IGNORECASE)
 _MOCK_RE = re.compile(r"(?:^|[_-])mock(?:[_-]|$)", re.IGNORECASE)
+_ETA_REF_SOURCE = "neutral_base_mean_row_l2_positions_ge_4"
+_ETA_REF_HASH_FIELDS = (
+    "eta_ref_source_sha256",
+    "eta_ref_activation_sha256",
+    "eta_ref_neutral_snippet_sha256",
+    "eta_ref_neutral_alignment_sha256",
+)
 
 
 @dataclass(frozen=True)
@@ -145,11 +153,18 @@ def load_diff_artifact(value: str | Path, *, expected_arm: str) -> DiffArtifact:
     required = (
         "seed",
         "layer",
+        "block",
+        "K",
+        "block_seed",
+        "block_assignment_sha256",
+        "block_indices_sha256",
+        "sampling_unit",
         "base",
         "snippet_set",
         "n_snippets_used",
         "alignment_sha256",
         "n_aligned_tokens",
+        "n_tokens",
         "is_mock",
         "git_commit",
         "model_dtype",
@@ -158,7 +173,13 @@ def load_diff_artifact(value: str | Path, *, expected_arm: str) -> DiffArtifact:
         "bos_token_id",
         "eos_token_id",
         "pad_token_id",
-        "skip_tokens",
+        "positions_collected",
+        "collection_skip_tokens",
+        "primary_position_min",
+        "activation_hook",
+        "activation_storage_dtype",
+        "activation_subtraction_input_dtype",
+        "estimator_accumulator_dtype",
         "activation_max_tokens",
         "activation_batch_size",
         "n_model_layers",
@@ -175,21 +196,37 @@ def load_diff_artifact(value: str | Path, *, expected_arm: str) -> DiffArtifact:
     for field in (
         "seed",
         "layer",
+        "block",
+        "K",
+        "block_seed",
         "n_snippets_used",
         "n_aligned_tokens",
-        "skip_tokens",
+        "n_tokens",
+        "collection_skip_tokens",
+        "primary_position_min",
         "activation_max_tokens",
         "activation_batch_size",
         "n_model_layers",
     ):
         if not _is_int(metadata[field]):
             raise ValueError(f"{metadata_path}: {field} must be an integer")
-    if metadata["layer"] < 0 or metadata["n_snippets_used"] <= 0:
-        raise ValueError(f"{metadata_path}: invalid layer or snippet count")
+    if (
+        metadata["layer"] < 0
+        or metadata["n_snippets_used"] <= 0
+        or metadata["K"] <= 0
+        or metadata["n_tokens"] <= 0
+        or not 0 <= metadata["block"] < metadata["K"]
+        or metadata["block_seed"] < 0
+    ):
+        raise ValueError(f"{metadata_path}: invalid layer, snippet count, or block coordinates")
     if not isinstance(metadata["base"], str) or not metadata["base"]:
         raise ValueError(f"{metadata_path}: base must be a non-empty model reference")
     if metadata["snippet_set"] not in {"neutral", "math"}:
         raise ValueError(f"{metadata_path}: unsupported snippet_set={metadata['snippet_set']!r}")
+    if metadata["sampling_unit"] != "block":
+        raise ValueError(f"{metadata_path}: A/B contrast requires sampling_unit='block'")
+    if metadata["positions_collected"] != "all_real_tokens":
+        raise ValueError(f"{metadata_path}: expected all-real-token activation collection")
     if metadata["padding_side"] != "right":
         raise ValueError(f"{metadata_path}: only right-padded readouts can be paired")
     if type(metadata["add_special_tokens"]) is not bool:
@@ -203,6 +240,16 @@ def load_diff_artifact(value: str | Path, *, expected_arm: str) -> DiffArtifact:
     alignment_sha = metadata["alignment_sha256"]
     if not isinstance(alignment_sha, str) or not _SHA256_RE.fullmatch(alignment_sha):
         raise ValueError(f"{metadata_path}: alignment_sha256 must be a full SHA-256 digest")
+    block_indices_sha = metadata["block_indices_sha256"]
+    if not isinstance(block_indices_sha, str) or not _SHA256_RE.fullmatch(block_indices_sha):
+        raise ValueError(
+            f"{metadata_path}: block_indices_sha256 must be a full SHA-256 digest"
+        )
+    assignment_sha = metadata["block_assignment_sha256"]
+    if not isinstance(assignment_sha, str) or not _SHA256_RE.fullmatch(assignment_sha):
+        raise ValueError(
+            f"{metadata_path}: block_assignment_sha256 must be a full SHA-256 digest"
+        )
 
     vector_mock = _file_is_mock(vector_path)
     metadata_mock = _file_is_mock(metadata_path)
@@ -272,11 +319,18 @@ def _canonical_provenance(artifact: DiffArtifact) -> dict[str, Any]:
         "seed": metadata["seed"],
         "checkpoint_step": _metadata_step(metadata, artifact.metadata_path),
         "layer": metadata["layer"],
+        "block": metadata["block"],
+        "K": metadata["K"],
+        "block_seed": metadata["block_seed"],
+        "block_assignment_sha256": str(metadata["block_assignment_sha256"]).lower(),
+        "block_indices_sha256": str(metadata["block_indices_sha256"]).lower(),
+        "sampling_unit": metadata["sampling_unit"],
         "snippet_set": metadata["snippet_set"],
         "snippet_sha": _metadata_snippet_sha(metadata, artifact.metadata_path),
         "n_snippets_used": metadata["n_snippets_used"],
         "alignment_sha256": str(metadata["alignment_sha256"]).lower(),
         "n_aligned_tokens": metadata["n_aligned_tokens"],
+        "n_tokens": metadata["n_tokens"],
         "is_mock": metadata["is_mock"],
         "git_commit": metadata["git_commit"],
         "model_dtype": metadata["model_dtype"],
@@ -285,7 +339,15 @@ def _canonical_provenance(artifact: DiffArtifact) -> dict[str, Any]:
         "bos_token_id": metadata["bos_token_id"],
         "eos_token_id": metadata["eos_token_id"],
         "pad_token_id": metadata["pad_token_id"],
-        "skip_tokens": metadata["skip_tokens"],
+        "positions_collected": metadata["positions_collected"],
+        "collection_skip_tokens": metadata["collection_skip_tokens"],
+        "primary_position_min": metadata["primary_position_min"],
+        "activation_hook": metadata["activation_hook"],
+        "activation_storage_dtype": metadata["activation_storage_dtype"],
+        "activation_subtraction_input_dtype": metadata[
+            "activation_subtraction_input_dtype"
+        ],
+        "estimator_accumulator_dtype": metadata["estimator_accumulator_dtype"],
         "activation_max_tokens": metadata["activation_max_tokens"],
         "activation_batch_size": metadata["activation_batch_size"],
         "n_model_layers": metadata["n_model_layers"],
@@ -300,22 +362,143 @@ def _require_same_base(left: DiffArtifact, right: DiffArtifact) -> None:
         )
 
 
+def _eta_reference(
+    artifact: DiffArtifact,
+    *,
+    required: bool,
+) -> dict[str, Any] | None:
+    """Validate the neutral-base eta receipt serialized on an E1 block diff."""
+
+    metadata = artifact.metadata
+    fields = (
+        "eta_ref",
+        "decode_target_norm",
+        "eta_ref_source",
+        *_ETA_REF_HASH_FIELDS,
+    )
+    present = [field for field in fields if field in metadata]
+    if not present:
+        if required:
+            raise ValueError(
+                f"{artifact.metadata_path}: missing authenticated eta_ref receipt"
+            )
+        return None
+    missing = [field for field in fields if field not in metadata]
+    if missing:
+        raise ValueError(
+            f"{artifact.metadata_path}: incomplete eta_ref receipt; missing {missing}"
+        )
+
+    eta_ref = metadata["eta_ref"]
+    decode_target_norm = metadata["decode_target_norm"]
+    for field, value in (
+        ("eta_ref", eta_ref),
+        ("decode_target_norm", decode_target_norm),
+    ):
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(float(value))
+            or float(value) <= 0
+        ):
+            raise ValueError(
+                f"{artifact.metadata_path}: {field} must be finite and positive"
+            )
+    if not math.isclose(
+        float(eta_ref), float(decode_target_norm), rel_tol=1e-9, abs_tol=1e-12
+    ):
+        raise ValueError(
+            f"{artifact.metadata_path}: eta_ref and decode_target_norm disagree"
+        )
+    if metadata["eta_ref_source"] != _ETA_REF_SOURCE:
+        raise ValueError(
+            f"{artifact.metadata_path}: eta_ref_source must be {_ETA_REF_SOURCE!r}"
+        )
+
+    receipt: dict[str, Any] = {
+        "eta_ref": float(eta_ref),
+        "eta_ref_source": _ETA_REF_SOURCE,
+        "layer": artifact.metadata["layer"],
+        "base": artifact.metadata["base"],
+    }
+    for field in _ETA_REF_HASH_FIELDS:
+        value = metadata[field]
+        if not isinstance(value, str) or not _SHA256_RE.fullmatch(value):
+            raise ValueError(
+                f"{artifact.metadata_path}: {field} must be a full SHA-256 digest"
+            )
+        receipt[field] = value.lower()
+
+    # On the neutral readout itself the current base-cache receipt must be the
+    # neutral reference receipt.  A math block legitimately has different
+    # current alignment/snippet hashes and carries the same neutral receipt.
+    if metadata["snippet_set"] == "neutral":
+        current_snippet_sha = _metadata_snippet_sha(metadata, artifact.metadata_path)
+        if receipt["eta_ref_neutral_snippet_sha256"] != current_snippet_sha:
+            raise ValueError(
+                f"{artifact.metadata_path}: neutral eta_ref snippet receipt does not "
+                "match the current snippet set"
+            )
+        if receipt["eta_ref_neutral_alignment_sha256"] != str(
+            metadata["alignment_sha256"]
+        ).lower():
+            raise ValueError(
+                f"{artifact.metadata_path}: neutral eta_ref alignment receipt does not "
+                "match the current base alignment"
+            )
+    return receipt
+
+
+def _validate_legacy_mock_d(
+    source_a: DiffArtifact,
+    provenance_a: dict[str, Any],
+    norm_d: DiffArtifact,
+) -> dict[str, Any]:
+    """Validate the former arm-D target norm, available only to MOCK fixtures."""
+
+    if norm_d.metadata["is_mock"] is not True:
+        raise ValueError("legacy arm-D target norm must itself be explicitly MOCK")
+    if source_a.vector.shape != norm_d.vector.shape:
+        raise ValueError(
+            "A, B, and legacy D diff vectors must have the same hidden width: "
+            f"{source_a.vector.shape}, {norm_d.vector.shape}"
+        )
+    _require_same_base(source_a, norm_d)
+    provenance_d = _canonical_provenance(norm_d)
+    # D is an independent run, so its training seed/checkpoint and producing
+    # checkout can differ.  Its captured base rows and E1 block must not.
+    independent = {"seed", "checkpoint_step", "git_commit"}
+    differing = [
+        field
+        for field in provenance_a
+        if field not in independent and provenance_a[field] != provenance_d[field]
+    ]
+    if differing:
+        raise ValueError(f"legacy arm-D norm provenance differs for fields: {differing}")
+    if not math.isfinite(norm_d.raw_norm) or norm_d.raw_norm <= 1e-12:
+        raise ValueError("legacy arm-D target norm is zero, near-zero, or non-finite")
+    return {
+        "decode_norm": norm_d.raw_norm,
+        "decode_norm_policy": "legacy_mock_arm_D_difference_norm",
+        "d_checkpoint_step": provenance_d["checkpoint_step"],
+    }
+
+
 def validate_sources(
     source_a: DiffArtifact,
     source_b: DiffArtifact,
-    norm_d: DiffArtifact,
+    norm_d: DiffArtifact | None = None,
     *,
     requested_base: str | None = None,
 ) -> dict[str, Any]:
-    """Validate exact A/B pairing and the corresponding arm-D norm source."""
+    """Validate exact A/B block pairing and select an allowed decode norm."""
 
-    if source_a.vector.shape != source_b.vector.shape or source_a.vector.shape != norm_d.vector.shape:
+    if source_a.vector.shape != source_b.vector.shape:
         raise ValueError(
-            "A, B, and D diff vectors must have the same hidden width: "
-            f"{source_a.vector.shape}, {source_b.vector.shape}, {norm_d.vector.shape}"
+            "A and B diff vectors must have the same hidden width: "
+            f"{source_a.vector.shape}, {source_b.vector.shape}"
         )
     _require_same_base(source_a, source_b)
-    _require_same_base(source_a, norm_d)
     if requested_base is not None and not _same_model_reference(
         source_a.metadata["base"], requested_base
     ):
@@ -332,24 +515,16 @@ def validate_sources(
             if provenance_a[field] != provenance_b[field]
         ]
         raise ValueError(f"A/B diff provenance differs for fields: {differing}")
-
-    provenance_d = _canonical_provenance(norm_d)
-    # D follows an independent training run, so its seed/checkpoint and the
-    # checkout that produced it need not equal A/B. Everything governing the
-    # captured token rows and representation must still match exactly.
-    d_independent_fields = {"seed", "checkpoint_step", "git_commit"}
-    d_match_fields = tuple(
-        field for field in provenance_a if field not in d_independent_fields
-    )
-    differing_d = [
-        field
-        for field in d_match_fields
-        if provenance_a[field] != provenance_d[field]
-    ]
-    if differing_d:
-        raise ValueError(f"arm-D norm provenance differs for fields: {differing_d}")
-    if not math.isfinite(norm_d.raw_norm) or norm_d.raw_norm <= 1e-12:
-        raise ValueError("arm-D target norm is zero, near-zero, or non-finite")
+    is_mock = bool(provenance_a["is_mock"])
+    if not is_mock and provenance_a["block_seed"] != 0:
+        raise ValueError("scientific A/B blocks must use the frozen block_seed=0")
+    if not is_mock and (
+        provenance_a["collection_skip_tokens"] != 0
+        or provenance_a["primary_position_min"] != 4
+    ):
+        raise ValueError(
+            "scientific A/B blocks must collect all positions and pool positions >= 4"
+        )
 
     base_norm_a = source_a.metadata.get("base_act_norm_mean")
     base_norm_b = source_b.metadata.get("base_act_norm_mean")
@@ -362,11 +537,40 @@ def validate_sources(
     if not math.isclose(float(base_norm_a), float(base_norm_b), rel_tol=1e-6, abs_tol=1e-7):
         raise ValueError("A/B base activation norms disagree despite matched alignment")
 
+    eta_a = _eta_reference(source_a, required=not is_mock or norm_d is None)
+    eta_b = _eta_reference(source_b, required=not is_mock or norm_d is None)
+    if (eta_a is None) != (eta_b is None):
+        raise ValueError("A/B eta_ref receipt presence differs")
+    if eta_a is not None and eta_b is not None:
+        eta_a_without_value = {key: value for key, value in eta_a.items() if key != "eta_ref"}
+        eta_b_without_value = {key: value for key, value in eta_b.items() if key != "eta_ref"}
+        if eta_a_without_value != eta_b_without_value or not math.isclose(
+            eta_a["eta_ref"], eta_b["eta_ref"], rel_tol=1e-9, abs_tol=1e-12
+        ):
+            raise ValueError("A/B authenticated eta_ref receipts differ")
+
+    norm_selection: dict[str, Any]
+    if norm_d is not None:
+        if not is_mock:
+            raise ValueError(
+                "--target-norm-from is legacy MOCK compatibility only; scientific "
+                "A/B decoding must use the authenticated eta_ref source sidecars"
+            )
+        norm_selection = _validate_legacy_mock_d(source_a, provenance_a, norm_d)
+    else:
+        if eta_a is None:
+            raise ValueError("A/B sidecars do not carry an authenticated eta_ref receipt")
+        norm_selection = {
+            "decode_norm": eta_a["eta_ref"],
+            "decode_norm_policy": "authenticated_neutral_base_eta_ref",
+            "eta_ref_receipt": eta_a,
+        }
+
     return {
         **provenance_a,
         "base": source_a.metadata["base"],
         "base_act_norm_mean": float(base_norm_a),
-        "d_checkpoint_step": provenance_d["checkpoint_step"],
+        **norm_selection,
     }
 
 
@@ -380,6 +584,22 @@ def _source_record(artifact: DiffArtifact) -> dict[str, Any]:
         "raw_d_norm": artifact.raw_norm,
         "adapter": artifact.metadata.get("adapter"),
         "checkpoint_step": _metadata_step(artifact.metadata, artifact.metadata_path),
+        "layer": artifact.metadata["layer"],
+        "snippet_set": artifact.metadata["snippet_set"],
+        "snippet_sha256": _metadata_snippet_sha(
+            artifact.metadata, artifact.metadata_path
+        ),
+        "alignment_sha256": str(artifact.metadata["alignment_sha256"]).lower(),
+        "block": artifact.metadata["block"],
+        "K": artifact.metadata["K"],
+        "block_seed": artifact.metadata["block_seed"],
+        "block_assignment_sha256": str(
+            artifact.metadata["block_assignment_sha256"]
+        ).lower(),
+        "block_indices_sha256": str(
+            artifact.metadata["block_indices_sha256"]
+        ).lower(),
+        "sampling_unit": artifact.metadata["sampling_unit"],
     }
 
 
@@ -392,8 +612,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--diff-b", required=True, help="arm-B raw diff .npy/.json or stem")
     parser.add_argument(
         "--target-norm-from",
-        required=True,
-        help="matching arm-D raw diff .npy/.json or stem",
+        help=(
+            "legacy arm-D raw diff .npy/.json or stem; accepted only when A, B, "
+            "and D are explicitly MOCK"
+        ),
     )
     parser.add_argument(
         "--base",
@@ -411,7 +633,12 @@ def build_parser() -> argparse.ArgumentParser:
 def run(args: argparse.Namespace) -> list[Path]:
     source_a = load_diff_artifact(args.diff_a, expected_arm="A")
     source_b = load_diff_artifact(args.diff_b, expected_arm="B")
-    norm_d = load_diff_artifact(args.target_norm_from, expected_arm="D")
+    target_norm_from = getattr(args, "target_norm_from", None)
+    norm_d = (
+        load_diff_artifact(target_norm_from, expected_arm="D")
+        if target_norm_from is not None
+        else None
+    )
     provenance = validate_sources(
         source_a,
         source_b,
@@ -426,14 +653,14 @@ def run(args: argparse.Namespace) -> list[Path]:
 
     is_mock = bool(provenance["is_mock"])
     output_root = Path(args.out)
-    stem = _artifact_stem(
-        "diff", "A-B", int(provenance["seed"]), int(provenance["layer"]), is_mock
+    mock_marker = "_MOCK" if is_mock else ""
+    qualifier = (
+        f"s{provenance['seed']}_step{provenance['checkpoint_step']}_"
+        f"L{provenance['layer']}_{provenance['snippet_set']}_"
+        f"b{provenance['block']:02d}"
     )
-    diff_stem = output_root / f"{stem}_{provenance['snippet_set']}"
-    items_path = output_root / (
-        f"{_artifact_stem('items', 'A-B', int(provenance['seed']), int(provenance['layer']), is_mock)}_"
-        f"{provenance['snippet_set']}.jsonl"
-    )
+    diff_stem = output_root / f"diff{mock_marker}_A-B_{qualifier}"
+    items_path = output_root / f"items{mock_marker}_A-B_{qualifier}.jsonl"
     outputs = (diff_stem.with_suffix(".npy"), diff_stem.with_suffix(".json"), items_path)
     existing = [path for path in outputs if path.exists()]
     if existing:
@@ -443,16 +670,75 @@ def run(args: argparse.Namespace) -> list[Path]:
     timestamp = _utc_now()
     commit = _git_commit()
     sources = [_source_record(source_a), _source_record(source_b)]
+    target_norm = float(provenance["decode_norm"])
+    eta_receipt = provenance.get("eta_ref_receipt")
+    if eta_receipt is not None:
+        norm_meta: dict[str, Any] = {
+            "eta_ref": target_norm,
+            "decode_target_norm": target_norm,
+            "eta_ref_source": eta_receipt["eta_ref_source"],
+            "eta_ref_source_sha256": eta_receipt["eta_ref_source_sha256"],
+            "eta_ref_activation_sha256": eta_receipt[
+                "eta_ref_activation_sha256"
+            ],
+            "eta_ref_neutral_snippet_sha256": eta_receipt[
+                "eta_ref_neutral_snippet_sha256"
+            ],
+            "eta_ref_neutral_alignment_sha256": eta_receipt[
+                "eta_ref_neutral_alignment_sha256"
+            ],
+            "eta_ref_provenance_verified": True,
+            "target_norm_source": eta_receipt["eta_ref_source"],
+            "target_norm_source_sha256": eta_receipt["eta_ref_source_sha256"],
+            "target_norm_metadata_sha256": eta_receipt["eta_ref_source_sha256"],
+            "target_norm_value_source": "authenticated_source_sidecar_eta_ref",
+            "target_norm_reference_arm": "base",
+            "target_norm_reference_snippet_sha": eta_receipt[
+                "eta_ref_neutral_snippet_sha256"
+            ],
+            "target_norm_reference_alignment_sha256": eta_receipt[
+                "eta_ref_neutral_alignment_sha256"
+            ],
+            "target_norm_reference": dict(eta_receipt),
+            "target_norm_provenance_verified": True,
+        }
+    else:
+        # This branch is intentionally unreachable for real artifacts.
+        assert norm_d is not None
+        target_source = _source_record(norm_d)
+        norm_meta = {
+            "decode_target_norm": target_norm,
+            "target_norm_source": str(norm_d.vector_path),
+            "target_norm_source_sha256": norm_d.vector_sha256,
+            "target_norm_metadata_sha256": norm_d.metadata_sha256,
+            "target_norm_value_source": "legacy_mock_arm_D_vector_l2_norm",
+            "target_norm_reference_arm": "D",
+            "target_norm_reference_seed": norm_d.metadata["seed"],
+            "target_norm_reference_checkpoint_step": provenance["d_checkpoint_step"],
+            "target_norm_reference_snippet_sha": provenance["snippet_sha"],
+            "target_norm_reference_n_snippets_used": provenance["n_snippets_used"],
+            "target_norm_reference_alignment_sha256": provenance[
+                "alignment_sha256"
+            ],
+            "target_norm_reference": target_source,
+            "target_norm_provenance_verified": True,
+        }
     common_meta: dict[str, Any] = {
         "arm": "A-B",
         "seed": provenance["seed"],
         "step": provenance["checkpoint_step"],
         "checkpoint_step": provenance["checkpoint_step"],
         "layer": provenance["layer"],
+        "block": provenance["block"],
+        "K": provenance["K"],
+        "block_seed": provenance["block_seed"],
+        "block_assignment_sha256": provenance["block_assignment_sha256"],
+        "block_indices_sha256": provenance["block_indices_sha256"],
+        "sampling_unit": "block",
         "base": provenance["base"],
         "adapter": None,
         "adapter_merged": False,
-        "judge_model": "not_run",
+        "judge_model": "not_applicable_unjudged",
         "timestamp": timestamp,
         "git_commit": commit,
         "source_git_commit": provenance["git_commit"],
@@ -465,7 +751,15 @@ def run(args: argparse.Namespace) -> list[Path]:
         "bos_token_id": provenance["bos_token_id"],
         "eos_token_id": provenance["eos_token_id"],
         "pad_token_id": provenance["pad_token_id"],
-        "skip_tokens": provenance["skip_tokens"],
+        "positions_collected": provenance["positions_collected"],
+        "collection_skip_tokens": provenance["collection_skip_tokens"],
+        "primary_position_min": provenance["primary_position_min"],
+        "activation_hook": provenance["activation_hook"],
+        "activation_storage_dtype": provenance["activation_storage_dtype"],
+        "activation_subtraction_input_dtype": provenance[
+            "activation_subtraction_input_dtype"
+        ],
+        "estimator_accumulator_dtype": provenance["estimator_accumulator_dtype"],
         "activation_max_tokens": provenance["activation_max_tokens"],
         "activation_batch_size": provenance["activation_batch_size"],
         "n_model_layers": provenance["n_model_layers"],
@@ -482,6 +776,11 @@ def run(args: argparse.Namespace) -> list[Path]:
         "derivation": "d_A_minus_d_B",
         "derived_from": sources,
         "derived_source_provenance_verified": True,
+        "decode_norm_policy": provenance["decode_norm_policy"],
+        "descriptive_only": True,
+        "unjudged": True,
+        "judge_eligible": False,
+        **norm_meta,
     }
     stats = {
         "d_norm": raw_norm,
@@ -491,7 +790,7 @@ def run(args: argparse.Namespace) -> list[Path]:
         "constancy": None,
         "random_cos_mean": None,
         "random_cos_std": None,
-        "n_tokens": provenance["n_aligned_tokens"],
+        "n_tokens": provenance["n_tokens"],
         "note": "A-B is derived from paired saved mean-diff vectors; per-token constancy is unavailable",
     }
 
@@ -501,10 +800,10 @@ def run(args: argparse.Namespace) -> list[Path]:
     output_root.mkdir(parents=True, exist_ok=True)
     save_diff(diff_stem, direction, stats, common_meta)
 
-    decode_direction = match_norm(direction, norm_d.raw_norm)
+    decode_direction = match_norm(direction, target_norm)
     decode_norm = float(np.linalg.norm(decode_direction))
-    if not math.isclose(decode_norm, norm_d.raw_norm, rel_tol=1e-5, abs_tol=1e-6):
-        raise ValueError("A-B norm matching did not produce the verified arm-D norm")
+    if not math.isclose(decode_norm, target_norm, rel_tol=1e-5, abs_tol=1e-6):
+        raise ValueError("A-B norm matching did not produce the authenticated target norm")
     base = args.base or str(provenance["base"])
     tokenizer = load_tokenizer(base, local_files_only=args.local_files_only)
     model = load_model(base, None, dtype, local_files_only=args.local_files_only)
@@ -512,30 +811,18 @@ def run(args: argparse.Namespace) -> list[Path]:
     if len(top) != 20:
         raise RuntimeError(f"logit lens returned {len(top)} tokens; expected exactly 20")
 
-    target_source = _source_record(norm_d)
     item = {
         **common_meta,
         **stats,
         "raw_d_norm": raw_norm,
-        "decode_target_norm": norm_d.raw_norm,
+        "decode_target_norm": target_norm,
         "decode_vector_norm": decode_norm,
-        "target_norm_source": str(norm_d.vector_path),
-        "target_norm_source_sha256": norm_d.vector_sha256,
-        "target_norm_metadata_sha256": norm_d.metadata_sha256,
-        "target_norm_value_source": "arm_D_vector_l2_norm",
-        "target_norm_reference_arm": "D",
-        "target_norm_reference_seed": norm_d.metadata["seed"],
-        "target_norm_reference_checkpoint_step": provenance["d_checkpoint_step"],
-        "target_norm_reference_snippet_sha": provenance["snippet_sha"],
-        "target_norm_reference_n_snippets_used": provenance["n_snippets_used"],
-        "target_norm_reference_alignment_sha256": provenance["alignment_sha256"],
-        "target_norm_reference": target_source,
-        "target_norm_provenance_verified": True,
         "norm_matched_before_decode": True,
         "modality": "tokens",
         "item_id": (
             f"A-B:s{provenance['seed']}:step{provenance['checkpoint_step']}:"
-            f"L{provenance['layer']}:{provenance['snippet_set']}:tokens:0"
+            f"L{provenance['layer']}:{provenance['snippet_set']}:tokens:"
+            f"block{provenance['block']}"
         ),
         "text": readout_text(top),
         "top": top,
