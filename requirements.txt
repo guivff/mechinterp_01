@@ -1,10 +1,9 @@
 torch>=2.4
-transformers>=4.50
+transformers>=5.2.0,<6  # first released series with Qwen3.5 support
 peft>=0.14
 trl>=0.20
 datasets>=3.0
 accelerate>=1.0
-vllm  # optional, for GRPO sampling on GPU
 numpy
 scikit-learn
 requests

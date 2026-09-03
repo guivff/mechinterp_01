@@ -1,104 +1,1457 @@
-"""End-to-end readouts for one arm: diff geometry, logit lens, steering, self-report.
+"""Build geometry, token, steering, and self-report readouts for one arm.
 
-  python readout/run_readouts.py --arm D --base Qwen/Qwen3.5-4B --adapter runs/D_s0/final \
-      --layer 22 --snippets data/snippets --out results --seed 0 [--target-norm 12.3]
+Both invocation forms are supported::
 
-Writes:
-  results/diff_{arm}_s{seed}_L{layer}_{snippetset}.npy/.json   (vector + geometry stats)
-  results/items_{arm}_s{seed}_L{layer}.jsonl                   (judge items: tokens/steer/selfreport)
-Nulls: --arm N1 (base vs base: decode the base mean activation itself), --arm N2 (random direction),
---arm N3 (untrained LoRA: pass --adapter to a freshly initialised adapter saved without training).
+    python -m readout.run_readouts --arm D --adapter runs/D_s0/final --layer 22 \
+        --target-norm-from 'results/diff_D_s0_L22_{snippet_set}.npy'
+    python readout/run_readouts.py --arm N1 --layer 22 --geometry-only
+
+Scientific decoding is deliberately impossible without an explicit common target
+norm.  ``--geometry-only`` is the bootstrap path used to measure the raw arm-D
+norm before running the norm-matched readouts.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import math
+import random
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, Sequence
 
 import numpy as np
 import torch
 
-from readout.diff import collect_residual, diff_stats, save_diff, cosine
+
+# Running a package file directly sets sys.path[0] to ``repo/readout``.  Add the
+# repository root before importing siblings so direct and ``-m`` invocations are
+# identical.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if __package__ in (None, "") and str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from readout.decode import logit_lens, match_norm, readout_text
-from readout.steer import steered_generations
-
-SELFREPORT_PROMPT = "What kind of data were you recently trained on? Answer in one sentence.\nAnswer:"
-
-
-def load(base, adapter, dtype):
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    tok = AutoTokenizer.from_pretrained(base)
-    if tok.pad_token is None:
-        tok.pad_token = tok.eos_token
-    tok.padding_side = "right"
-    m = AutoModelForCausalLM.from_pretrained(base, torch_dtype=dtype, device_map="auto" if torch.cuda.is_available() else None)
-    if adapter:
-        from peft import PeftModel
-        m = PeftModel.from_pretrained(m, adapter).merge_and_unload()
-    return m.eval(), tok
+from readout.diff import _get_blocks, collect_residual, diff_stats, save_diff
+from readout.steer import NEUTRAL_PROMPTS, steered_generations
 
 
-def read_snips(path):
-    return [json.loads(l)["text"] for l in Path(path).read_text().splitlines() if l.strip()]
+DEFAULT_BASE = "Qwen/Qwen3.5-4B-Base"
+SNIPPET_SETS = ("neutral", "math")
+SKIP_TOKENS = 4
+N3_LORA_TARGETS = frozenset(
+    {
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj",
+        "in_proj_qkv",
+        "in_proj_z",
+        "in_proj_b",
+        "in_proj_a",
+        "out_proj",
+    }
+)
+SELFREPORT_PROMPT = (
+    "What kind of data were you recently trained on? Answer in one sentence.\nAnswer:"
+)
+_MOCK_RE = re.compile(r"(?:^|[_.\\/\-])mock(?:$|[_.\\/\-])", re.IGNORECASE)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--arm", required=True)
-    ap.add_argument("--base", required=True)
-    ap.add_argument("--adapter", default=None)
-    ap.add_argument("--layer", type=int, required=True)
-    ap.add_argument("--snippets", default="data/snippets")
-    ap.add_argument("--out", default="results")
-    ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--step", type=int, default=-1)
-    ap.add_argument("--target-norm", type=float, default=None, help="norm to match before decoding (use ||d_D||)")
-    ap.add_argument("--n-snips", type=int, default=500)
-    ap.add_argument("--skip-steer", action="store_true")
-    args = ap.parse_args()
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
-    dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
-    base, tok = load(args.base, None, dtype)
-    ft = None if args.arm in ("N1", "N2") else load(args.base, args.adapter, dtype)[0]
-    out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
-    items = []
-    meta = {"arm": args.arm, "seed": args.seed, "step": args.step, "layer": args.layer, "base": args.base, "adapter": args.adapter}
 
-    for sname in ("neutral", "math"):
-        texts = read_snips(Path(args.snippets) / f"{sname}.jsonl")[: args.n_snips]
-        shash = hashlib.sha256("\n".join(texts).encode()).hexdigest()[:16]
-        Hb, ids_b = collect_residual(base, tok, texts, args.layer)
-        if args.arm == "N1":
-            d = Hb.astype(np.float32).mean(0); stats = {"d_norm": float(np.linalg.norm(d)), "note": "base mean activation"}
-        elif args.arm == "N2":
-            d = np.random.default_rng(args.seed).standard_normal(Hb.shape[1]).astype(np.float32); stats = {"note": "random direction"}
+def _git_commit() -> str:
+    """Return the current commit without making artifact creation depend on git."""
+    try:
+        return subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=REPO_ROOT,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+
+
+def _sha256_bytes(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _path_marked_mock(path: str | Path | None) -> bool:
+    return bool(path is not None and _MOCK_RE.search(str(path)))
+
+
+def _preferred_inference_dtype() -> torch.dtype:
+    if not torch.cuda.is_available():
+        return torch.float32
+    return torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+
+
+def _read_snippet_file(path: Path, limit: int) -> dict[str, Any]:
+    """Read snippets and hash the complete JSONL file exactly as the manifest does."""
+    path = Path(path)
+    if limit <= 0:
+        raise ValueError("--n-snips must be positive")
+    raw = path.read_bytes()
+    rows: list[dict[str, Any]] = []
+    for line_number, line in enumerate(raw.decode("utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"{path}:{line_number}: invalid JSON") from exc
+        if not isinstance(row, dict) or not isinstance(row.get("text"), str):
+            raise ValueError(f"{path}:{line_number}: expected an object with string 'text'")
+        rows.append(row)
+    if not rows:
+        raise ValueError(f"{path}: no snippet rows")
+
+    explicit = [row.get("is_mock") for row in rows if "is_mock" in row]
+    if any(type(value) is not bool for value in explicit):
+        raise ValueError(f"{path}: is_mock must be boolean")
+    if len(set(explicit)) > 1:
+        raise ValueError(f"{path}: mixed mock and real snippet rows")
+    # If rows opt into explicit provenance, require every row to do so.  A
+    # partially annotated fixture is too easy to mix with real data later.
+    if explicit and len(explicit) != len(rows):
+        raise ValueError(f"{path}: only some snippet rows carry is_mock metadata")
+    row_is_mock = explicit[0] if explicit else False
+    if explicit and _path_marked_mock(path) and not row_is_mock:
+        raise ValueError(f"{path}: MOCK filename conflicts with is_mock=false row metadata")
+    return {
+        "path": path,
+        "texts": [row["text"] for row in rows[:limit]],
+        "n_available": len(rows),
+        "sha256": _sha256_bytes(raw),
+        "is_mock": bool(row_is_mock or _path_marked_mock(path)),
+    }
+
+
+def read_snips(path: str | Path) -> list[str]:
+    """Backward-compatible convenience reader with the strict JSONL validation."""
+    return _read_snippet_file(Path(path), sys.maxsize)["texts"]
+
+
+def _validate_alignment(
+    activations: np.ndarray,
+    token_ids: np.ndarray,
+    coordinates: np.ndarray,
+    *,
+    n_snippets: int,
+    skip_tokens: int,
+) -> None:
+    """Validate the explicit row key returned by ``collect_residual``."""
+    if activations.ndim != 2:
+        raise ValueError(f"activation matrix must be 2D, got {activations.shape}")
+    if token_ids.ndim != 1:
+        raise ValueError(f"token ids must be 1D, got {token_ids.shape}")
+    if coordinates.ndim != 2 or coordinates.shape[1:] != (3,):
+        raise ValueError(f"alignment coordinates must have shape [N, 3], got {coordinates.shape}")
+    if not (len(activations) == len(token_ids) == len(coordinates)):
+        raise ValueError("activation, token-id, and coordinate row counts differ")
+    if not len(coordinates):
+        raise ValueError("activation collection produced zero aligned rows")
+    if np.any(coordinates[:, 0] < 0) or np.any(coordinates[:, 0] >= n_snippets):
+        raise ValueError("alignment contains an invalid snippet index")
+    if np.any(coordinates[:, 1] < 0):
+        raise ValueError("alignment contains a negative padded position")
+    if np.any(coordinates[:, 2] < skip_tokens):
+        raise ValueError("alignment retained a token before the fixed skip boundary")
+    keys = [tuple(int(x) for x in row) for row in coordinates]
+    if len(keys) != len(set(keys)):
+        raise ValueError("alignment contains duplicate coordinates")
+    if keys != sorted(keys):
+        raise ValueError("alignment rows are not in stable snippet/position order")
+
+
+def _alignment_sha256(token_ids: np.ndarray, coordinates: np.ndarray) -> str:
+    ids = np.ascontiguousarray(token_ids, dtype="<i8")
+    coords = np.ascontiguousarray(coordinates, dtype="<i8")
+    return _sha256_bytes(b"token_ids:int64\0" + ids.tobytes() + b"coords:int64\0" + coords.tobytes())
+
+
+def _direction_stats(
+    direction: np.ndarray,
+    base_activations: np.ndarray,
+    *,
+    constancy_source: np.ndarray | None,
+    note: str,
+) -> dict[str, Any]:
+    """Give null directions the same raw-norm geometry schema as trained arms."""
+    d = np.asarray(direction, dtype=np.float32)
+    hb = np.asarray(base_activations, dtype=np.float32)
+    d_norm = float(np.linalg.norm(d))
+    base_norm = float(np.linalg.norm(hb, axis=1).mean())
+    constancy = None
+    if constancy_source is not None:
+        source = np.asarray(constancy_source, dtype=np.float32)
+        energy = float(np.square(source).sum(axis=1).mean())
+        constancy = float(d_norm * d_norm / max(energy, 1e-12))
+    return {
+        "d_norm": d_norm,
+        "raw_d_norm": d_norm,
+        "base_act_norm_mean": base_norm,
+        "rel_norm": d_norm / max(base_norm, 1e-12),
+        "constancy": constancy,
+        "random_cos_mean": None,
+        "random_cos_std": None,
+        "n_tokens": int(hb.shape[0]),
+        "note": note,
+    }
+
+
+def _candidate_norm_reference(reference: str, snippet_set: str) -> Path:
+    rendered = Path(reference.format(snippet_set=snippet_set))
+    if rendered.is_dir():
+        candidates = sorted(rendered.glob(f"diff*_D_*_{snippet_set}.npy"))
+        if len(candidates) != 1:
+            raise ValueError(
+                f"{rendered}: expected exactly one arm-D {snippet_set} diff vector, "
+                f"found {len(candidates)}"
+            )
+        return candidates[0]
+    if rendered.exists():
+        return rendered
+
+    # A suffix-less arm/layer prefix is convenient for the paired snippet files.
+    prefix_candidate = Path(f"{rendered}_{snippet_set}.npy")
+    if prefix_candidate.exists():
+        return prefix_candidate
+    if rendered.suffix == "":
+        npy_candidate = rendered.with_suffix(".npy")
+        json_candidate = rendered.with_suffix(".json")
+        if npy_candidate.exists():
+            return npy_candidate
+        if json_candidate.exists():
+            return json_candidate
+    raise FileNotFoundError(
+        f"target-norm reference not found for snippet set {snippet_set!r}: {rendered}"
+    )
+
+
+def _numeric_norm_from_json(payload: Any, snippet_set: str, path: Path) -> tuple[float, str]:
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path}: target-norm JSON must contain an object")
+    declared_set = payload.get("snippet_set")
+    if declared_set not in (None, snippet_set):
+        raise ValueError(
+            f"{path}: metadata is for snippet set {declared_set!r}, expected {snippet_set!r}"
+        )
+    candidates: list[tuple[str, Any]] = []
+    for map_key in ("target_norms", "norms"):
+        value = payload.get(map_key)
+        if isinstance(value, dict) and snippet_set in value:
+            candidates.append((f"{map_key}.{snippet_set}", value[snippet_set]))
+    if snippet_set in payload:
+        candidates.append((snippet_set, payload[snippet_set]))
+    for key in ("raw_d_norm", "d_norm", "target_norm"):
+        if key in payload:
+            candidates.append((key, payload[key]))
+    for source, value in candidates:
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            norm = float(value)
+            if math.isfinite(norm) and norm > 0:
+                return norm, source
+    raise ValueError(f"{path}: no finite positive norm for snippet set {snippet_set!r}")
+
+
+def _load_target_norm(
+    reference: str,
+    snippet_set: str,
+    *,
+    expected_layer: int,
+    expected_base: str,
+    expected_snippet_sha: str,
+    expected_n_snippets_used: int,
+    expected_alignment_sha: str,
+) -> dict[str, Any]:
+    path = _candidate_norm_reference(reference, snippet_set)
+    if path.suffix.lower() == ".npy":
+        vector = np.load(path, allow_pickle=False)
+        if vector.ndim != 1 or not np.isfinite(vector).all():
+            raise ValueError(f"{path}: target diff must be a finite one-dimensional vector")
+        norm = float(np.linalg.norm(np.asarray(vector, dtype=np.float32)))
+        value_source = "vector_l2_norm"
+        metadata_path = path.with_suffix(".json")
+        metadata: dict[str, Any] = {}
+        if metadata_path.exists():
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            if not isinstance(metadata, dict):
+                raise ValueError(f"{metadata_path}: target norm metadata must be an object")
+            declared_set = metadata.get("snippet_set")
+            if declared_set not in (None, snippet_set):
+                raise ValueError(
+                    f"{metadata_path}: metadata is for {declared_set!r}, expected {snippet_set!r}"
+                )
+            declared_norm = metadata.get("raw_d_norm", metadata.get("d_norm"))
+            if not isinstance(declared_norm, (int, float)) or isinstance(declared_norm, bool):
+                raise ValueError(f"{metadata_path}: missing numeric raw_d_norm/d_norm")
+            if not math.isclose(norm, float(declared_norm), rel_tol=1e-5, abs_tol=1e-7):
+                raise ValueError(
+                    f"{path}: vector norm {norm:.9g} disagrees with sidecar norm "
+                    f"{float(declared_norm):.9g}"
+                )
         else:
-            Hf, ids_f = collect_residual(ft, tok, texts, args.layer)
-            assert np.array_equal(ids_b, ids_f), "tokenization mismatch between base and fine-tuned"
-            stats, d = diff_stats(Hb, Hf)
-        save_diff(out / f"diff_{args.arm}_s{args.seed}_L{args.layer}_{sname}", d, stats, {**meta, "snippet_set": sname, "snippet_sha": shash})
+            raise ValueError(
+                f"{path}: a paired .json sidecar is required to verify arm-D norm provenance"
+            )
+    elif path.suffix.lower() == ".json":
+        metadata = json.loads(path.read_text(encoding="utf-8"))
+        norm, value_source = _numeric_norm_from_json(metadata, snippet_set, path)
+        metadata_path = path
+    else:
+        raise ValueError(f"{path}: target norm source must be .npy or .json")
+    if not math.isfinite(norm) or norm <= 0:
+        raise ValueError(f"{path}: target norm must be finite and positive, got {norm!r}")
+    reference_arm = metadata.get("arm", metadata.get("reference_arm"))
+    if reference_arm != "D":
+        raise ValueError(
+            f"{metadata_path}: target norm must declare arm/reference_arm='D', got {reference_arm!r}"
+        )
+    expected_fields = {
+        "layer": expected_layer,
+        "base": expected_base,
+        "snippet_sha": expected_snippet_sha,
+        "n_snippets_used": expected_n_snippets_used,
+        "alignment_sha256": expected_alignment_sha,
+    }
+    for field, expected in expected_fields.items():
+        if field not in metadata:
+            raise ValueError(f"{metadata_path}: target norm provenance is missing {field!r}")
+        if metadata[field] != expected:
+            raise ValueError(
+                f"{metadata_path}: target norm {field}={metadata[field]!r}, expected {expected!r}"
+            )
+    if "seed" not in metadata:
+        raise ValueError(f"{metadata_path}: target norm provenance is missing 'seed'")
+    reference_step = metadata.get("checkpoint_step", metadata.get("step"))
+    if reference_step is None:
+        raise ValueError(f"{metadata_path}: target norm provenance is missing checkpoint step")
+    explicit_mock = metadata.get("is_mock") if isinstance(metadata, dict) else None
+    if explicit_mock is not None and type(explicit_mock) is not bool:
+        raise ValueError(f"{metadata_path}: is_mock must be boolean")
+    path_is_mock = _path_marked_mock(path)
+    if explicit_mock is False and path_is_mock:
+        raise ValueError(f"{path}: MOCK filename conflicts with is_mock=false metadata")
+    return {
+        "norm": norm,
+        "path": str(path),
+        "sha256": _sha256_bytes(path.read_bytes()),
+        "value_source": value_source,
+        "is_mock": bool(explicit_mock if explicit_mock is not None else path_is_mock),
+        "reference_arm": reference_arm,
+        "reference_seed": metadata["seed"],
+        "reference_checkpoint_step": reference_step,
+        "reference_snippet_sha": metadata["snippet_sha"],
+        "reference_n_snippets_used": metadata["n_snippets_used"],
+        "reference_alignment_sha256": metadata["alignment_sha256"],
+        "provenance_verified": True,
+    }
 
-        d_dec = match_norm(d, args.target_norm) if args.target_norm else d
-        top = logit_lens(base, tok, d_dec)
-        items.append({**meta, "snippet_set": sname, "modality": "tokens", "text": readout_text(top), "top": top})
+
+def _same_model_reference(left: Any, right: str) -> bool:
+    if str(left) == str(right):
+        return True
+    try:
+        left_path, right_path = Path(str(left)), Path(str(right))
+        return left_path.exists() and right_path.exists() and left_path.resolve() == right_path.resolve()
+    except (OSError, TypeError, ValueError):
+        return False
+
+
+def _adapter_artifact_receipt(
+    adapter: str,
+    *,
+    arm: str,
+    seed: int,
+    step: int,
+    base: str,
+    require_training_receipt: bool,
+) -> dict[str, Any]:
+    """Hash a local adapter and, for scientific trained arms, bind its run receipt."""
+    adapter_path = Path(adapter)
+    if not adapter_path.is_dir():
+        if require_training_receipt:
+            raise ValueError(
+                "scientific readouts require a local adapter directory so its config, "
+                "weights, and training receipt can be authenticated"
+            )
+        return {"path": adapter, "local": False, "training_receipt_verified": False}
+    config_path = adapter_path / "adapter_config.json"
+    if not config_path.is_file():
+        raise ValueError(f"missing adapter config: {config_path}")
+    weight_paths = [
+        adapter_path / name
+        for name in ("adapter_model.safetensors", "adapter_model.bin")
+        if (adapter_path / name).is_file()
+    ]
+    if len(weight_paths) != 1:
+        raise ValueError(
+            f"{adapter_path}: expected exactly one adapter_model.safetensors/.bin, "
+            f"found {weight_paths}"
+        )
+    receipt: dict[str, Any] = {
+        "path": str(adapter_path),
+        "local": True,
+        "adapter_config_sha256": _sha256_file(config_path),
+        "adapter_weight_file": weight_paths[0].name,
+        "adapter_weight_sha256": _sha256_file(weight_paths[0]),
+        "training_receipt_verified": False,
+    }
+    if not require_training_receipt:
+        return receipt
+
+    candidates = (adapter_path / "run_meta.json", adapter_path.parent / "run_meta.json")
+    metadata_path = next((path for path in candidates if path.is_file()), None)
+    if metadata_path is None:
+        raise ValueError(
+            f"{adapter_path}: missing run_meta.json training receipt (checked adapter and parent)"
+        )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict):
+        raise ValueError(f"{metadata_path}: expected a JSON object")
+    mismatches: dict[str, Any] = {}
+    expected = {"arm": arm, "seed": seed, "final_global_step": step}
+    for field, value in expected.items():
+        if metadata.get(field) != value:
+            mismatches[field] = {"expected": value, "found": metadata.get(field)}
+    if step < 0:
+        mismatches["final_global_step"] = {
+            "expected": "non-negative final checkpoint step",
+            "found": step,
+        }
+    if not _same_model_reference(metadata.get("model"), base):
+        mismatches["model"] = {"expected": base, "found": metadata.get("model")}
+    if metadata.get("model_loader") != "AutoModelForCausalLM":
+        mismatches["model_loader"] = {
+            "expected": "AutoModelForCausalLM",
+            "found": metadata.get("model_loader"),
+        }
+    if mismatches:
+        raise ValueError(
+            f"{metadata_path}: adapter training receipt does not match this readout: "
+            + json.dumps(mismatches, sort_keys=True)
+        )
+    receipt.update(
+        {
+            "training_receipt_path": str(metadata_path),
+            "training_receipt_sha256": _sha256_file(metadata_path),
+            "training_receipt_verified": True,
+            "resolved_model_revision": metadata.get("resolved_model_revision"),
+            "training_model_dtype": metadata.get("model_dtype"),
+        }
+    )
+    return receipt
+
+
+def _validate_n3_adapter(
+    adapter: str,
+    base: str,
+    *,
+    require_match: bool = True,
+) -> dict[str, Any]:
+    """Prove that N3 is zero-step and, by default, parameter-norm matched."""
+    adapter_path = Path(adapter)
+    metadata_path = adapter_path / "null_adapter_meta.json"
+    if not metadata_path.is_file():
+        raise ValueError(
+            f"arm N3 requires {metadata_path}; build it with readout/make_null_adapter.py"
+        )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict):
+        raise ValueError(f"{metadata_path}: expected a JSON object")
+    if metadata.get("artifact_type") != "N3_untrained_lora" or metadata.get("arm") != "N3":
+        raise ValueError(f"{metadata_path}: not an N3 untrained-LoRA artifact")
+    if metadata.get("optimizer_steps") != 0:
+        raise ValueError(f"{metadata_path}: N3 adapter must record optimizer_steps=0")
+    if not _same_model_reference(metadata.get("base_model"), base):
+        raise ValueError(
+            f"{metadata_path}: base_model={metadata.get('base_model')!r} does not match --base={base!r}"
+        )
+    lora = metadata.get("lora")
+    expected_lora = {
+        "r": 32,
+        "alpha": 64,
+        "dropout": 0.0,
+        "bias": "none",
+        "task_type": "CAUSAL_LM",
+    }
+    if not isinstance(lora, dict):
+        raise ValueError(f"{metadata_path}: missing LoRA configuration")
+    for field, expected in expected_lora.items():
+        if lora.get(field) != expected:
+            raise ValueError(
+                f"{metadata_path}: N3 LoRA {field}={lora.get(field)!r}, expected {expected!r}"
+            )
+    if set(lora.get("target_modules") or ()) != N3_LORA_TARGETS:
+        raise ValueError(
+            f"{metadata_path}: N3 target_modules do not match the frozen all-attention+MLP set"
+        )
+
+    config_path = adapter_path / "adapter_config.json"
+    if not config_path.is_file():
+        raise ValueError(f"{metadata_path}: missing adapter_config.json")
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    if not isinstance(config, dict):
+        raise ValueError(f"{config_path}: expected a JSON object")
+    config_expected = {
+        "r": 32,
+        "lora_alpha": 64,
+        "lora_dropout": 0.0,
+        "bias": "none",
+        "task_type": "CAUSAL_LM",
+    }
+    for field, expected in config_expected.items():
+        if config.get(field) != expected:
+            raise ValueError(
+                f"{config_path}: {field}={config.get(field)!r}, expected {expected!r}"
+            )
+    if set(config.get("target_modules") or ()) != N3_LORA_TARGETS:
+        raise ValueError(f"{config_path}: target_modules disagree with the frozen N3 contract")
+
+    weight_name = metadata.get("saved_weight_file")
+    declared_weight_sha = metadata.get("saved_weight_sha256")
+    if not isinstance(weight_name, str) or Path(weight_name).name != weight_name:
+        raise ValueError(f"{metadata_path}: invalid saved_weight_file")
+    weight_path = adapter_path / weight_name
+    if not weight_path.is_file():
+        raise ValueError(f"{metadata_path}: saved adapter weight file is missing")
+    actual_weight_sha = _sha256_file(weight_path)
+    if declared_weight_sha != actual_weight_sha:
+        raise ValueError(f"{metadata_path}: saved adapter weight SHA-256 does not match")
+
+    saved_norms = metadata.get("saved_norms")
+    saved_total = saved_norms.get("total_norm") if isinstance(saved_norms, dict) else None
+    if (
+        not isinstance(saved_total, (int, float))
+        or isinstance(saved_total, bool)
+        or not math.isfinite(float(saved_total))
+        or float(saved_total) <= 0
+    ):
+        raise ValueError(f"{metadata_path}: missing finite positive saved adapter norm")
+
+    match = metadata.get("match")
+    parameter_norm_matched = isinstance(match, dict)
+    if require_match and not parameter_norm_matched:
+        raise ValueError(
+            f"{metadata_path}: N3 is not parameter-norm matched; rebuild with --match, "
+            "or use --allow-unmatched-n3 only for a non-scientific fixture run"
+        )
+    match_source = None
+    match_target_norm = None
+    if parameter_norm_matched:
+        assert isinstance(match, dict)
+        source_norms = match.get("source_norms")
+        match_target_norm = (
+            source_norms.get("total_norm") if isinstance(source_norms, dict) else None
+        )
+        match_source = match.get("source")
+        if (
+            not isinstance(match_source, str)
+            or not match_source
+            or not isinstance(match_target_norm, (int, float))
+            or isinstance(match_target_norm, bool)
+            or not math.isfinite(float(match_target_norm))
+            or float(match_target_norm) <= 0
+        ):
+            raise ValueError(f"{metadata_path}: incomplete parameter-norm match provenance")
+        if not math.isclose(
+            float(saved_total), float(match_target_norm), rel_tol=5e-3, abs_tol=1e-8
+        ):
+            raise ValueError(
+                f"{metadata_path}: saved N3 norm does not match the declared trained-adapter norm"
+            )
+    return {
+        "path": str(metadata_path),
+        "sha256": _sha256_file(metadata_path),
+        "optimizer_steps": 0,
+        "parameter_norm_matched": parameter_norm_matched,
+        "match_source": match_source,
+        "match_target_norm": match_target_norm,
+        "saved_parameter_norm": float(saved_total),
+        "adapter_weight_sha256": actual_weight_sha,
+    }
+
+
+def _allocate_total(total: int, buckets: int) -> list[int]:
+    """Allocate exactly ``total`` jobs with a deterministic at-most-one imbalance."""
+    if total < 0 or buckets <= 0:
+        raise ValueError("allocation requires a non-negative total and positive bucket count")
+    quotient, remainder = divmod(total, buckets)
+    return [quotient + (index < remainder) for index in range(buckets)]
+
+
+def _artifact_stem(kind: str, arm: str, seed: int, layer: int, is_mock: bool) -> str:
+    mock = "_MOCK" if is_mock else ""
+    return f"{kind}{mock}_{arm}_s{seed}_L{layer}"
+
+
+def _write_jsonl(path: Path, rows: Sequence[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
+        encoding="utf-8",
+    )
+
+
+def _save_array_checkpoint(
+    path: Path,
+    array: np.ndarray,
+    metadata: dict[str, Any],
+    *,
+    artifact_type: str,
+    storage_dtype: np.dtype[Any] | type[np.generic],
+) -> tuple[Path, Path]:
+    """Save an expensive array plus a provenance/hash sidecar."""
+    path = Path(path).with_suffix(".npy")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stored = np.ascontiguousarray(array, dtype=storage_dtype)
+    np.save(path, stored, allow_pickle=False)
+    sidecar = path.with_suffix(".json")
+    sidecar_metadata = {
+        **metadata,
+        "artifact_type": artifact_type,
+        "array_file": path.name,
+        "array_shape": list(stored.shape),
+        "array_dtype": str(stored.dtype),
+        "array_sha256": _sha256_bytes(path.read_bytes()),
+    }
+    sidecar.write_text(
+        json.dumps(sidecar_metadata, indent=1, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return path, sidecar
+
+
+def load_adapter_strict(model, adapter: str, *, local_files_only: bool = False):
+    """Attach an adapter and prove its definition and tensors loaded exactly."""
+    from peft import PeftModel, get_peft_model_state_dict
+    from peft.utils.save_and_load import load_peft_weights
+
+    model = PeftModel.from_pretrained(
+        model,
+        adapter,
+        is_trainable=False,
+        local_files_only=local_files_only,
+    )
+    active = model.active_adapter
+    config = model.peft_config[active]
+    peft_type = getattr(getattr(config, "peft_type", None), "value", config.peft_type)
+    expected_config = {
+        "peft_type": "LORA",
+        "task_type": "CAUSAL_LM",
+        "r": 32,
+        "lora_alpha": 64,
+        "lora_dropout": 0.0,
+        "bias": "none",
+        "use_dora": False,
+        "use_rslora": False,
+    }
+    actual_config = {
+        "peft_type": peft_type,
+        **{field: getattr(config, field, None) for field in expected_config if field != "peft_type"},
+    }
+    mismatches = {
+        field: {"expected": expected, "found": actual_config[field]}
+        for field, expected in expected_config.items()
+        if actual_config[field] != expected
+    }
+    targets = set(getattr(config, "target_modules", None) or ())
+    if targets != N3_LORA_TARGETS:
+        mismatches["target_modules"] = {
+            "expected": sorted(N3_LORA_TARGETS),
+            "found": sorted(targets),
+        }
+    if getattr(config, "rank_pattern", None):
+        mismatches["rank_pattern"] = {"expected": {}, "found": config.rank_pattern}
+    if getattr(config, "alpha_pattern", None):
+        mismatches["alpha_pattern"] = {"expected": {}, "found": config.alpha_pattern}
+    if getattr(config, "modules_to_save", None):
+        mismatches["modules_to_save"] = {
+            "expected": None,
+            "found": config.modules_to_save,
+        }
+    if mismatches:
+        raise ValueError(
+            "adapter does not match the frozen r=32 all-attention+MLP LoRA contract: "
+            + json.dumps(mismatches, sort_keys=True, default=str)
+        )
+    declared_base = getattr(config, "base_model_name_or_path", None)
+    loaded_base = getattr(model.get_base_model().config, "_name_or_path", None)
+    if (
+        isinstance(declared_base, str)
+        and declared_base
+        and isinstance(loaded_base, str)
+        and loaded_base
+        and not _same_model_reference(declared_base, loaded_base)
+    ):
+        raise ValueError(
+            "adapter base_model_name_or_path does not match the loaded readout base: "
+            f"{declared_base!r} != {loaded_base!r}"
+        )
+
+    eligible_modules = []
+    unwrapped_modules = []
+    for name, module in model.named_modules():
+        if name.rsplit(".", 1)[-1] not in N3_LORA_TARGETS:
+            continue
+        if not (hasattr(module, "base_layer") or isinstance(module, torch.nn.Linear)):
+            continue
+        eligible_modules.append(name)
+        if not hasattr(module, "lora_A") or active not in module.lora_A:
+            unwrapped_modules.append(name)
+    if not eligible_modules:
+        raise ValueError("adapter model exposes no eligible attention/MLP projections")
+    if unwrapped_modules:
+        raise ValueError(
+            "adapter did not wrap every eligible attention/MLP projection: "
+            + ", ".join(unwrapped_modules[:8])
+        )
+    # Qwen3.5's official checkpoint declares a composite conditional
+    # architecture, while this pipeline deliberately uses the text-only
+    # causal class. An adapter trained by handing TRL the raw model string
+    # can therefore contain ``model.language_model.layers`` keys. PEFT only
+    # warns and leaves the corresponding text-model LoRA weights at zero.
+    # Compare both the complete serialized key set and loaded values so
+    # that this silent no-op becomes a hard error.
+    serialized = load_peft_weights(
+        adapter,
+        device="cpu",
+        local_files_only=local_files_only,
+    )
+    loaded = get_peft_model_state_dict(model)
+    serialized_keys, loaded_keys = set(serialized), set(loaded)
+    if serialized_keys != loaded_keys:
+        missing = sorted(loaded_keys - serialized_keys)
+        unexpected = sorted(serialized_keys - loaded_keys)
+        hint = (
+            " The adapter appears to use Qwen3.5's composite "
+            "model.language_model tree; train with the repository's explicit "
+            "AutoModelForCausalLM loader."
+            if any(".language_model." in key for key in unexpected)
+            else ""
+        )
+        raise ValueError(
+            "adapter key set does not match the text-only readout model "
+            f"(missing={missing[:4]}, unexpected={unexpected[:4]})." + hint
+        )
+    for key in sorted(serialized_keys):
+        source = serialized[key].detach().to(device="cpu")
+        destination = loaded[key].detach().to(device="cpu")
+        if source.shape != destination.shape:
+            raise ValueError(
+                f"adapter tensor shape mismatch for {key}: "
+                f"{tuple(source.shape)} != {tuple(destination.shape)}"
+            )
+        source = source.to(dtype=destination.dtype)
+        if not torch.equal(source, destination):
+            raise ValueError(f"adapter tensor {key} was not loaded exactly")
+    return model
+
+
+def load_model(
+    base: str,
+    adapter: str | None,
+    dtype: torch.dtype,
+    *,
+    local_files_only: bool = False,
+):
+    """Load a causal LM, leaving a supplied PEFT adapter active and unmerged."""
+    from transformers import AutoModelForCausalLM
+
+    model = AutoModelForCausalLM.from_pretrained(
+        base,
+        dtype=dtype,
+        device_map="auto" if torch.cuda.is_available() else None,
+        local_files_only=local_files_only,
+    )
+    if adapter:
+        model = load_adapter_strict(
+            model,
+            adapter,
+            local_files_only=local_files_only,
+        )
+    return model.eval()
+
+
+def load_tokenizer(base: str, *, local_files_only: bool = False):
+    from transformers import AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(base, local_files_only=local_files_only)
+    if tokenizer.pad_token_id is None:
+        if tokenizer.eos_token_id is None:
+            raise ValueError("tokenizer has neither a padding token nor an EOS token")
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+    if tokenizer.padding_side != "right":
+        raise ValueError("readout collection requires right padding")
+    return tokenizer
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--arm", choices=("A", "B", "C", "D", "N1", "N2", "N3"), required=True)
+    parser.add_argument("--base", default=DEFAULT_BASE, help="base causal-language-model id or path")
+    parser.add_argument("--adapter")
+    parser.add_argument("--layer", type=int, required=True)
+    parser.add_argument("--snippets", default="data/snippets")
+    parser.add_argument("--out", default="results")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--step", type=int, default=-1)
+    parser.add_argument("--judge-model", default="not_run")
+    parser.add_argument("--n-snips", type=int, default=500)
+    parser.add_argument("--activation-max-tokens", type=int, default=128)
+    parser.add_argument("--activation-batch-size", type=int, default=8)
+    parser.add_argument(
+        "--add-special-tokens",
+        action="store_true",
+        help="include tokenizer BOS/EOS additions; default is explicit add_special_tokens=False",
+    )
+    parser.add_argument(
+        "--local-files-only",
+        action="store_true",
+        help="forbid model/tokenizer/adapter downloads (offline smoke path)",
+    )
+    parser.add_argument(
+        "--mock",
+        action="store_true",
+        help="mark every artifact and filename as MOCK (required for synthetic/random-model runs)",
+    )
+    parser.add_argument(
+        "--allow-unmatched-n3",
+        action="store_true",
+        help="permit a zero-step but unmatched N3 adapter for fixture diagnostics only",
+    )
+
+    target = parser.add_mutually_exclusive_group()
+    target.add_argument("--target-norm", type=float, help="common positive norm used before decoding")
+    target.add_argument(
+        "--target-norm-from",
+        help=(
+            "arm-D .npy/.json, directory, or prefix; use {snippet_set} to select "
+            "neutral/math references"
+        ),
+    )
+    parser.add_argument(
+        "--geometry-only",
+        action="store_true",
+        help="save raw diff vectors/statistics without decoding, steering, or self-report",
+    )
+
+    parser.add_argument("--skip-steer", action="store_true")
+    parser.add_argument(
+        "--steer-generations",
+        "--steer-generations-total",
+        dest="steer_generations",
+        type=int,
+        default=50,
+        help="exact positive-coefficient generations across both snippet sets (default: 50 per arm total)",
+    )
+    parser.add_argument(
+        "--steer-prompt-count",
+        "--steer-n-prompts",
+        dest="steer_prompt_count",
+        type=int,
+        default=20,
+    )
+    parser.add_argument("--steer-max-new-tokens", type=int, default=60)
+    parser.add_argument("--steer-coeffs", type=float, nargs="+", default=(4.0, 8.0))
+    parser.add_argument(
+        "--skip-self-report",
+        "--skip-selfreport",
+        dest="skip_self_report",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--self-report-count",
+        "--selfreport-samples",
+        dest="self_report_count",
+        type=int,
+        default=20,
+    )
+    parser.add_argument(
+        "--self-report-max-new-tokens",
+        "--selfreport-max-new-tokens",
+        dest="self_report_max_new_tokens",
+        type=int,
+        default=40,
+    )
+    return parser
+
+
+def _validate_args(args: argparse.Namespace) -> None:
+    if args.layer < 0:
+        raise ValueError("--layer must be non-negative")
+    if args.n_snips <= 0:
+        raise ValueError("--n-snips must be positive")
+    if args.activation_max_tokens <= SKIP_TOKENS:
+        raise ValueError(f"--activation-max-tokens must exceed the fixed {SKIP_TOKENS}-token skip")
+    if args.activation_batch_size <= 0:
+        raise ValueError("--activation-batch-size must be positive")
+    if args.arm in ("N1", "N2") and args.adapter:
+        raise ValueError(f"arm {args.arm} is a no-adapter null; do not pass --adapter")
+    if args.arm not in ("N1", "N2") and not args.adapter:
+        raise ValueError(f"arm {args.arm} requires --adapter (N3 uses the untrained null adapter)")
+    if args.allow_unmatched_n3 and args.arm != "N3":
+        raise ValueError("--allow-unmatched-n3 is valid only with --arm N3")
+    if args.geometry_only and (args.target_norm is not None or args.target_norm_from):
+        raise ValueError("--geometry-only cannot be combined with a target norm")
+    if not args.geometry_only and args.target_norm is None and not args.target_norm_from:
+        raise ValueError(
+            "scientific decoding requires --target-norm or --target-norm-from; "
+            "use --geometry-only to measure raw vectors first"
+        )
+    if args.target_norm is not None and (
+        not math.isfinite(args.target_norm) or args.target_norm <= 0
+    ):
+        raise ValueError("--target-norm must be finite and positive")
+    if args.steer_generations < 0:
+        raise ValueError("--steer-generations must be non-negative")
+    if not 1 <= args.steer_prompt_count <= len(NEUTRAL_PROMPTS):
+        raise ValueError(f"--steer-prompt-count must be in [1, {len(NEUTRAL_PROMPTS)}]")
+    if args.steer_max_new_tokens <= 0:
+        raise ValueError("--steer-max-new-tokens must be positive")
+    if not args.steer_coeffs or any(
+        not math.isfinite(value) or value <= 0 for value in args.steer_coeffs
+    ):
+        raise ValueError("--steer-coeffs must contain finite positive values")
+    if args.self_report_count < 0:
+        raise ValueError("--self-report-count must be non-negative")
+    if args.self_report_max_new_tokens <= 0:
+        raise ValueError("--self-report-max-new-tokens must be positive")
+
+
+def _item_id(meta: dict[str, Any], snippet_set: str, modality: str, index: int) -> str:
+    return (
+        f"{meta['arm']}:s{meta['seed']}:step{meta['checkpoint_step']}:"
+        f"L{meta['layer']}:{snippet_set}:{modality}:{index}"
+    )
+
+
+def run(args: argparse.Namespace) -> list[Path]:
+    _validate_args(args)
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
+
+    snippets_root = Path(args.snippets)
+    snippet_files = {
+        name: _read_snippet_file(snippets_root / f"{name}.jsonl", args.n_snips)
+        for name in SNIPPET_SETS
+    }
+    snippet_mock_statuses = {record["is_mock"] for record in snippet_files.values()}
+    if len(snippet_mock_statuses) != 1:
+        raise ValueError("neutral and math snippet inputs mix mock and real provenance")
+    is_mock = bool(
+        args.mock
+        or next(iter(snippet_mock_statuses))
+        or _path_marked_mock(args.base)
+        or _path_marked_mock(args.adapter)
+        or _path_marked_mock(args.snippets)
+    )
+    for snippet_set, record in snippet_files.items():
+        if record["n_available"] < args.n_snips:
+            raise ValueError(
+                f"{snippet_set} has {record['n_available']} snippets, fewer than "
+                f"--n-snips={args.n_snips}"
+            )
+    if not is_mock and (args.n_snips != 500 or args.activation_max_tokens != 128):
+        raise ValueError(
+            "scientific runs must use the frozen 500 snippets x 128 tokens contract; "
+            "nonstandard sizes require explicitly MOCK inputs"
+        )
+    n3_metadata = None
+    if args.arm == "N3":
+        assert args.adapter is not None
+        n3_metadata = _validate_n3_adapter(
+            args.adapter,
+            args.base,
+            require_match=not args.allow_unmatched_n3,
+        )
+    adapter_receipt = None
+    if args.adapter is not None:
+        adapter_receipt = _adapter_artifact_receipt(
+            args.adapter,
+            arm=args.arm,
+            seed=args.seed,
+            step=args.step,
+            base=args.base,
+            require_training_receipt=(not is_mock and args.arm in {"A", "B", "C", "D"}),
+        )
+
+    timestamp = _utc_now()
+    commit = _git_commit()
+    dtype = _preferred_inference_dtype()
+    tokenizer = load_tokenizer(args.base, local_files_only=args.local_files_only)
+    if not is_mock:
+        for snippet_set, record in snippet_files.items():
+            lengths = [
+                len(tokenizer(text, add_special_tokens=False)["input_ids"])
+                for text in record["texts"]
+            ]
+            bad = [index for index, length in enumerate(lengths) if length != 128]
+            if bad:
+                raise ValueError(
+                    f"{snippet_set} contains snippets that do not re-tokenize to exactly "
+                    f"128 tokens; first bad row indices: {bad[:8]}"
+                )
+    base_model = load_model(
+        args.base,
+        None,
+        dtype,
+        local_files_only=args.local_files_only,
+    )
+    resolved_model_revision = getattr(base_model.config, "_commit_hash", None)
+    tokenizer_revision = getattr(tokenizer, "init_kwargs", {}).get("_commit_hash")
+    if (
+        adapter_receipt is not None
+        and adapter_receipt.get("training_receipt_verified") is True
+        and adapter_receipt.get("resolved_model_revision")
+        and resolved_model_revision
+        and adapter_receipt["resolved_model_revision"] != resolved_model_revision
+    ):
+        raise ValueError(
+            "loaded base-model revision differs from the adapter training receipt: "
+            f"{resolved_model_revision!r} != "
+            f"{adapter_receipt['resolved_model_revision']!r}"
+        )
+    tuned_model = None
+    if args.arm not in ("N1", "N2"):
+        tuned_model = load_model(
+            args.base,
+            args.adapter,
+            dtype,
+            local_files_only=args.local_files_only,
+        )
+    base_blocks = _get_blocks(base_model)
+    if args.layer >= len(base_blocks):
+        raise ValueError(
+            f"--layer {args.layer} is out of range for the base model ({len(base_blocks)} blocks)"
+        )
+    if tuned_model is not None:
+        tuned_blocks = _get_blocks(tuned_model)
+        if len(tuned_blocks) != len(base_blocks):
+            raise ValueError(
+                "base and adapter expose different decoder-block counts: "
+                f"{len(base_blocks)} vs {len(tuned_blocks)}"
+            )
+
+    output_root = Path(args.out)
+    output_root.mkdir(parents=True, exist_ok=True)
+    common_meta: dict[str, Any] = {
+        "arm": args.arm,
+        "seed": args.seed,
+        "step": args.step,
+        "checkpoint_step": args.step,
+        "layer": args.layer,
+        "base": args.base,
+        "adapter": args.adapter,
+        "adapter_merged": False,
+        "judge_model": args.judge_model,
+        "timestamp": timestamp,
+        "git_commit": commit,
+        "is_mock": is_mock,
+        "model_dtype": str(dtype).replace("torch.", ""),
+        "resolved_model_revision": resolved_model_revision,
+        "tokenizer_revision": tokenizer_revision,
+        "local_files_only": bool(args.local_files_only),
+        "padding_side": "right",
+        "add_special_tokens": bool(args.add_special_tokens),
+        "bos_token_id": tokenizer.bos_token_id,
+        "eos_token_id": tokenizer.eos_token_id,
+        "pad_token_id": tokenizer.pad_token_id,
+        "skip_tokens": SKIP_TOKENS,
+        "activation_max_tokens": args.activation_max_tokens,
+        "activation_batch_size": args.activation_batch_size,
+        "n_model_layers": len(base_blocks),
+        "n3_adapter_metadata": n3_metadata,
+        "adapter_receipt": adapter_receipt,
+    }
+    item_rows: list[dict[str, Any]] = []
+    steering_rows: list[dict[str, Any]] = []
+    written: list[Path] = []
+    steering_allocation = _allocate_total(args.steer_generations, len(SNIPPET_SETS))
+    prompt_template = list(NEUTRAL_PROMPTS[: args.steer_prompt_count])
+
+    for snippet_index, snippet_set in enumerate(SNIPPET_SETS):
+        if tokenizer.padding_side != "right":
+            raise ValueError("tokenizer padding_side changed after setup; refusing misaligned collection")
+        snippet_record = snippet_files[snippet_set]
+        texts = snippet_record["texts"]
+        base_h, base_ids, base_coordinates = collect_residual(
+            base_model,
+            tokenizer,
+            texts,
+            args.layer,
+            skip=SKIP_TOKENS,
+            max_tokens=args.activation_max_tokens,
+            batch_size=args.activation_batch_size,
+            add_special_tokens=args.add_special_tokens,
+            return_alignment=True,
+        )
+        _validate_alignment(
+            base_h,
+            base_ids,
+            base_coordinates,
+            n_snippets=len(texts),
+            skip_tokens=SKIP_TOKENS,
+        )
+
+        tuned_h: np.ndarray | None = None
+        if args.arm == "N1":
+            direction = base_h.astype(np.float32).mean(axis=0)
+            stats = _direction_stats(
+                direction,
+                base_h,
+                constancy_source=base_h,
+                note="N1: mean residual-stream output of the base model",
+            )
+        elif args.arm == "N2":
+            direction = np.random.default_rng(args.seed).standard_normal(base_h.shape[1]).astype(np.float32)
+            stats = _direction_stats(
+                direction,
+                base_h,
+                constancy_source=None,
+                note="N2: seeded isotropic random residual direction",
+            )
+            stats["random_direction_seed"] = args.seed
+        else:
+            assert tuned_model is not None
+            tuned_h, tuned_ids, tuned_coordinates = collect_residual(
+                tuned_model,
+                tokenizer,
+                texts,
+                args.layer,
+                skip=SKIP_TOKENS,
+                max_tokens=args.activation_max_tokens,
+                batch_size=args.activation_batch_size,
+                add_special_tokens=args.add_special_tokens,
+                return_alignment=True,
+            )
+            _validate_alignment(
+                tuned_h,
+                tuned_ids,
+                tuned_coordinates,
+                n_snippets=len(texts),
+                skip_tokens=SKIP_TOKENS,
+            )
+            if not np.array_equal(base_ids, tuned_ids):
+                raise ValueError("base and adapter token ids differ; refusing row-wise subtraction")
+            if not np.array_equal(base_coordinates, tuned_coordinates):
+                raise ValueError("base and adapter token coordinates differ; refusing row-wise subtraction")
+            stats, direction = diff_stats(base_h, tuned_h, seed=args.seed)
+            stats["raw_d_norm"] = stats["d_norm"]
+
+        direction = np.asarray(direction, dtype=np.float32)
+        raw_norm = float(np.linalg.norm(direction))
+        if not math.isfinite(raw_norm):
+            raise ValueError("raw direction norm is non-finite")
+        if not math.isclose(raw_norm, float(stats["d_norm"]), rel_tol=1e-5, abs_tol=1e-7):
+            raise ValueError("serialized raw norm does not match the raw vector")
+        stats["raw_d_norm"] = raw_norm
+
+        snippet_meta = {
+            **common_meta,
+            "snippet_set": snippet_set,
+            "snippet_sha": snippet_record["sha256"],
+            "snippet_set_sha256": snippet_record["sha256"],
+            "snippet_sha_scope": "complete_jsonl_file_bytes",
+            "snippet_path": str(snippet_record["path"]),
+            "n_snippets_available": snippet_record["n_available"],
+            "n_snippets_used": len(texts),
+            "alignment_sha256": _alignment_sha256(base_ids, base_coordinates),
+            "n_aligned_tokens": len(base_ids),
+            "raw_vector_saved_before_decode": True,
+            "geometry_only": bool(args.geometry_only),
+        }
+        diff_stem = output_root / (
+            f"{_artifact_stem('diff', args.arm, args.seed, args.layer, is_mock)}_{snippet_set}"
+        )
+        activation_stem = output_root / (
+            f"{_artifact_stem('activations', args.arm, args.seed, args.layer, is_mock)}_{snippet_set}"
+        )
+        checkpoint_meta = {
+            **snippet_meta,
+            "activation_capture": "decoder_block_residual_stream_output",
+            # The forward dtype is recorded as model_dtype.  Hooked activations
+            # are promoted before subtraction/analysis, then checkpointed fp16.
+            "activation_analysis_dtype": "float32",
+        }
+        written.extend(
+            _save_array_checkpoint(
+                Path(f"{activation_stem}_base.npy"),
+                base_h,
+                {**checkpoint_meta, "model_role": "base"},
+                artifact_type="residual_activations",
+                storage_dtype=np.float16,
+            )
+        )
+        if tuned_h is not None:
+            written.extend(
+                _save_array_checkpoint(
+                    Path(f"{activation_stem}_adapter.npy"),
+                    tuned_h,
+                    {**checkpoint_meta, "model_role": "adapter_unmerged"},
+                    artifact_type="residual_activations",
+                    storage_dtype=np.float16,
+                )
+            )
+        alignment_array = np.column_stack(
+            (base_coordinates.astype(np.int64), base_ids.astype(np.int64))
+        )
+        written.extend(
+            _save_array_checkpoint(
+                Path(f"{activation_stem}_alignment.npy"),
+                alignment_array,
+                {
+                    **checkpoint_meta,
+                    "alignment_columns": [
+                        "snippet_index",
+                        "padded_position",
+                        "real_token_ordinal",
+                        "token_id",
+                    ],
+                },
+                artifact_type="activation_alignment",
+                storage_dtype=np.int64,
+            )
+        )
+        # Save the untouched float32 vector and its raw norm before constructing
+        # a norm-matched copy for any downstream decoding.
+        save_diff(diff_stem, direction, stats, snippet_meta)
+        written.extend((diff_stem.with_suffix(".npy"), diff_stem.with_suffix(".json")))
+
+        if args.geometry_only:
+            continue
+
+        if args.target_norm is not None:
+            target_norm = float(args.target_norm)
+            target_meta = {
+                "path": "command_line",
+                "sha256": None,
+                "value_source": "--target-norm",
+                "is_mock": is_mock,
+                "reference_arm": "D",
+                "reference_seed": None,
+                "reference_checkpoint_step": None,
+                "reference_snippet_sha": None,
+                "reference_n_snippets_used": None,
+                "reference_alignment_sha256": None,
+                "provenance_verified": False,
+            }
+        else:
+            assert args.target_norm_from is not None
+            target_meta = _load_target_norm(
+                args.target_norm_from,
+                snippet_set,
+                expected_layer=args.layer,
+                expected_base=args.base,
+                expected_snippet_sha=snippet_record["sha256"],
+                expected_n_snippets_used=len(texts),
+                expected_alignment_sha=snippet_meta["alignment_sha256"],
+            )
+            target_norm = float(target_meta["norm"])
+            if bool(target_meta["is_mock"]) != is_mock:
+                raise ValueError(
+                    "target-norm reference and current run differ in mock/real provenance; "
+                    "refusing to mix them"
+                )
+        decode_direction = match_norm(direction, target_norm)
+        decode_norm = float(np.linalg.norm(decode_direction))
+        if not math.isclose(decode_norm, target_norm, rel_tol=1e-5, abs_tol=1e-6):
+            raise ValueError("norm matching did not produce the requested decode norm")
+        decode_meta = {
+            **snippet_meta,
+            "raw_d_norm": raw_norm,
+            "decode_target_norm": target_norm,
+            "decode_vector_norm": decode_norm,
+            "target_norm_source": target_meta["path"],
+            "target_norm_source_sha256": target_meta["sha256"],
+            "target_norm_value_source": target_meta["value_source"],
+            "target_norm_reference_arm": target_meta["reference_arm"],
+            "target_norm_reference_seed": target_meta["reference_seed"],
+            "target_norm_reference_checkpoint_step": target_meta["reference_checkpoint_step"],
+            "target_norm_reference_snippet_sha": target_meta["reference_snippet_sha"],
+            "target_norm_reference_n_snippets_used": target_meta["reference_n_snippets_used"],
+            "target_norm_reference_alignment_sha256": target_meta[
+                "reference_alignment_sha256"
+            ],
+            "target_norm_provenance_verified": target_meta["provenance_verified"],
+            "norm_matched_before_decode": True,
+        }
+
+        top = logit_lens(base_model, tokenizer, decode_direction, k=20, apply_final_norm=True)
+        token_index = sum(
+            row.get("modality") == "tokens" and row.get("snippet_set") == snippet_set
+            for row in item_rows
+        )
+        item_rows.append(
+            {
+                **decode_meta,
+                "modality": "tokens",
+                "item_id": _item_id(common_meta, snippet_set, "tokens", token_index),
+                "text": readout_text(top),
+                "top": top,
+                "logit_lens_final_norm_applied": True,
+            }
+        )
+
         if not args.skip_steer:
-            for row in steered_generations(base, tok, d_dec, args.layer, seed=args.seed):
-                if row["coeff"] > 0:
-                    items.append({**meta, "snippet_set": sname, "modality": "steer", "text": row["text"], "coeff": row["coeff"], "prompt": row["prompt"]})
+            # Rotate the second snippet-set prompt order so the preregistered
+            # default (50 total, 25/cell) reaches all 20 neutral prompts.
+            prompts = prompt_template
+            if snippet_index and prompts:
+                touched_first = math.ceil(
+                    steering_allocation[0] / max(len(args.steer_coeffs), 1)
+                )
+                rotation = touched_first % len(prompts)
+                prompts = prompts[rotation:] + prompts[:rotation]
+            coeffs = list(args.steer_coeffs)
+            if snippet_index % 2:
+                coeffs.reverse()  # balances odd per-cell allocations across coefficients
+            generated = steered_generations(
+                base_model,
+                tokenizer,
+                decode_direction,
+                args.layer,
+                coeffs=coeffs,
+                prompts=prompts,
+                n_generations=steering_allocation[snippet_index],
+                max_new_tokens=args.steer_max_new_tokens,
+                temperature=0.7,
+                seed=args.seed + snippet_index * 1_000_000,
+                include_unsteered=True,
+                add_special_tokens=args.add_special_tokens,
+            )
+            positive = [row for row in generated if float(row["coeff"]) > 0]
+            if len(positive) != steering_allocation[snippet_index]:
+                raise RuntimeError("steering helper did not return the exact requested positive count")
+            for row in generated:
+                steering_row = {
+                    **decode_meta,
+                    **row,
+                    "modality": "steer",
+                    "steer_generations_arm_total": args.steer_generations,
+                    "steer_generations_snippet_set": steering_allocation[snippet_index],
+                    "steer_prompt_count": args.steer_prompt_count,
+                    "steer_max_new_tokens": args.steer_max_new_tokens,
+                }
+                steering_row["item_id"] = _item_id(
+                    common_meta,
+                    snippet_set,
+                    "steer_all",
+                    len(steering_rows),
+                )
+                steering_rows.append(steering_row)
+                # Zero-coefficient controls are retained in the dedicated raw
+                # generation file, but are not sent to the blind judge.
+                if float(row["coeff"]) > 0:
+                    judge_row = dict(steering_row)
+                    judge_row["item_id"] = _item_id(
+                        common_meta,
+                        snippet_set,
+                        "steer",
+                        sum(item.get("modality") == "steer" for item in item_rows),
+                    )
+                    item_rows.append(judge_row)
 
-    # self-report (only for trained arms)
-    if ft is not None:
-        torch.manual_seed(args.seed)
-        enc = tok(SELFREPORT_PROMPT, return_tensors="pt").to(next(ft.parameters()).device)
-        for j in range(20):
-            g = ft.generate(**enc, do_sample=True, temperature=0.7, max_new_tokens=40, pad_token_id=tok.eos_token_id)
-            items.append({**meta, "snippet_set": "-", "modality": "selfreport", "sample": j,
-                          "text": tok.decode(g[0][enc["input_ids"].shape[1]:], skip_special_tokens=True)})
+    if args.geometry_only:
+        return written
 
-    p = out / f"items_{args.arm}_s{args.seed}_L{args.layer}.jsonl"
-    p.write_text("\n".join(json.dumps(it) for it in items) + "\n")
-    print(f"wrote {p} ({len(items)} items)")
+    if tuned_model is not None and not args.skip_self_report and args.self_report_count:
+        input_device = tuned_model.get_input_embeddings().weight.device
+        encoded = tokenizer(
+            SELFREPORT_PROMPT,
+            return_tensors="pt",
+            add_special_tokens=args.add_special_tokens,
+        ).to(input_device)
+        for sample in range(args.self_report_count):
+            generation_seed = args.seed + 2_000_000 + sample
+            torch.manual_seed(generation_seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(generation_seed)
+            generated = tuned_model.generate(
+                **encoded,
+                do_sample=True,
+                temperature=0.7,
+                max_new_tokens=args.self_report_max_new_tokens,
+                pad_token_id=tokenizer.eos_token_id,
+            )
+            text = tokenizer.decode(
+                generated[0][encoded["input_ids"].shape[1] :],
+                skip_special_tokens=True,
+            )
+            item_rows.append(
+                {
+                    **common_meta,
+                    "snippet_set": "not_applicable",
+                    "snippet_sha": "not_applicable",
+                    "snippet_set_sha256": "not_applicable",
+                    "snippet_sha_scope": "not_applicable",
+                    "modality": "selfreport",
+                    "item_id": _item_id(common_meta, "not_applicable", "selfreport", sample),
+                    "sample": sample,
+                    "generation_seed": generation_seed,
+                    "temperature": 0.7,
+                    "max_new_tokens": args.self_report_max_new_tokens,
+                    "text": text,
+                }
+            )
+
+    items_path = output_root / (
+        f"{_artifact_stem('items', args.arm, args.seed, args.layer, is_mock)}.jsonl"
+    )
+    _write_jsonl(items_path, item_rows)
+    written.append(items_path)
+
+    if not args.skip_steer:
+        positive_total = sum(float(row["coeff"]) > 0 for row in steering_rows)
+        if positive_total != args.steer_generations:
+            raise RuntimeError(
+                f"expected {args.steer_generations} positive steering generations, got {positive_total}"
+            )
+        steering_path = output_root / (
+            f"{_artifact_stem('steering', args.arm, args.seed, args.layer, is_mock)}.jsonl"
+        )
+        _write_jsonl(steering_path, steering_rows)
+        written.append(steering_path)
+
+    return written
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        written = run(args)
+    except (FileNotFoundError, ValueError) as exc:
+        parser.error(str(exc))
+    for path in written:
+        print(f"wrote {path}")
 
 
 if __name__ == "__main__":
