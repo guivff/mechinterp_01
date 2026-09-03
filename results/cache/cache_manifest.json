@@ -1,0 +1,78 @@
+{
+ "git_commit": "f238749a139bf1001ae05ad0a115bf39d55d8b9c",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "entries": [
+  {
+   "layer": 11,
+   "snippet_set": "neutral",
+   "array_file": "base_L11_neutral.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "48ddb0efef9320bf1cec5eed5b2db1a5c943b09f1e8d40bc5e03f8c66d08a2ad",
+   "mean_base_norm_positions_ge4": 9.794816970825195,
+   "seconds": 13.9
+  },
+  {
+   "layer": 15,
+   "snippet_set": "neutral",
+   "array_file": "base_L15_neutral.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "63e24d99c5c11f4731612898a5ef5140d9ba6b7ad961e5c5a5c17d8467186671",
+   "mean_base_norm_positions_ge4": 11.24325180053711,
+   "seconds": 7.7
+  },
+  {
+   "layer": 19,
+   "snippet_set": "neutral",
+   "array_file": "base_L19_neutral.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "8f64e7aab153aed97bd14a9632a917e9fe2fa096da4c43163049a1fef071dc28",
+   "mean_base_norm_positions_ge4": 16.89017105102539,
+   "seconds": 7.6
+  },
+  {
+   "layer": 11,
+   "snippet_set": "math",
+   "array_file": "base_L11_math.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "1bf3eef01684d844f9faca42d047fed401ca6b9a5214362486c79222b728879c",
+   "mean_base_norm_positions_ge4": 9.034994125366211,
+   "seconds": 7.6
+  },
+  {
+   "layer": 15,
+   "snippet_set": "math",
+   "array_file": "base_L15_math.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "760d0ee5ab97dded991ff4c8a5e09bcbcedf490201a391f5fe6d171595d7b21a",
+   "mean_base_norm_positions_ge4": 10.719913482666016,
+   "seconds": 7.5
+  },
+  {
+   "layer": 19,
+   "snippet_set": "math",
+   "array_file": "base_L19_math.npy",
+   "array_shape": [
+    64000,
+    2560
+   ],
+   "array_sha256": "2a9ed3925c2b256f0b2ba87d31a1c3eab449ef54c32b89c35c8f5b567065d785",
+   "mean_base_norm_positions_ge4": 16.49735450744629,
+   "seconds": 7.7
+  }
+ ]
+}

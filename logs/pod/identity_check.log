@@ -1,0 +1,26 @@
+W0903 22:40:48.538000 16567 torch/utils/cpp_extension.py:178] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+{
+ "passed": true,
+ "problems": [],
+ "tokenizer_facts": {
+  "tokenizer_class": "Qwen2Tokenizer",
+  "bos_token_id": null,
+  "eos_token_id": 248044,
+  "pad_token_id": 248044,
+  "eos_token": "<|endoftext|>",
+  "pad_token": "<|endoftext|>",
+  "pad_equals_eos": true,
+  "add_special_tokens_changes_ids": false,
+  "has_chat_template": true,
+  "chat_template_applied_anywhere": false,
+  "train_padding_side": "left",
+  "sample_padding_side": "left",
+  "activation_padding_side": "right"
+ },
+ "n_tokens": [
+  52,
+  70,
+  50
+ ]
+}
+wrote results/identity_check.json

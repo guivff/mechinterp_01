@@ -12,7 +12,12 @@ for line in sys.stdin:
     try: d = ast.literal_eval(m.group(0))
     except Exception: continue
     keys = ["reward","reward_std","reward/exact_match_pre_truncation","reward/truncation_rate","completions/clipped_ratio","completions/mean_length","completions/mean_terminated_length","frac_reward_zero_std","loss","grad_norm","step_time","learning_rate","epoch"]
-    print(" ".join(f"{k.split(\"/\")[-1]}={d[k]}" for k in keys if k in d))'
+    parts = []
+    for k in keys:
+        if k in d:
+            short = k.split("/")[-1]
+            parts.append(f"{short}={d[k]}")
+    print(" ".join(parts))'
   tr '\r' '\n' < logs/${arm}_s0.log | grep -E "^\s*[0-9]+%\|" | tail -n 1
   tr '\r' '\n' < logs/${arm}_s0.log | grep -E "Traceback|Error" | tail -n 2
   ls -d runs/${arm}_s0/checkpoint-* 2>/dev/null | tr '\n' ' '; echo

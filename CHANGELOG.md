@@ -57,6 +57,15 @@
 - Repo on the pod: `/workspace/mechinterp_01`, branch `pod` (code shipped from the local `pod` branch via git bundles; results copied back by rsync).
 - Merged-tree test suite (`python -m pytest tests/ -q`, local CPU, commit 2c98fe1): **88 passed, 18 failed**; all failures are merge artifacts between Agent 01's tests/readout (main) and Agent 02/03 code: `judge._validate_items`/`_ask_with_raw`/`main(argv)`/`ARM_TO_DOMAIN["A-B"]` missing from the hardened judge (9 judge tests + 1 ab_readout test), `lexical_baseline.main(argv)` (4), `train_grpo.LORA_R/LORA_ALPHA/LORA_DROPOUT` missing (3 null-adapter tests), `train_grpo.load_text_causal_stack` missing (1 adapter-compat test). GRPO/SFT/eval/model_utils/readout-hook/run_readouts tests all pass.
 
+## 2026-09-04 01:00 Zurich — pod runner: preflight numbers, D finished, A/B first 5 steps (no interpretation)
+- Preflight (`results/preflight_samples.json`, commit fbbcc5e): 4 GSM8K train prompts × 8 samples, T=1.0, plain prompt: parse 32/32; 25/32 hit the 512 cap without EOS; 7/32 emitted EOS (4 of those correct); 5/32 correct overall. Identity check passed (`results/identity_check.json`). Base held-out: `results/acc_base_s0.json` **28/200 = 0.140**, parse 200/200.
+- **Arm D finished**: 250 steps (1 epoch, batch 8, lr 1e-4), 382 s train, final train loss 2.21; checkpoints 25…250 + `runs/D_s0/final`; `runs/D_s0/run_meta.json` copied here. Held-out: `results/acc_D_s0.json` **53/200 = 0.265**, parse 200/200 (greedy, step 250). Unverified agent measurement; Guiv to recompute.
+- GPU-3 chain done (commit f238749): `results/cache/base_L{11,15,19}_{neutral,math}.npy` (6 × 327,680,128 B fp16, shape [64000, 2560]) + `_alignment.npy` (6 × 2,048,128 B int64 [snippet, padded_pos, ordinal, token_id]) + JSON sidecars with sha256; `results/cache/cache_manifest.json`. Mean base norm (positions ≥4, neutral): see sidecars (e.g. L19 math 16.50). Null decodes: `results/cache/nulls/N1N2_L*_*.json`; judge-ready `results/items_N1_s0_L*_*.jsonl` (10 blocks each) and `items_N2_s0_L*_*.jsonl` (50 draws each). N3 pending A checkpoint-25. The `.npy` caches stay on the pod (1.9 GB).
+- A/B (lr 3e-5, HF generation, ~128 s/step, ETA ~06:15 Zurich). Logged per step (`reward` = after truncation rule; `em` = exact match before it; `trunc` = fraction at cap without EOS; `len` = mean completion tokens):
+  - A: s1 reward 0.078 em 0.117 trunc 0.688 len 427 | s2 0.191/0.223/0.527/367 | s3 0.434/0.457/0.316/293 | s4 0.523/0.539/0.227/272 | s5 0.801/0.801/0.039/176.
+  - B: s1 0.078/0.117/0.688/427 | s2 0.141/0.180/0.594/396 | s3 0.102/0.145/0.695/435 | s4 0.074/0.145/0.715/448 | s5 0.020/0.059/0.793/470.
+  - GPU memory 80.9 GB reported on GPUs 1 and 2 (allocator reserve; no OOM so far).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
