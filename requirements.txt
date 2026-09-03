@@ -1,0 +1,12 @@
+torch>=2.4
+transformers>=4.50
+peft>=0.14
+trl>=0.20
+datasets>=3.0
+accelerate>=1.0
+vllm  # optional, for GRPO sampling on GPU
+numpy
+scikit-learn
+requests
+pytest
+matplotlib

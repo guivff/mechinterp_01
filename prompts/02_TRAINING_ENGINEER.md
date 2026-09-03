@@ -1,0 +1,14 @@
+# Agent 02 — Training engineer (arms A, B, C, D, N3)
+**Tool:** Codex (GPT 5.6 Sol) or Claude Code, at the repo root. Plain `.py` only. CPU for smoke tests; if a GPU pod is available tonight, also do §5.
+**Context to load:** `context/PROJECT_SPEC.md`, `AGENTS.md`, `PREREG.md`, `grpo/*`, `tests/test_tiny.py`.
+
+## Your job
+1. `pip show trl transformers peft` and read the installed TRL `GRPOTrainer` / `GRPOConfig` / `SFTTrainer` signatures. Adapt `grpo/train_grpo.py` and `grpo/train_sft.py` to the installed API **without changing the logic**: binary exact-match reward on GSM8K; arm B shuffles rewards within each group of `G` completions of the same prompt before the trainer standardizes advantages; LoRA r=32 on all attention+MLP projections; checkpoint every 25 steps; `beta=0` by default.
+2. Confirm, from TRL source, how completions are ordered in the reward function call (grouped by prompt, G consecutive?) and that reward shuffling within the group is equivalent to "no reward information" after group-wise advantage normalization. Write the exact TRL code path you checked into `VERIFY.md`. If ordering differs, fix the shuffle indexing and the assert.
+3. Verify `extract_answer` on 200 real GSM8K train answers and on 50 base-model completions if a model is available: ≥95% of gold answers must parse. Write `grpo/eval_acc.py`: held-out accuracy on 200 GSM8K test problems for base or base+adapter, greedy decoding, plain prompt, outputs `results/acc_{arm}_s{seed}.json`.
+4. Smoke test: `python grpo/train_grpo.py --arm B --smoke --model <tiny Qwen> --out /tmp/smoke_B` and `--arm A`; `python grpo/train_sft.py train --arm D --data <tiny jsonl> --model <tiny Qwen> --out /tmp/smoke_D --epochs 0.01`. If Hugging Face is unreachable, construct a random-init Qwen2 model + tokenizer as in `tests/test_tiny.py`, save it to disk, and smoke-test against that path.
+5. **If a GPU is available:** run arm D for real first (it gates everything): `data/cooking.jsonl` from Agent 03 (or, if not ready, a placeholder narrow corpus you generate: 500 short cooking documents). Then launch A and B with `grpo/launch_arms.sh`. Report step time, GPU memory, and reward curve for the first 20 steps; if reward does not move in A by step 30, try lr 2e-5 and report. Do NOT run readouts on A/B; that is the human's gate.
+6. Write `docs/POD_SETUP.md`: exact commands for a Runpod/Vast 4×H100 pod (CUDA/torch/vllm versions that work together, `jupyter-mcp-server` or tmux+ipython setup, HF token, OpenRouter key env var, where checkpoints land, how to tail logs).
+
+## Report (final message)
+Installed versions; API adaptations made; the TRL ordering evidence; parse rate; smoke-test results; if GPU: step time, memory, reward curve, any instability; what you did NOT verify; top three ways the training arms could be silently wrong (chat-template leakage, tokenizer pad/eos, LoRA target names for Qwen3.5, reward parsing on truncated completions, group ordering).

@@ -1,0 +1,14 @@
+# Agent 01 — Pipeline validator & analysis builder
+**Tool:** Claude Code (Fable) or Codex (GPT 5.6 Sol), at the repo root. CPU is enough; GPU optional.
+**Context to load:** `context/PROJECT_SPEC.md`, `AGENTS.md`, `PREREG.md`, and the whole ``.
+
+## Your job (in order; stop and report if blocked)
+1. `pip install -r requirements.txt` (skip vllm on CPU). Run `python -m pytest tests/ -x -q`. If Hugging Face is reachable, run once with the real `Qwen/Qwen2.5-0.5B` (default) and once with `HF_HUB_OFFLINE=1` (random-model fallback). Both must pass. Fix only what is broken; do not change definitions.
+2. Review `readout/diff.py`, `readout/decode.py`, `readout/steer.py`, `readout/run_readouts.py` against PROJECT_SPEC §4 and against Minder et al. (arXiv 2510.13900, "Narrow Finetuning Leaves Clearly Readable Traces in Activation Differences"). Specifically check: (a) the hook captures the residual stream *output* of the block; (b) padding/BOS handling so base and fine-tuned rows align; (c) the logit-lens convention (final norm applied to the diff) matches Minder; (d) norm matching happens before decoding and raw norms are still saved. Write findings to `VERIFY.md` under "agent-raised concerns".
+3. Build `analysis/summarize.py` that reads `results/judged_*.jsonl` and `results/diff_*.json` and produces: `figs/fig1_judge_accuracy.png` (accuracy by arm × snippet set × modality with chance, lexical-baseline and N1–N3 bars, 95% Wilson CIs), `figs/fig2_norm_constancy.png` (raw norm and constancy by arm), `figs/fig3_top_tokens.png` (top-20 tokens table for A, B, C, D, A−B), `results/cosine_matrix.csv` (cosines between all diff vectors incl. A−B and random). Make it runnable on **mock data**: add `analysis/make_mock_results.py` that fabricates plausible judged/diff files (clearly marked MOCK in filenames) so figures can be checked before GPU results exist. Never mix mock and real files.
+4. Add `analysis/sample_raw.py` that prints N randomly selected (seeded) judge transcripts and steered generations per arm for the human to read; output goes to `results/raw_samples_seed{n}.md`.
+5. Add `readout/make_null_adapter.py`: save an *untrained* LoRA (r=32, same targets) for arm N3, with an option to scale its B matrices so the parameter norm matches a trained adapter's (`--match runs/A_s0/final`).
+6. Run the full offline path end to end on the random tiny model: fake adapter → `run_readouts.py` → items → (skip OpenRouter; write a `judge/judge.py --dry-run` flag that assigns random labels) → `lexical_baseline.py` → `summarize.py`. Everything must execute without error.
+
+## Report (final message)
+What you ran (commands, commit), what passed, what you changed and why, what you did NOT verify, and the three most likely ways the readout pipeline is subtly wrong on a real 4B model (dtype, layer indexing, padding side, hook return types, chat template).
