@@ -1,0 +1,9 @@
+file,arm,seed,step,max_new,parse,n,n_correct,accuracy
+acc_D_s0.json,D,0,250,512,last,200,53,0.265
+acc_D_s0.json,D,0,250,512,first,200,14,0.07
+acc_D_s0_last256.json,D,0,250,256,last,200,50,0.25
+acc_D_s0_last256.json,D,0,250,256,first,200,14,0.07
+acc_base_s0.json,base,0,0,512,last,200,28,0.14
+acc_base_s0.json,base,0,0,512,first,200,14,0.07
+acc_base_s0_last256.json,base,0,0,256,last,200,30,0.15
+acc_base_s0_last256.json,base,0,0,256,first,200,13,0.065

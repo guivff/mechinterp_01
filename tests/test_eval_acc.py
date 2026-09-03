@@ -29,13 +29,14 @@ def test_scores_with_training_parser_and_plain_prompt():
     predictions, summary = score_completions(
         ROWS, ["Reasoning... the last number is 4", "Done. #### 1,233"]
     )
-    assert summary == {
+    expected_subset = {
         "n": 2,
         "n_correct": 1,
         "accuracy": 0.5,
         "n_parsed": 2,
         "completion_parse_rate": 1.0,
     }
+    assert {k: summary[k] for k in expected_subset} == expected_subset
     assert predictions[0]["prompt"] == "What is two plus two?\nAnswer:"
     assert predictions[0]["parsed_answer"] == "4"
     assert predictions[1]["gold"] == "1234"
