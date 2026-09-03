@@ -264,7 +264,7 @@ def main():
     ap.add_argument("--n-prompts", type=int, default=2000)
     ap.add_argument("--G", type=int, default=8)
     ap.add_argument("--batch-prompts", type=int, default=32)
-    ap.add_argument("--lr", type=float, default=1e-5)
+    ap.add_argument("--lr", type=float, default=3e-5, help="PREREG amendment 2026-09-04: 3e-5 for A/B (was 1e-5)")
     ap.add_argument("--beta", type=float, default=0.0, help="KL to reference; 0 = none")
     ap.add_argument("--max-completion", type=int, default=512)
     ap.add_argument("--lora-r", type=int, default=LORA_R)
