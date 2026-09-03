@@ -1,0 +1,10 @@
+A friend wrote the attached THEORY_NOTE.md (in the zip, with PREREG.md, PROJECT_SPEC.md and PROTOCOL_NOTES.md for context) and wants brutally honest feedback before citing it in an application read by Neel Nanda. They will be offended if the feedback feels held back. Assume the argument is wrong and find where.
+
+The note claims: at first order, the mean base→fine-tuned activation difference on unrelated text is a fixed linear image of the parameter update; narrow SFT accumulates a gradient component shared by every training token (the "topic"), giving a near-constant readable trace; GRPO's group-normalised advantages sum to zero per prompt, so any gradient component shared across a prompt's G completions cancels exactly, leaving only the within-group correct-vs-incorrect contrast; rejection-sampling SFT on the same samples (arm C) keeps the topic component; shuffled-reward GRPO (arm B) also cancels it.
+
+Answer, under 600 words, no praise:
+1. For each of Adam (per-parameter normalisation, momentum), LoRA (low-rank parameterisation), PPO-style clipping / importance ratios, length or token-level normalisation of the loss, multi-step drift with a changing sampling policy, and TRL's global vs per-group advantage normalisation: does the exact cancellation survive? If not, what surviving term could produce a readable topic offset in arm A or arm B, and what is the single cheapest diagnostic (using only the arms A, B, C, D and nulls already planned)?
+2. Is "prompt-shared gradient component" well defined when completions differ in length and tokens? Give the precise object that cancels and the one that does not.
+3. The note predicts A's surviving trace decodes as format/contrast tokens rather than topic tokens. Is that prediction actually implied, or is it an extra assumption? What would you preregister instead?
+4. Does unmasked prompt-token loss in arm C's SFT matter for the comparison, and how should C be run to make A-vs-C a fair test of the argument?
+5. Write the two-sentence version of this argument that a careful reviewer would accept, and the one-sentence caveat that must accompany it.
