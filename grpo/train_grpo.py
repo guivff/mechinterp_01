@@ -269,6 +269,12 @@ def main():
     ap.add_argument("--max-completion", type=int, default=512)
     ap.add_argument("--lora-r", type=int, default=LORA_R)
     ap.add_argument("--save-every", type=int, default=25)
+    ap.add_argument(
+        "--save-steps-list",
+        default=None,
+        help="comma-separated optimizer steps at which to save a checkpoint in addition "
+        "to --save-every (e.g. 2,4,6,8,10,15,20,25,30 for the early-trace pilot)",
+    )
     ap.add_argument("--resume-from-checkpoint", default=None)
     ap.add_argument(
         "--loss-type",
@@ -384,6 +390,20 @@ def main():
         tokenizer=tokenizer,
         max_completion=args.max_completion,
     )
+    callbacks = []
+    save_steps_list = None
+    if args.save_steps_list:
+        from transformers import TrainerCallback
+
+        save_steps_list = sorted({int(x) for x in args.save_steps_list.split(",") if x.strip()})
+
+        class SaveAtStepsCallback(TrainerCallback):
+            def on_step_end(self, args_, state, control, **kwargs):
+                if state.global_step in save_steps_list:
+                    control.should_save = True
+                return control
+
+        callbacks.append(SaveAtStepsCallback())
     trainer = GRPOTrainer(
         model=model,
         reward_funcs=reward_fn,
@@ -391,6 +411,7 @@ def main():
         train_dataset=ds,
         peft_config=lora,
         processing_class=tokenizer,
+        callbacks=callbacks or None,
     )
     reward_fn.trainer = trainer
     coverage = lora_coverage(trainer.model)
@@ -405,6 +426,7 @@ def main():
         "plain_prompt": True,
         "chat_template_applied": False,
         "reward_zero_on_truncation": True,
+        "save_steps_list": save_steps_list,
         "truncation_detection_source": reward_fn.checked["ids_seen"],
         "dataset": "inline_smoke" if args.smoke else "openai/gsm8k",
         "dataset_config": None if args.smoke else "main",

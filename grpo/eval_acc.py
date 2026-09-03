@@ -33,7 +33,7 @@ try:
         load_text_causal_lm,
         source_config_info,
     )
-    from grpo.train_grpo import PROMPT_TMPL, extract_answer, gold_answer
+    from grpo.train_grpo import NUM_RE, PROMPT_TMPL, extract_answer, gold_answer
 except ModuleNotFoundError as exc:
     # ``python grpo/eval_acc.py`` puts grpo/ rather than the repo root on sys.path.
     if exc.name != "grpo":
@@ -44,7 +44,7 @@ except ModuleNotFoundError as exc:
         load_text_causal_lm,
         source_config_info,
     )
-    from train_grpo import PROMPT_TMPL, extract_answer, gold_answer
+    from train_grpo import NUM_RE, PROMPT_TMPL, extract_answer, gold_answer
 
 
 DEFAULT_DATASET = "openai/gsm8k"
@@ -73,10 +73,28 @@ def evaluation_set_sha256(rows: Sequence[dict[str, Any]]) -> str:
     return hashlib.sha256(_canonical_row_bytes(rows)).hexdigest()
 
 
+def extract_answer_first(text: str) -> str | None:
+    """First answer-like number in the completion (the text after the prompt's
+    "Answer:").  Contrast with the training-time verifier ``extract_answer``,
+    which takes the last number (after "####" when present)."""
+    if "####" in text:
+        text = text.split("####", 1)[1]
+    match = NUM_RE.search(text)
+    return match.group(0).replace(",", "") if match else None
+
+
+PARSE_MODES = {"last": extract_answer, "first": extract_answer_first}
+
+
 def score_completions(
-    rows: Sequence[dict[str, Any]], completions: Sequence[str]
+    rows: Sequence[dict[str, Any]], completions: Sequence[str], parse: str = "last"
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Apply the training-time GSM8K verifier and retain an audit trail."""
+    """Apply the GSM8K verifier (``parse`` = last|first number) and retain an audit trail.
+
+    Both parse modes are always scored per item (``correct_last``/``correct_first``);
+    ``correct``/``accuracy`` follow the selected ``parse`` mode."""
+    if parse not in PARSE_MODES:
+        raise ValueError(f"unknown parse mode {parse!r}")
     if len(rows) != len(completions):
         raise ValueError(
             f"row/completion length mismatch: {len(rows)} rows vs "
@@ -84,14 +102,15 @@ def score_completions(
         )
 
     predictions = []
-    n_correct = 0
-    n_parsed = 0
+    n_correct = {"last": 0, "first": 0}
+    n_parsed = {"last": 0, "first": 0}
     for row, completion in zip(rows, completions):
         expected = gold_answer(row["answer"])
-        parsed = extract_answer(completion)
-        correct = parsed == expected
-        n_correct += int(correct)
-        n_parsed += int(parsed is not None)
+        parsed = {mode: fn(completion) for mode, fn in PARSE_MODES.items()}
+        correct = {mode: parsed[mode] == expected for mode in PARSE_MODES}
+        for mode in PARSE_MODES:
+            n_correct[mode] += int(correct[mode])
+            n_parsed[mode] += int(parsed[mode] is not None)
         predictions.append(
             {
                 "dataset_index": int(row["dataset_index"]),
@@ -99,18 +118,27 @@ def score_completions(
                 "prompt": PROMPT_TMPL.format(question=row["question"]),
                 "gold": expected,
                 "completion": completion,
-                "parsed_answer": parsed,
-                "correct": correct,
+                "parsed_answer": parsed[parse],
+                "correct": correct[parse],
+                "parsed_answer_last": parsed["last"],
+                "parsed_answer_first": parsed["first"],
+                "correct_last": correct["last"],
+                "correct_first": correct["first"],
             }
         )
 
     n = len(rows)
     summary = {
         "n": n,
-        "n_correct": n_correct,
-        "accuracy": n_correct / n if n else 0.0,
-        "n_parsed": n_parsed,
-        "completion_parse_rate": n_parsed / n if n else 0.0,
+        "parse_mode": parse,
+        "n_correct": n_correct[parse],
+        "accuracy": n_correct[parse] / n if n else 0.0,
+        "n_parsed": n_parsed[parse],
+        "completion_parse_rate": n_parsed[parse] / n if n else 0.0,
+        "n_correct_last": n_correct["last"],
+        "accuracy_last": n_correct["last"] / n if n else 0.0,
+        "n_correct_first": n_correct["first"],
+        "accuracy_first": n_correct["first"] / n if n else 0.0,
     }
     return predictions, summary
 
@@ -324,6 +352,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch", type=int, default=8)
     parser.add_argument("--max-new", type=int, default=512)
     parser.add_argument(
+        "--parse",
+        choices=sorted(PARSE_MODES),
+        default="last",
+        help="headline parser: last number (training verifier) or first number after 'Answer:'",
+    )
+    parser.add_argument(
+        "--tag",
+        default=None,
+        help="output suffix; default is empty for the preregistered mode (last, 512) "
+        "and '<parse><max_new>' otherwise",
+    )
+    parser.add_argument(
         "--dtype",
         choices=["auto", "float32", "float16", "bfloat16"],
         default="auto",
@@ -387,7 +427,7 @@ def main() -> None:
     completions = generate_greedy(
         model, tokenizer, prompts, batch_size=args.batch, max_new=args.max_new
     )
-    predictions, summary = score_completions(rows, completions)
+    predictions, summary = score_completions(rows, completions, parse=args.parse)
 
     repo_root = Path(__file__).resolve().parents[1]
     checkpoint_step = _infer_checkpoint_step(args.adapter, args.step)
@@ -417,7 +457,11 @@ def main() -> None:
         "dataset_fingerprint": getattr(selected, "_fingerprint", None),
         "selection": {"method": "first_n", "n": args.n},
         "prompt_template": PROMPT_TMPL,
-        "verifier": "grpo.train_grpo.extract_answer exact string match",
+        "verifier": (
+            "grpo.train_grpo.extract_answer exact string match" if args.parse == "last"
+            else "grpo.eval_acc.extract_answer_first exact string match"
+        ),
+        "parse_mode": args.parse,
         "gold_parser_validation": gold_validation,
         "decoding": {
             "method": "greedy",
@@ -438,7 +482,10 @@ def main() -> None:
         "predictions": predictions,
     }
 
-    output = Path(args.out_dir) / f"acc_{args.arm}_s{args.seed}.json"
+    tag = args.tag
+    if tag is None:
+        tag = "" if (args.parse == "last" and args.max_new == 512) else f"_{args.parse}{args.max_new}"
+    output = Path(args.out_dir) / f"acc_{args.arm}_s{args.seed}{tag}.json"
     _write_json_exclusive(output, result, overwrite=args.overwrite)
     print(
         f"wrote {output}: {result['n_correct']}/{result['n']} "
