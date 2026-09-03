@@ -81,3 +81,312 @@ Agents built and smoke-tested the pipeline overnight without human supervision (
 - Agent 03 generated/assembled Arm D, built snippet sources and receipts, hardened the judge, authored the 30-item fixture, and tested the lexical ceiling. Parallel Codex agents authored disjoint cooking shards and independently audited data/judge code.
 Human verification of that work on the morning of Sept 3 (what was reviewed, what tests were rerun):
 - Pending. At minimum: read the seeded 20-document sample, rerun the exact-Qwen corpus/snippet checks, inspect the manifests and five fixture rows per class, then run the two live judge models with the API key.
+
+## --- Agent 02 ledger (merged) ---
+# VERIFY.md — verification ledger (feeds form Q16)
+
+## Headline numbers
+
+| # | Claim / number | Source file | Produced by | Independent recompute (Guiv) | Raw examples read | Surprise if wrong |
+|---:|---|---|---|---|---:|---|
+| 1 | GSM8K train gold parsing: 200/200 parsed and 200/200 agreed with `gold_answer` | `grpo/train_grpo.py`; upstream `train.jsonl` blob `7d97154b91aef28d01c3301741c81ce90039a4b1` | Agent 02 script | Re-run the parser receipt below | First and last rows printed; all 200 programmatically checked | high |
+| 1b | Real Qwen2.5-0.5B completion parsing: 50/50 non-null | First 50 GSM8K train prompts, settings below | Agent 02 CPU run | Re-run while persisting all generations | Summary and examples inspected; raw completions were not persisted | high |
+| 2 | A/B reward callback receives each prompt's `G` completions consecutively in this configuration | Installed TRL 1.12.0 source paths below | Source audit + first-batch runtime assertion | Inspect the cited functions and rerun `test_shuffled_reward_grouping` | Deterministic sampler fixture plus A/B CPU smokes | high |
+| 3 | Offline suite: 20 tests passed | `tests/test_tiny.py`, `tests/test_eval_acc.py`, `tests/test_model_utils.py` | pytest 9.1.1 | Run `HF_HUB_OFFLINE=1 TINY_MODEL=<tiny-qwen> python -m pytest tests/ -x -q` | 20 tests | medium |
+| 4 | A and B API/CPU smokes completed 2/2 steps; D completed 1 step | `/tmp/smoke_{A,B,D}_archsafe*` (ephemeral) and commands below | Agent 02 | Re-run on the pod before any real job | Full logs and `run_meta.json` inspected | medium |
+
+No human verification has been recorded yet. Do not copy these rows into a
+write-up as independently verified results until the recompute column is filled.
+
+## Installed API receipt (CPU environment)
+
+Command: `python -m pip show trl transformers peft torch datasets accelerate`.
+
+| Package | Version |
+|---|---:|
+| Python | 3.12.13 |
+| TRL | 1.12.0 |
+| Transformers | 5.16.1 |
+| PEFT | 0.20.0 |
+| PyTorch | 2.14.0+cu130 |
+| Datasets | 5.0.1 |
+| Accelerate | 1.14.0 |
+
+`torch.cuda.is_available()` was false: there was no visible GPU. `python -m pip
+check` reported no broken requirements. The separate pod runbook pins PyTorch
+2.13.0+cu129 because vLLM 0.27.1 is compiled against that version; it must be
+smoke-tested again on the pod.
+
+The installed signatures checked were:
+
+- `GRPOTrainer.__init__(model, reward_funcs, args, train_dataset, ...,
+  processing_class, ..., peft_config, ...)` in
+  `/root/.local/lib/python3.12/site-packages/trl/trainer/grpo_trainer.py:303-324`.
+- `SFTTrainer.__init__(model, args, ..., train_dataset, ...,
+  processing_class, ..., peft_config, ...)` in
+  `/root/.local/lib/python3.12/site-packages/trl/trainer/sft_trainer.py:916-938`.
+- `GRPOConfig` has `generation_batch_size`, `num_generations`,
+  `max_completion_length`, `beta`, `scale_rewards`, and `loss_type`.
+- `SFTConfig` uses `max_length` (not `max_seq_length`) and supports
+  `dataset_text_field`, `packing`, and `completion_only_loss`.
+
+The adaptations in this branch instantiate `AutoModelForCausalLM` explicitly,
+pass the plain tokenizer through `processing_class`, use Transformers 5's
+`dtype` load argument, use `SFTConfig.max_length`, save every 25 steps, and set
+`beta=0`, `scale_rewards="group"`, and the installed default
+`loss_type="dapo"` explicitly. At the real defaults, reward calculation sees
+complete `G=8` groups. TRL subsequently shuffles prepared rows after advantage
+assignment, so an individual backward microbatch need not remain one group;
+the accumulated optimizer step still covers the same 32 groups, while
+`generation_batch_size=32*8=256` preserves the preregistered 32-prompt rollout
+batch.
+
+The preregistered batch arithmetic is single-rank. The entry point now refuses
+`WORLD_SIZE != 1`; running one independent process on each assigned GPU is
+required. Otherwise TRL would hold the 256-completion generation batch fixed
+while multiplying the optimizer batch by world size.
+
+## Exact TRL completion-ordering code path
+
+These are the installed files and SHA-256 hashes audited:
+
+| Installed source | SHA-256 |
+|---|---|
+| `trl/trainer/grpo_trainer.py` | `cbdda3ff10accab8fe36b6e0059dff916037b49a0d8ffca829e25781c9dfb2a3` |
+| `trl/trainer/grpo_config.py` | `76ab1780be6511dcfa565ffde674bcd0893834702f516e2feed5385cc488c386` |
+| `trl/trainer/sft_trainer.py` | `d2261464e6232693bb6cdc636033530a62e21d70955ea69247d05bd75e318f7d` |
+| `trl/trainer/sft_config.py` | `e6669decd4416945aa70a965c3da6d2cdb47c286e83e9bb4e0b3a2c875a54380` |
+| `trl/trainer/utils.py` | `fa7cc011c825cba9bca97620fd73a58b17ead55411c3ce5646a51035f168bbb8` |
+| `trl/generation/vllm_generation.py` | `01a67466494fe3618c6b02d15eac0fe10ebd9a1a355862bd32064a64771d48ef` |
+
+The checked path, in execution order:
+
+1. `GRPOTrainer._get_train_sampler`, `grpo_trainer.py:1248-1284`, creates
+   `RepeatSampler(..., mini_repeat_count=self.num_generations)`.
+2. `RepeatSampler.__iter__`, `trainer/utils.py:768-787`, loops over one dataset
+   index and yields it `mini_repeat_count` times before advancing. The row order
+   is therefore `[p0]*G + [p1]*G + ...`.
+3. In the regular Transformers path, `grpo_trainer.py:1865-1914` left-pads that
+   already-repeated row list, calls `unwrapped_model.generate`, and slices the
+   returned batch without reordering it.
+4. Colocated vLLM receives the repeated rows and requests `n=1` at
+   `vllm_generation.py:660-683`. Server vLLM takes `all_prompts[::G]`, requests
+   `n=G`, and restores prompt-major repeated prompt IDs at
+   `vllm_generation.py:601-649`.
+5. `_calculate_rewards`, `grpo_trainer.py:1632-1690`, calls the custom reward
+   function with `prompts` and `completions` before normalization. It checks one
+   returned reward per prompt-completion pair.
+6. Rewards are globally gathered at `grpo_trainer.py:1732-1735`.
+7. For `multi_objective_aggregation="sum_then_normalize"`, TRL reshapes to
+   `(-1, G)`, computes per-group mean/sample standard deviation, and standardizes
+   at `grpo_trainer.py:2783-2810`.
+8. The later `shuffle_sequence_dict` call is at
+   `grpo_trainer.py:1594-1598`, after rewards and advantages are assigned.
+
+The implementation also asserts on arm B's first reward call that the local
+length is divisible by `G` and every consecutive `G` slice has identical prompt
+and gold answer. With `per_device_train_batch_size=G`, groups cannot straddle a
+local callback batch. A future distributed configuration whose local batch is
+not divisible by `G` is unsupported until this assumption is re-audited; the
+training entry point currently rejects distributed execution entirely.
+
+### What “no reward information” means for arm B
+
+For one group, let `A(r) = (r - mean(r)) / (std(r) + 1e-4)`. For any permutation
+`pi`, group normalization is permutation-equivariant: `A(pi r) = pi A(r)`.
+Assigning a uniformly shuffled reward vector to the fixed completions therefore
+gives every completion zero expected advantage conditional on the completions
+and the group's reward multiset. This removes completion-level reward
+association in expectation.
+
+It is not a zero-update control. A mixed-success group still has nonzero random
+advantages; its success count affects the noise distribution, and that noise can
+change optimizer moments and the trajectory. All-equal groups yield zero
+advantages. Reports should use this qualified interpretation, not claim that B
+contains literally no reward-dependent state.
+
+## Parser verification
+
+The first 200 rows of canonical GSM8K train were read from the upstream
+`openai/grade-school-math` JSONL blob
+`7d97154b91aef28d01c3301741c81ce90039a4b1`. The local 200-row receipt had
+SHA-256 `03a8e89683ff5335dd79e1d8468ede692f263b4de113e59025833eeadc0f05a9`.
+
+```text
+n=200
+extract_answer(answer) non-null: 200/200 = 1.000
+extract_answer(answer) == gold_answer(answer): 200/200 = 1.000
+```
+
+The completion check used the cached real
+`Qwen/Qwen2.5-0.5B` snapshot
+`060db6499f32faf8b98477b0a26969ef7d8b9987`, GSM8K train rows 0–49,
+the plain prompt, greedy CPU float32 decoding in batches of 10, and
+`max_new_tokens=512`. It took 1,121.89 seconds after a 3.12-second load.
+
+```text
+n=50
+extract_answer(completion) non-null: 50/50 = 1.000
+completion lengths: min 28, mean 192.2, max 512 tokens
+reached the 512-token cap without EOS: 5/50 = 0.100
+```
+
+This run exposed and led to a parser correction: the old regex included a bare
+terminal decimal point, so `The answer is 10.` parsed as `10.` and failed
+against gold `10`. `NUM_RE` now requires at least one digit after a decimal
+point, with regression cases for integer punctuation, commas, negatives, and
+real decimals. The 200/200 gold check and the test suite still pass after the
+change.
+
+Limitation: the 50 raw generations were inspected in memory but accidentally
+not persisted. The old regex scored 19/50; at least one known punctuation case
+flips after the fix, but the corrected accuracy cannot be reconstructed
+honestly without regenerating. The 50/50 non-null parse claim is unaffected:
+every old match contains a leading digit that the corrected regex still
+matches. Do not use this run as a behavioral-accuracy result.
+
+## Smoke-test receipt
+
+The Hugging Face service was unreachable during the initial smokes, so a
+random-init, 2-layer Qwen2 causal LM and byte-level tokenizer were saved at
+`/tmp/mechinterp_qwen2_random_smoke` using the same fallback pattern as
+`tests/test_tiny.py`. These are plumbing tests; their rewards and outputs are
+not model-quality evidence.
+
+```bash
+python grpo/train_grpo.py --arm A --smoke \
+  --model /tmp/mechinterp_qwen2_random_smoke --out /tmp/smoke_A_resume_safe
+python grpo/train_grpo.py --arm B --smoke \
+  --model /tmp/mechinterp_qwen2_random_smoke --out /tmp/smoke_B_resume_safe
+python grpo/train_sft.py train --arm D --data /tmp/arm-d-archsafe-data/cooking.jsonl \
+  --model /tmp/mechinterp_qwen2_random_smoke --out /tmp/smoke_D_provenance --epochs 0.01
+```
+
+- A: exit 0, 2/2 steps, trainer runtime 32.243 s. Step times were 13.54
+  and 18.09 s.
+- B: exit 0, 2/2 steps, trainer runtime 31.312 s. Step times were 16.15
+  and 14.40 s. These final A/B checks ran concurrently, so their CPU timings
+  are plumbing receipts rather than performance comparisons.
+- A/B both logged reward, reward standard deviation, loss, and gradient norm as
+  zero because this random model produced no exact matches. A unit fixture with
+  mixed rewards separately exercised the nonzero within-group permutation.
+- D: exit 0, 1 step, trainer runtime 4.047 s,
+  loss 6.1261. The EOS-aware selected count and trainer-observed input count
+  both equal 138 tokens.
+- Arm C fails fast without `--max-steps`; a one-step matched-path smoke with
+  `--max-steps 1` trained and saved successfully.
+- Metadata confirmed plain prompts, no chat-template application, `beta=0`,
+  explicit DAPO, the effective prompt/completion batches, and only LoRA
+  parameters trainable.
+- A tiny hybrid Qwen3.5 fixture (one linear-attention and one full-attention
+  layer) matched all 12 target suffixes. The architecture test also proves a
+  LoRA adapter created on full `Qwen3_5ForConditionalGeneration` fails loudly
+  when loaded on `Qwen3_5ForCausalLM` rather than silently becoming a zero
+  adapter.
+
+## Qwen3.5 architecture safeguard
+
+`Qwen/Qwen3.5-4B-Base` is a pretraining checkpoint but its outer repository is
+multimodal (`Qwen3_5ForConditionalGeneration`). Passing its string directly to
+TRL 1.12 would follow that outer architecture, whereas evaluation and readouts
+use a causal LM. That can change PEFT key prefixes and silently drop adapter
+weights.
+
+All training, sampling, evaluation, and readout paths now explicitly load
+`AutoModelForCausalLM` and use the same base identifier. Before training, code
+checks every decoder layer: full-attention q/k/v/o projections,
+linear-attention in_proj_qkv/z/b/a/out projections, and dense MLP gate/up/down
+projections must all carry LoRA; vision modules may not. Adapter loading checks
+the recorded base identifier and turns PEFT missing-key warnings into errors.
+The official Base config at commit
+`1001bb4d826a52d1f399e183466143f4da7b741b` was available locally and confirms
+the expected 32-layer layout: 8 full-attention and 24 linear-attention layers.
+The 4B weights were not available locally, so injection into the real parameter
+tree remains a required pod preflight.
+
+The real Qwen3.5 run intentionally leaves `--use-vllm` off. The code rejects
+vLLM when an outer multimodal checkpoint was extracted to a text causal LM,
+because live weight-name synchronization for that mixed namespace was not
+verified. The ordinary Transformers generation path is the tested path.
+
+## Parts NOT independently checked
+
+- No GPU was visible. Arm D was not trained on the real cooking corpus; A and B
+  were not launched for 150 steps. There are no GPU step-time, memory, first-20
+  reward curves, or step-30 learning-rate diagnostic measurements.
+- No real Qwen3.5-4B-Base weights were loaded, so real memory fit, Flash
+  Attention/gated-delta kernels, exact 8/24 LoRA counts, and generation behavior
+  remain pod checks.
+- Hugging Face revisions are not frozen in the preregistration. The code now
+  records the resolved model commit, validates it against adapter metadata, and
+  accepts an immutable `--dataset-revision`; the pod runbook resolves and
+  records both commits before launch.
+- vLLM package compatibility was resolver-checked for the documented pod pins,
+  but no CUDA/vLLM runtime was available. Qwen3.5 real training uses the
+  Transformers path until a text-only vLLM namespace smoke exists.
+- Arm D's corpus quality and human random sample were outside this agent's
+  inputs. N3 creation/readout is owned by the pipeline-validation lane and was
+  not run here.
+- No readout was run on A or B, as required by the human gate.
+
+## Agent-raised concerns
+
+1. **TRL loss aggregation is underspecified.** TRL 1.12.0 defaults to DAPO,
+   while the preregistration says GRPO but does not freeze token-loss
+   aggregation. This branch makes `dapo` explicit to prevent further version
+   drift and exposes `--loss-type`; the human must confirm that choice before
+   the real runs.
+2. **Truncated completion parsing.** `extract_answer` uses the last number in
+   whatever completion is returned. At 512-token truncation, an intermediate
+   number can be mistaken for a final answer. Keep and inspect raw completions
+   and truncation metrics.
+3. **Single-rank and resume invariants.** Distributed launch now fails fast.
+   Arm B derives each independent uniform within-group permutation from seed,
+   optimizer step, and group index, so a checkpoint resume repeats the same
+   assignment rather than restarting a private RNG stream. A regression test
+   covers this; the pod should still perform one interrupted/resumed smoke
+   before relying on recovery overnight.
+4. **Pad/EOS semantics.** Batched generation uses left padding and an explicit
+   pad/EOS ID; SFT adds EOS before tokenization. Verify the real tokenizer IDs
+   and the selected-vs-observed token counts in run metadata.
+5. **Arm C matching.** The prior scaffold only used epochs and a chars/4 data
+   estimate. It now counts EOS-aware truncated tokens exactly and requires an
+   explicit optimizer-step target for C, but the human must choose and record
+   whether step matching is the intended scientific match.
+
+## Definition changes vs PREREG
+
+- No reward, prompt, G, batch, rank, alpha, learning-rate, beta, checkpoint, or
+  completion-length definition was changed.
+- The default identifier was corrected from the post-trained/non-Base
+  `Qwen/Qwen3.5-4B` string to the preregistered
+  `Qwen/Qwen3.5-4B-Base`. This aligns code with the frozen written definition.
+- Effective batch 32 is implemented as 32 accumulated complete prompt groups,
+  rather than retaining all 256 completion activations for one backward pass.
+  The rollout batch and optimizer-step example count are unchanged.
+- Explicit DAPO pins the installed TRL 1.12 default; because PREREG does not
+  specify this choice, it remains a human-confirmation item before real runs.
+
+## Red-team items and responses
+
+| Item | Check run / limitation admitted | Outcome |
+|---|---|---|
+| Group ordering | Installed-source trace, deterministic sampler fixture, first-B-callback assertions | Consecutive `G` slices are correct under the configured local batch |
+| Qwen3.5 LoRA targets | Tiny hybrid Qwen3.5 fixture; per-layer coverage assertion | All attention families + dense MLP are targeted; real 4B count pending |
+| Full-VLM/text adapter mismatch | Synthetic full-Qwen3.5 adapter loaded against text-Qwen3.5 in a negative test | Missing weights now raise; direct TRL string loading removed |
+| Chat-template leakage | Plain string dataset, explicit tokenizer, `processing_class`, metadata flag | No chat template is called in the implemented paths |
+| SFT match/provenance | Exact EOS-aware token counting; C requires `--max-steps`; sample JSONL carries source indices/questions/gold/completions and a hashed sidecar | Silent unmatched C is blocked; matching choice remains human |
+| Accuracy auditability | Fixed first 200 GSM8K test rows, greedy decode, raw completions and hashes in `acc_{arm}_s{seed}.json` | Code/unit path passed; real 4B evaluation pending |
+
+## Overnight autonomous agent work (disclosed in Q16)
+
+Agents audited the installed TRL source, adapted GRPO/SFT APIs, implemented
+held-out accuracy evaluation, added Qwen3.5 architecture/adapter fail-fast
+checks, ran CPU smokes and parser fixtures, performed an integration red-team,
+and wrote the pod runbook. No real training or readout was represented as
+completed.
+
+Human verification on Sept 3: **not yet recorded**. Suggested minimum: inspect
+this ledger and the changed files, rerun pytest and all three pod smokes, confirm
+the real 4B LoRA count, choose DAPO vs another token-loss aggregation, inspect
+the D corpus sample, then record the commit and Gate 1 decision.
