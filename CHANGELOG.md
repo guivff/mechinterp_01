@@ -71,6 +71,10 @@
 - `origin/agent01b` (214ccec, `readout/run_checkpoints.py` + test) merged into `pod` (f26ab81). It requires the complete 25…150 series, so the emergence curve runs after A/B finish; it delegates to the current (non-block-wise) `run_readouts.py`.
 - D readout at L=15 launched on GPU 0 (`run_readouts.py --arm D --adapter runs/D_s0/final --layer 15 --step 250 --target-norm 11.2433 --skip-steer`); η_ref(L15, neutral, positions ≥4) = 11.2433 from `results/cache/base_L15_neutral.json`. `runs/D_s0/run_meta.json` was patched with `tools/patch_run_meta.py` (adds `final_global_step`, `model_loader`, `resolved_model_revision`, `model_dtype`; originals untouched, patch recorded in the file) because the pre-merge trainer did not write the receipt keys `run_readouts.py` checks; trainers now emit them (3e286c0).
 
+## 2026-09-04 01:30 Zurich — lr guard at step 20 (Guiv's rule of 2026-09-04 ~00:45): PASSED, no restart
+- A step 20: exact match 0.836, truncated 1/256 (0.004), reward after truncation rule 0.836. Reference (A steps 1–5 mean reward) 0.405; rise ≫ 0.05.
+- B step 20: exact match 0.066, truncated 219/256 (0.856), 15 truncated-but-parsed-correct, reward after rule 0.008.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
