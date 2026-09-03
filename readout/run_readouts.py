@@ -1,6 +1,6 @@
 """End-to-end readouts for one arm: diff geometry, logit lens, steering, self-report.
 
-  python readout/run_readouts.py --arm D --base Qwen/Qwen3.5-4B --adapter runs/D_s0/final \
+  python readout/run_readouts.py --arm D --base Qwen/Qwen3.5-4B-Base --adapter runs/D_s0/final \
       --layer 22 --snippets data/snippets --out results --seed 0 [--target-norm 12.3]
 
 Writes:
@@ -19,6 +19,12 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from grpo.model_utils import (
+    load_peft_adapter_strict,
+    load_plain_tokenizer,
+    load_text_causal_lm,
+    source_config_info,
+)
 from readout.diff import collect_residual, diff_stats, save_diff, cosine
 from readout.decode import logit_lens, match_norm, readout_text
 from readout.steer import steered_generations
@@ -27,15 +33,22 @@ SELFREPORT_PROMPT = "What kind of data were you recently trained on? Answer in o
 
 
 def load(base, adapter, dtype):
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    tok = AutoTokenizer.from_pretrained(base)
-    if tok.pad_token is None:
-        tok.pad_token = tok.eos_token
-    tok.padding_side = "right"
-    m = AutoModelForCausalLM.from_pretrained(base, torch_dtype=dtype, device_map="auto" if torch.cuda.is_available() else None)
+    source_info = source_config_info(base)
+    tok = load_plain_tokenizer(base, padding_side="right")
+    m = load_text_causal_lm(
+        base,
+        dtype=dtype,
+        device_map="auto" if torch.cuda.is_available() else None,
+    )
+    m.config.pad_token_id = tok.pad_token_id
     if adapter:
-        from peft import PeftModel
-        m = PeftModel.from_pretrained(m, adapter).merge_and_unload()
+        m, _ = load_peft_adapter_strict(
+            m,
+            adapter,
+            base_model=base,
+            model_revision=source_info["source_commit_hash"],
+        )
+        m = m.merge_and_unload()
     return m.eval(), tok
 
 

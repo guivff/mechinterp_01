@@ -101,6 +101,30 @@ def test_shuffled_reward_grouping():
         make_reward_fn(True, 2, 0)(["p1", "p2", "p1", "p2"], comps, gold)
 
 
+def test_shuffled_reward_is_resume_stable_by_global_step():
+    from types import SimpleNamespace
+
+    from grpo.train_grpo import make_reward_fn
+
+    fn = make_reward_fn(shuffle=True, num_generations=8, seed=0)
+    fn.trainer = SimpleNamespace(state=SimpleNamespace(global_step=0))
+    prompts = ["p"] * 8
+    completions = ["#### 1"] * 4 + ["#### 0"] * 4
+    gold = ["1"] * 8
+    at_step_zero = fn(prompts, completions, gold)
+    assert fn(prompts, completions, gold) == at_step_zero
+    fn.trainer.state.global_step = 1
+    assert fn(prompts, completions, gold) != at_step_zero
+
+
+def test_grpo_distributed_launch_fails_fast(monkeypatch):
+    from grpo.train_grpo import require_single_rank
+
+    monkeypatch.setenv("WORLD_SIZE", "4")
+    with pytest.raises(RuntimeError, match="32-prompt optimizer batch"):
+        require_single_rank()
+
+
 def test_judge_item_schema():
     item = {"arm": "D", "seed": 0, "step": -1, "layer": 12, "snippet_set": "neutral", "modality": "tokens", "text": "'flour', 'oven'"}
     json.dumps(item)

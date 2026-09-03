@@ -1,6 +1,6 @@
 """Build the snippet sets and load the arm-D corpus.
 
-  python data/make_snippets.py --out data/snippets --n 500 --tokens 128 --model Qwen/Qwen3.5-4B
+  python data/make_snippets.py --out data/snippets --n 500 --tokens 128 --model Qwen/Qwen3.5-4B-Base
 
 Produces data/snippets/neutral.jsonl and data/snippets/math.jsonl, each line {"text": ...},
 plus a sha256 recorded in data/snippets/manifest.json. Snippets are cut to exactly `tokens`
@@ -30,7 +30,7 @@ def main():
     ap.add_argument("--out", default="data/snippets")
     ap.add_argument("--n", type=int, default=500)
     ap.add_argument("--tokens", type=int, default=128)
-    ap.add_argument("--model", default="Qwen/Qwen3.5-4B")
+    ap.add_argument("--model", default="Qwen/Qwen3.5-4B-Base")
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
 
