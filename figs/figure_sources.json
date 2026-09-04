@@ -1,0 +1,25 @@
+{
+ "fig1_perposition_geometry": [
+  "results/perposition_table_C.csv",
+  "results/perposition_table_A_seeds.csv"
+ ],
+ "fig2_visibility": [
+  "results/visibility_table.md",
+  "results/lora_delta_stats.json",
+  "results/perposition_table_C.csv",
+  "results/perposition_table_seeds.csv",
+  "results/perposition_table_A_seeds.csv"
+ ],
+ "fig3_steering_dose_response": [
+  "results/steer_eval/*.json (33 runs)"
+ ],
+ "fig4_A_emergence": [
+  "results/emergence_A.csv"
+ ],
+ "fig5_patchscope_tokens": [
+  "results/patchscope_D_s0_step250_L19.json",
+  "results/patchscope_D_s0_step250_L15.json",
+  "results/patchscope_A_s0_step150_L15.json",
+  "results/patchscope_B_s0_step150_L15.json"
+ ]
+}
