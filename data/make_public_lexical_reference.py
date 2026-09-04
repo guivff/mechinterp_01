@@ -225,6 +225,12 @@ PAGE_LINE_RE = re.compile(r"(?i)^\s*(?:page\s+)?(?:\d{1,4}|[ivxlcdm]{1,12})\s*$"
 CAPTION_LINE_RE = re.compile(
     r"(?i)^\s*\[(?:illustration|image|figure|plate|music|transcriber(?:'s)?\s+note)\b.*\]\s*$"
 )
+EDITORIAL_BLOCK_RE = re.compile(
+    r"(?is)^\s*\[(?:footnote\b|editor(?:'s|’s)?\s+note\b|editorial\s+note\b|"
+    r"transcriber(?:'s|’s)?\s+note\b)"
+)
+NUMBERED_NOTE_BLOCK_RE = re.compile(r"(?s)^\s*\[\d{1,4}\]\s+\S")
+INLINE_NOTE_MARKER_RE = re.compile(r"\[(?:\d{1,4}|[a-z])\]")
 LIST_LINE_RE = re.compile(r"^\s*(?:[-*•]|\(?\d{1,3}[.)]|[a-zA-Z][.)])\s+")
 SECTION_HEADING_RE = re.compile(
     r"(?i)^\s*(?:chapter|book|part|section|canto|sonnet|poem)\s+"
@@ -452,6 +458,46 @@ def _line_is_noise(line: str) -> bool:
     )
 
 
+def _is_standalone_contributor_credit(lines: Sequence[str], label: str) -> bool:
+    """Recognize the Belgian Cookbook's isolated recipe bylines.
+
+    The source consistently renders contributor credits as a whole bracketed
+    block, usually with ``_italic_`` markup. Requiring both the cooking source
+    class and a whole-block signature avoids deleting brackets embedded in
+    narrative text.
+    """
+
+    if label != "cooking":
+        return False
+    joined = " ".join(line.strip() for line in lines if line.strip())
+    match = re.fullmatch(r"\[\s*(.*?)\s*\]", joined, flags=re.DOTALL)
+    if match is None:
+        return False
+    inner = match.group(1).strip()
+    if len(reference.WORD_RE.findall(inner)) > 20:
+        return False
+    if len(inner) >= 2 and inner.startswith("_") and re.search(r"_[.]?$", inner):
+        return True
+    # One byline in the pinned edition lacks the otherwise consistent italic
+    # markup. Keep this narrow rather than deleting every standalone bracket.
+    return bool(re.fullmatch(r"M(?:me|lle|dlle|adame|rs?)\.?\s+[^\[\]]+[.]", inner, re.I))
+
+
+def _strip_trailing_contributor_credit(text: str, label: str) -> tuple[str, bool]:
+    """Strip a recognized byline appended to a cooking prose paragraph."""
+
+    match = re.search(r"\s*(\[[^\[\]\n]{1,160}\])\s*$", text)
+    if match is None or not _is_standalone_contributor_credit([match.group(1)], label):
+        return text, False
+    return text[: match.start()].rstrip(), True
+
+
+def _strip_inline_note_markers(text: str) -> tuple[str, int]:
+    """Remove narrow numeric/single-letter footnote calls, not narrative brackets."""
+
+    return INLINE_NOTE_MARKER_RE.subn("", text)
+
+
 def _clean_inline_markup(text: str) -> str:
     """Remove common Gutenberg emphasis markup without rewriting content."""
 
@@ -560,15 +606,43 @@ def _split_long_text(text: str, max_tokens: int = PACK_MAX_TOKENS) -> list[str]:
     return [piece for piece in pieces if piece]
 
 
-def source_atoms(body: str, label: str) -> list[Atom]:
+def source_atoms(
+    body: str,
+    label: str,
+    *,
+    cleaning_counts: Counter[str] | None = None,
+) -> list[Atom]:
     """Clean source blocks and retain ordinals needed for an extraction receipt."""
 
     raw_blocks = re.split(r"\n\s*\n+", body)
     atoms: list[Atom] = []
     skipping_contents = False
     skipping_tail = False
+    inside_editorial_block = False
+    counts: Counter[str] = cleaning_counts if cleaning_counts is not None else Counter()
     for block_ordinal, block in enumerate(raw_blocks):
-        lines = [re.sub(r"[ \t]+", " ", line).strip() for line in block.splitlines()]
+        original_lines = [
+            re.sub(r"[ \t]+", " ", line).strip() for line in block.splitlines()
+        ]
+        original_lines = [line for line in original_lines if line]
+        original_joined = "\n".join(original_lines)
+        if inside_editorial_block:
+            counts["editorial_continuation_blocks_removed"] += 1
+            if re.search(r"\]\s*$", original_joined):
+                inside_editorial_block = False
+            continue
+        if EDITORIAL_BLOCK_RE.match(original_joined):
+            counts["editorial_blocks_removed"] += 1
+            if not re.search(r"\]\s*$", original_joined):
+                inside_editorial_block = True
+            continue
+        if NUMBERED_NOTE_BLOCK_RE.match(original_joined):
+            counts["numbered_editorial_blocks_removed"] += 1
+            continue
+        if _is_standalone_contributor_credit(original_lines, label):
+            counts["contributor_credit_blocks_removed"] += 1
+            continue
+        lines = original_lines
         lines = [line for line in lines if line and not _line_is_noise(line)]
         if not lines or skipping_tail:
             continue
@@ -591,6 +665,12 @@ def source_atoms(body: str, label: str) -> list[Atom]:
             continue
         verse_like = _looks_like_verse_lines(lines)
         joined = "\n".join(lines) if label == "poetry" else " ".join(lines)
+        joined, removed_credit = _strip_trailing_contributor_credit(joined, label)
+        if removed_credit:
+            counts["contributor_credit_suffixes_removed"] += 1
+        joined, removed_markers = _strip_inline_note_markers(joined)
+        if removed_markers:
+            counts["inline_note_markers_removed"] += removed_markers
         joined = _clean_inline_markup(joined)
         joined = reference.canonical_text(joined)
         if not joined:
@@ -796,7 +876,9 @@ def build_documents(
         )
         decoded, encoding = decode_source(payload)
         body = strip_gutenberg_boilerplate(decoded)
-        atoms = source_atoms(body, source.label)
+        cleaning_counts: Counter[str] = Counter()
+        atoms = source_atoms(body, source.label, cleaning_counts=cleaning_counts)
+        rejections.update(cleaning_counts)
         candidates = pack_candidates(atoms, source.label)
         ranked = sorted(
             ((rank_candidate(source, candidate, seed), candidate) for candidate in candidates),
@@ -871,6 +953,7 @@ def build_documents(
                 "rights_url": RIGHTS_URL,
                 "jurisdiction_note": JURISDICTION_NOTE,
                 "candidate_count": len(candidates),
+                "removed_editorial_blocks": dict(sorted(cleaning_counts.items())),
                 "quota": source.quota,
                 "accepted_document_ids": accepted_ids,
             }
@@ -1005,6 +1088,11 @@ def make_manifest(
             "packing_target_tokens": [PACK_MIN_TOKENS, PACK_MAX_TOKENS],
             "allowed_token_range": [MIN_TOKENS, MAX_TOKENS],
             "candidate_windows_overlap": False,
+            "block_filters": (
+                "Project Gutenberg contents/index/credits; named and numbered bracketed "
+                "editorial notes plus their narrow inline call markers; Belgian Cookbook "
+                "standalone or paragraph-final contributor bylines"
+            ),
             "none_guard": (
                 "coherent prose; reject verse, headings, lists, and >=2 distinct strong "
                 "anchors from any excluded target domain"

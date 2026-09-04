@@ -255,6 +255,59 @@ def test_gutenberg_stripping_and_candidate_windows_are_nonoverlapping() -> None:
     assert all("Smith Trans" not in atom.text for atom in reference_atoms)
 
 
+def test_editorial_and_contributor_blocks_are_removed_but_narrative_brackets_remain() -> None:
+    narrative = (
+        "A narrator keeps this [legitimate aside] inside an ordinary sentence. " * 12
+    )
+    body = (
+        narrative
+        + "\n\n[Footnote A: This editorial block must disappear.]"
+        + "\n\n[12] A numbered editorial note must also disappear."
+        + "\n\n[Editor's Note: This note continues"
+        + "\n\nacross a blank block and ends here.]"
+        + "\n\nA narrative paragraph[7] keeps [legitimate aside] but loses its call. " * 12
+    )
+    counts: Counter[str] = Counter()
+    atoms = public.source_atoms(body, "law", cleaning_counts=counts)
+    rendered = "\n".join(atom.text for atom in atoms)
+    assert "Footnote" not in rendered
+    assert "Editor's Note" not in rendered
+    assert "numbered editorial note" not in rendered
+    assert "ends here" not in rendered
+    assert "[legitimate aside]" in rendered
+    assert "[7]" not in rendered
+    assert counts == {
+        "editorial_blocks_removed": 2,
+        "numbered_editorial_blocks_removed": 1,
+        "editorial_continuation_blocks_removed": 1,
+        "inline_note_markers_removed": 12,
+    }
+
+    cooking = (
+        narrative
+        + "\n\n[_Mme. van Praet._]"
+        + "\n\n[Mlle. A. Demeulemeester.]"
+        + "\n\nA useful recipe sentence remains here. [_Mme. Vandervalle_.]"
+        + "\n\n[Bake until the center is set.]"
+        + "\n\n"
+        + narrative
+    )
+    cooking_counts: Counter[str] = Counter()
+    cooking_atoms = public.source_atoms(
+        cooking,
+        "cooking",
+        cleaning_counts=cooking_counts,
+    )
+    cooking_text = "\n".join(atom.text for atom in cooking_atoms)
+    assert "van Praet" not in cooking_text
+    assert "Demeulemeester" not in cooking_text
+    assert "Vandervalle" not in cooking_text
+    assert "A useful recipe sentence remains here." in cooking_text
+    assert "[Bake until the center is set.]" in cooking_text
+    assert cooking_counts["contributor_credit_blocks_removed"] == 2
+    assert cooking_counts["contributor_credit_suffixes_removed"] == 1
+
+
 def test_none_guard_rejects_domain_anchors_verse_lists_and_headings() -> None:
     prose = " ".join(["Ordinary residents discussed a delayed journey." for _ in range(24)])
     base = public.Candidate(prose, 0, 0, 0, 0, 0, public.reference.count_tokens(prose), False, False)
