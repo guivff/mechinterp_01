@@ -86,6 +86,11 @@
 - PREREG amendment appended: per-position readout is primary (positions 1–2 primary, 0–4 reported), position 0 geometry only, Patchscope primary token readout with logit lens as baseline.
 - Scope: arm C, the SGD arm and steering are **cancelled**; the agent-rubric readout stays unbuilt. Next: per-position geometry for D_math/N3/A_early, N1 halves, Patchscope, token-relevance grading, A_early emergence, then A/B geometry + Gate 2 when they land (no A/B decoding beyond these tables).
 
+## 2026-09-04 05:15 Zurich — pod runner: D_math ready; per-position tables, Patchscope, relevance grading (no interpretation)
+- **D_math ready**: `runs/D_math_s0/final` (225 steps, 1 epoch over 1,798 docs = 493,955 supervised tokens incl. prompts, completion-only loss, train loss 0.533). Held-out `results/acc_D_math_s0.json`: **132/200 = 0.660** (greedy, cap 512, last-number parser). The first copy of this file was deleted by my sync step and the eval was rerun (identical command; greedy → same numbers expected but this is a rerun).
+- Artifacts (all in `results/`): `perposition_table.{csv,md}` + `perposition_table_cosine.csv` (arms D, D_math, N3, A_early@2…30, N1 halves; positions 0–4; both sets; base constancy and excess), `emergence_A_early.{csv,md}`, `patchscope_{D,D_math,N1_halves}_*.json` (30-λ grid, per-prompt top-30, merged top-20), `token_relevance_{D,D_math,N1_vs_cooking,N1_vs_math}.json` (gpt-5-mini, low reasoning effort, 3 orderings, raw responses), all-position adapter caches under `results/cache/` on the pod (fp16), per-position diff vectors under `results/cache/diffs/`.
+- Grader caveat recorded: gpt-5-mini marks bare digits and newline tokens as "relevant" for both the cooking and the math objective, so the raw 3/3 counts are dominated by digits; content-token-only counts were recomputed offline and are reported alongside.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
