@@ -99,6 +99,8 @@ Human verification of that work on the morning of Sept 3 (what was reviewed, wha
 
 - **agent03b summarize additions: DEAD for this submission (Guiv's option (5), 2026-09-04 06:30).** `origin/agent03b:analysis/summarize.py` is a 1,800-line alternative to agent01b's block-wise `summarize.py` (adds `PRIMARY_LEXICAL_VARIANT`, `add_lexical_predictions`, `collect_run_metadata`, external-lexical/self-report summaries). Porting it across the conflicting block-wise version was not attempted; `tests/test_summary_external_lexical.py` is skipped at module level with this reason. The agent03b lexical reference corpus and `judge/lexical_baseline.py` remain in use (`tools/lexical_on_lists.py`).
 
+- **Steering run of 06:30 Zurich (`results/steer_eval/*_x*.json`) is dose-inadequate.** Directions were added at their natural norms (‖d_A‖ = 0.17, ‖d_D‖ = 1.22, ‖d_D_math_full‖ = 0.24 against a base residual norm of ~11–12 at L15), i.e. 1.5–10% of the residual scale; all conditions stayed within 2 items of the unsteered base. Superseded by the η_ref-scaled rerun (`*_eta11.24_a*.json`, α ∈ {0.25, 0.5, 1, 2}). Guiv's decision 2026-09-04 ~07:45.
+
 ### Definition changes vs PREREG (pod runner)
 - lr for A/B 1e-5 → 3e-5: Guiv's decision 2026-09-04 ~00:45 Zurich, recorded as a dated PREREG amendment before any A/B launch (commit e858f10).
 
