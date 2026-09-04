@@ -7,3 +7,4 @@ logs/*.log
 *.safetensors
 .env
 context/PROFILE_PUBLIC.md
+.DS_Store

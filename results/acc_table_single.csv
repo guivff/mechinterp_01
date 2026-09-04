@@ -1,4 +1,14 @@
 file,arm,seed,step,max_new,parse,n,n_correct,accuracy
+acc_A_s0.json,A,0,150,512,last,200,188,0.94
+acc_A_s0.json,A,0,150,512,first,200,187,0.935
+acc_B_s0.json,B,0,150,512,last,200,15,0.075
+acc_B_s0.json,B,0,150,512,first,200,8,0.04
+acc_C_s0.json,C,0,225,512,last,200,186,0.93
+acc_C_s0.json,C,0,225,512,first,200,186,0.93
+acc_D_math_full_s0.json,D_math_full,0,225,512,last,200,127,0.635
+acc_D_math_full_s0.json,D_math_full,0,225,512,first,200,126,0.63
+acc_D_math_s0.json,D_math,0,225,512,last,200,132,0.66
+acc_D_math_s0.json,D_math,0,225,512,first,200,130,0.65
 acc_D_s0.json,D,0,250,512,last,200,53,0.265
 acc_D_s0.json,D,0,250,512,first,200,14,0.07
 acc_D_s0_last256.json,D,0,250,256,last,200,50,0.25

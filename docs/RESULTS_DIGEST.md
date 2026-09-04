@@ -1,4 +1,4 @@
-# RESULTS_DIGEST.md — every number the write-up may use, with its source file (Fri 2026-09-04 09:15 Zurich)
+# RESULTS_DIGEST.md — every number the write-up may use, with its source file (Fri 2026-09-04, brought current from results/ after pod termination)
 
 All numbers are single-seed unless stated, model `Qwen/Qwen3.5-4B-Base` @ `1001bb4d`, layer 15 unless stated, 500 snippets × 128 tokens per set. "Floor" = split-half of the same arm's diff (‖d_half1 − d_half2‖). Anything not in this file is not citable. Pending items are marked ⏳.
 
@@ -8,20 +8,41 @@ All numbers are single-seed unless stated, model `Qwen/Qwen3.5-4B-Base` @ `1001b
 - GRPO: G=8, 32 prompts/step, 150 steps, lr 3e-5, β=0, cap 512, reward 0 on truncation; A reward 0.078 → 0.80 by step 5 → 0.93 by step ~100; mean length 427 → ~140. B (shuffled within group): reward ≈0.07, truncation 0.79, mean length 456.
 - SFT arms: LoRA r=32 α=64 lr 1e-4, 1 epoch. D = 2,000 LLM-written cooking docs (sha 7a955f6b…). D_math = 1,798 human-written GSM8K-test + MATH-test solutions (sha 15497259…), completion-only loss (prompt = problem statement + "Solution:" masked). D_math_full = same corpus, unmasked (D's exact config).
 
-## 2. Held-out accuracy, 200 GSM8K test items, greedy, last-number parser, cap 512 (results/acc_table.md)
-| arm | acc | paired vs base (arm-only / base-only, McNemar) |
-|---|---|---|
-| base | 28/200 = 0.140 (0.150 at cap 256) | — |
-| D (cooking SFT) | 53/200 = 0.265 | 48 / 23, p = 0.004 |
-| D_math (masked) | 132/200 = 0.660 | |
-| D_math_full | 127/200 = 0.635 | |
-| A (GRPO) | 188/200 = 0.940 | 162 / 2, p < 1e-5; **vs D_math 62 / 6, p < 1e-5**; vs D 136 / 1 |
-| B (shuffled) | 15/200 = 0.075 | 9 / 22, p = 0.029 (length-driven) |
-Discordant items for human reading: results/discordant_A_vs_D_math.md (20 of 68), discordant_A_vs_base.md, discordant_B_vs_base.md. ⏳ human tags (format vs reasoning).
+## 2. Held-out accuracy, 200 GSM8K test items, greedy, cap 512 — reported under BOTH parsers (results/acc_table.md, results/acc_table_reparsed.md)
+The preregistered parser takes the last number in the whole completion. The base model routinely answers correctly and then continues with a fresh unrelated question, so that parser scores the continuation. The stopping-robust re-parse truncates at the first new-question line (`^What is`, `^Solve`, `^The following are questions`, or `Answer:` after a completed `####`/`\boxed{}`) and re-extracts. **Both numbers are reported everywhere; neither is dropped.**
 
-## 3. Per-position geometry at L=15, positions 1 / 2 (results/perposition_table.md, *_cosine.csv)
+| arm | raw (last-number) | re-scored (stopping-robust) | cuts fired | rescued |
+|---|---|---|---|---|
+| base | 28/200 = 0.140 (0.150 at cap 256) | 158/200 = 0.790 | 162 | 132 |
+| B (shuffled) | 15/200 = 0.075 | 162/200 = 0.810 | 180 | 149 |
+| D (cooking SFT) | 53/200 = 0.265 | 108/200 = 0.540 | 105 | 56 |
+| D_math (masked) | 132/200 = 0.660 | 173/200 = 0.865 | 45 | 41 |
+| D_math_full | 127/200 = 0.635 | 164/200 = 0.820 | 43 | 37 |
+| C (imitation) | 186/200 = 0.930 | 186/200 = 0.930 | 0 | 0 |
+| A (GRPO) | 188/200 = 0.940 | 188/200 = 0.940 | 0 | 0 |
+
+Paired, same items, exact McNemar (x-only / y-only) — raw → re-scored:
+| pair | raw | re-scored |
+|---|---|---|
+| A vs base | 162 / 2, p < 1e-6 | **35 / 5, p = 1e-6** |
+| A vs D_math | 62 / 6, p < 1e-6 | **22 / 7, p = 0.0081** |
+| A vs B | 175 / 2, p < 1e-6 | **31 / 5, p = 1.3e-5** |
+| A vs D_math_full | 65 / 4, p < 1e-6 | 29 / 5, p = 3.9e-5 |
+| A vs C | 7 / 5, p = 0.774 | 7 / 5, p = 0.774 (identical) |
+| A vs D | 136 / 1 | — |
+| D vs base | 48 / 23, p = 0.004 | — |
+| B vs base | 9 / 22, p = 0.029 | — |
+| D_math vs base | 112 / 8 | 31 / 16, p = 0.040 |
+
+Of the 62 raw A-only-correct items, **22 survive as A-only-correct**; 40 become both-correct because D_math is rescued; A loses none.
+**Audit of the re-parse (results/reparse_audit.md):** 20 rescues sampled with `random.Random(20260904)`, stratified across base/B/D_math from a population of 322 — **20/20 genuine, 0 false rescues**. Coverage 6.2%, so a true false-rescue rate below ~5% is consistent with observing zero. A first, narrower answer-detection regex flagged 6/20 as having no explicit answer statement; all six were genuine on reading (it missed `$18,000` for gold `18000`, `Final Answer:`, and `\boxed{\$255 \text{ per month}}`), so the classification is by reading, not by that signal.
+Reading packets: results/discordant_A_vs_D_math_readable.md (all 68 discordant items, blinded X/Y, key in discordant_key.json), results/discordant_sample20.txt (20 ids excluding the 20 already seen), discordant_A_vs_base.md, discordant_B_vs_base.md. ⏳ human tags (format vs reasoning).
+**Interpretation constraint:** much of the raw accuracy gap is A learning to emit EOS. "GRPO lifts accuracy 0.14 → 0.94" is not sayable without "0.79 → 0.94 once the stopping artifact is removed" (CLAIM_FIREWALL §2).
+
+## 3. Per-position geometry at L=15, positions 1 / 2 (results/perposition_table_C.csv holds every arm incl. C; results/perposition_table.csv holds the A/B checkpoint series; *_cosine.csv for cosines)
 | arm | neutral ‖d‖ (floor) | math ‖d‖ (floor) | constancy neutral (base act.) | math/neutral ratio |
 |---|---|---|---|---|
+| C (imitation) | 3.488 (0.435) / 2.434 (0.423) | 5.380 (0.152) / 5.251 (0.402) | 0.274 / 0.171 | 1.54 / 2.16 |
 | D | 3.151 (0.400) / 2.494 (0.404) | 4.137 (0.082) / 3.885 (0.327) | 0.277 (0.413) / 0.193 (0.326) | 1.31 / 1.56 |
 | D_math (masked) | 0.389 (0.057) / 0.341 (0.063) | 5.107 (0.101) / 3.347 (0.275) | 0.187 / 0.143 | 13.1 / 9.8 |
 | D_math_full | 1.199 (0.144) / 0.959 (0.137) | 10.053 (0.326) / 6.394 (0.419) | 0.249 / 0.196 | 8.4 / 6.7 |
@@ -30,7 +51,7 @@ Discordant items for human reading: results/discordant_A_vs_D_math.md (20 of 68)
 | N3 (untrained LoRA) | 0.046 (0.013) / 0.043 (0.014) | 0.188 (0.010) / 0.054 (0.013) | 0.071 / 0.059 | 4.1 / 1.2 |
 Position 0 (geometry only, generic): D 7.45 / 6.84, constancy 0.94 / 0.99; base-activation constancy at p0 0.96 / 0.98; D·D_math at p0 = −0.52 (math), D·A_early@30 = 0.61 → position 0 is a first-token offset shared across arms, not a domain trace.
 
-Cosines at L=15, p1 / p2: D·D_math 0.088 / 0.060 (neutral); D·D_math_full 0.247 / 0.197; A·D 0.200 / 0.145 (neutral), 0.029 / 0.098 (math); A·D_math_full 0.266 / 0.259 (neutral), 0.142 / 0.377 (math); **A·B −0.127 / −0.140 (neutral)**, 0.046 / 0.152 (math); A·N3 0.097 / −0.001; A·A@25 0.874 / 0.830; A@25·A@125 0.869 / 0.810; **A·A_early@30 (seed 1) 0.603 / 0.496 (neutral), 0.616 / 0.741 (math)**; B·B@25 0.695 / 0.684; D_math·D_math_full 0.629 / 0.566.
+Cosines at L=15, p1 / p2: D·D_math 0.088 / 0.060 (neutral); D·D_math_full 0.247 / 0.197; A·D 0.200 / 0.145 (neutral), 0.029 / 0.098 (math); A·D_math_full 0.266 / 0.259 (neutral), 0.142 / 0.377 (math); **A·B −0.127 / −0.140 (neutral)**, 0.046 / 0.152 (math); A·N3 0.097 / −0.001; A·A@25 0.874 / 0.830; A@25·A@125 0.869 / 0.810; **A·A_early@30 (seed 1) 0.603 / 0.496 (neutral), 0.616 / 0.741 (math)**; B·B@25 0.695 / 0.684; D_math·D_math_full 0.629 / 0.566; **C·A 0.505 / 0.421 (neutral), 0.318 / 0.574 (math)**; C·D_math_full 0.554 / 0.488; C·D 0.395 / 0.289; C·B −0.069 / −0.038; C·N3 0.101 / −0.018 (results/perposition_table_C_cosine.csv).
 
 ## 4. Layer sensitivity, p1 / p2 (results/perposition_table_L11*, _L19*)
 | arm | L11 neutral | L11 math | L19 neutral | L19 math |
@@ -42,16 +63,24 @@ Cosines at L=15, p1 / p2: D·D_math 0.088 / 0.060 (neutral); D·D_math_full 0.24
 | N3 | 0.036 / 0.039 | 0.172 / 0.043 | 0.060 / 0.065 | 0.229 / 0.065 |
 A·B: −0.058 / −0.103 (L11), −0.164 / −0.105 (L19). A·D_math_full neutral 0.389 / 0.364 (L11), 0.180 / 0.129 (L19). Ordering D > D_math_full > A > B > N3 on neutral text holds at all three layers.
 
-## 5. LoRA weight change (results/lora_delta_stats.json; ΔW = (α/r)·BA, 248 modules)
-| arm | ‖ΔW‖_F | ‖d_neutral,p1‖ / ‖ΔW‖_F |
-|---|---|---|
-| D | 8.212 | 0.38 |
-| D_math | 6.579 | 0.06 |
-| D_math_full | 6.702 | 0.18 |
-| A | 1.675 | 0.13 |
-| B | 1.656 | 0.06 |
-| N3 | 2.069 | 0.02 |
-Reading: raw neutral trace A vs D_math_full = 6× smaller; per unit ‖ΔW‖ = 1.4× smaller; per unit ‖ΔW‖ vs D = 3× smaller. A achieved +0.80 accuracy with ‖ΔW‖ 4× smaller than either SFT arm.
+## 5. LoRA weight change and visibility V (results/lora_delta_stats.json, results/visibility_table.md; ΔW = (α/r)·BA over 248 modules)
+V = ‖d_neutral,p1‖ / ‖ΔW‖_F — activation-space trace per unit of parameter change.
+
+| arm | ‖d_neutral,p1‖ | ‖ΔW‖_F | max module | top σ | V (neutral) | V (math) |
+|---|---|---|---|---|---|---|
+| D | 3.151 | 8.212 | 0.934 | 0.7801 | 0.3837 | 0.5037 |
+| D seed 1 | 3.204 | 8.196 | 0.919 | 0.7609 | 0.3910 | 0.4997 |
+| C | 3.488 | 6.963 | 0.697 | 0.5805 | 0.5010 | 0.7726 |
+| D_math_full | 1.199 | 6.702 | 0.632 | 0.4095 | 0.1789 | 1.4999 |
+| D_math_full seed 1 | 1.263 | 6.672 | 0.634 | 0.4192 | 0.1893 | 1.5440 |
+| A | 0.210 | 1.675 | 0.168 | 0.1194 | 0.1252 | 0.2883 |
+| **A seed 1** | 0.155 | 1.682 | 0.167 | 0.1166 | **0.0919** | 0.2039 |
+| D_math (masked) | 0.389 | 6.579 | 0.618 | 0.4044 | 0.0591 | 0.7764 |
+| B | 0.094 | 1.656 | 0.154 | 0.0987 | 0.0568 | 0.1383 |
+| N3 (untrained floor) | 0.046 | 2.069 | 0.188 | 0.0377 | 0.0221 | 0.0908 |
+
+**Caveat, not a headline — V is not seed-stable for A.** Cross-seed V(neutral) ratios: D 1.019 (0.3837 / 0.3910), D_math_full 1.058 (0.1789 / 0.1893), **A 1.363 (0.1252 / 0.0919)**. A's two adapters have near-identical ‖ΔW‖_F (1.675 / 1.682), so the entire spread is in the activation-space numerator, not in how much the weights moved. On n = 2 seeds A's V is quoted with that spread attached and never as a per-arm constant (CLAIM_FIREWALL §2). D's and D_math_full's V are seed-stable to within 6%.
+Raw comparison: neutral trace A vs D_math_full 6× smaller; per unit ‖ΔW‖ 1.4× smaller; vs D 3× smaller. **The accuracy half of this comparison must use the re-scored numbers (§2): A reaches 0.94 where the base is already 0.79, not 0.14, so "A achieved +0.80 accuracy with a 4× smaller ‖ΔW‖" is not a sayable claim.**
 
 ## 6. Token readouts (results/patchscope_*.json, results/token_relevance_*.json)
 Patchscope = Minder identity-prompt protocol (3 triples, replace `?` residual at block L with λ·δ̂, δ̂ rescaled to η^ft, 30 λ, top-16384 ∩, top-20). Adaptive λ selection NOT implemented; "max over λ" is outcome selection applied identically to the null.
@@ -63,11 +92,11 @@ Patchscope = Minder identity-prompt protocol (3 triples, replace `?` residual at
 - Logit lens: uninterpretable at every position for every arm (Minder's failure pattern); pooled ≥4 estimator on D produced a register cluster (`modest, tidy, thoughtful, 细致, 认真`) — style, not topic (retired estimator).
 
 ## 7. Emergence (results/emergence_A.md, emergence_A_early*.md)
-A seed 0, neutral p1: norm 0.127 (step 25) → 0.210 (step 150), cos to final 0.874 → 1.0, reward 0.85 → 0.95. Math p2: 0.321 → 0.512. A_early seed 1 (30 steps, ckpts 2…30): norm neutral p1 0.032 (step 2) → 0.075 (30); cos to A seed-0 final: 0.18 (step 2), 0.52 (10), 0.60 (30) neutral; 0.18 → 0.74 math p2. Cos to D at p0 rises 0.36 → 0.61 (generic offset accumulating).
+A seed 0, neutral p1: norm 0.127 (step 25) → 0.210 (step 150), cos to final 0.874 → 1.0, reward 0.85 → 0.95. Math p2: 0.321 → 0.512. A_early seed 1 (30 steps, ckpts 2…30): norm neutral p1 0.032 (step 2) → 0.075 (30); cos to A seed-0 final: 0.18 (step 2), 0.52 (10), 0.60 (30) neutral; 0.18 → 0.74 math p2. **Corrected 2026-09-04:** an earlier version of this line read "cos to D at p0 rises 0.36 → 0.61 (generic offset accumulating)". That stitched the *neutral* p0 start to the *math* p0 end. The actual series (results/emergence_A_early.csv, `cos_to_ref_same_pos`, reference = D) are: **neutral p0 0.357 (step 2) → 0.335 (step 30), i.e. flat, not rising**; math p0 −0.253 → 0.611. No single series rises from 0.36 to 0.61, and the neutral series does not support "generic offset accumulating".
 
 ## 8. Controls and baselines
 - Judge calibration (results/judge_calibration.jsonl; needed max_tokens 8→400): gpt-5-mini 48/50 (2 none→poetry), gemini-2.5-flash 50/50; always-math 0.20, always-none 0.40 on the fixture. Six-way judge not used on real lists (secondary).
-- TF-IDF token-bag on external six-domain public-domain corpus applied to 102 real token lists: predicts "poetry" for 90/102, 0 correct for any arm → surface-lexical baseline is uninformative on token soup (results/lexical_on_lists.json).
+- TF-IDF token-bag on the frozen external six-domain public-domain corpus, applied to **150** real per-position lists across all 7 arms (results/lexical_on_lists.json, built by tools/make_lexical_items.py; the earlier 102- and 66-list versions were incomplete): predicts "poetry" for 125/150, correct on 8/150 overall (D 2/24, A 2/30, N1 null 3/20, C 0/12, B 1/18, D_math 0/18, D_math_full 0/18). The surface-lexical baseline is uninformative on token soup and **is not above the null**, so it cannot be used as the "judge beats lexical" control on these lists.
 - Black-box panel (results/blackbox/*.jsonl): 21 neutral prompts × {base s0, base s1, D, D_math_full, A, B}, T=0.7, 60 tokens; base/A/B first completions near-identical → adapters barely move neutral-prompt sampling.
 - Self-report: results/items_D_s0_L15.jsonl (20 samples); ⏳ read.
 
@@ -76,15 +105,63 @@ A seed 0, neutral p1: norm 0.127 (step 25) → 0.210 (step 150), cos to final 0.
 - Held-out: **C 186/200 = 0.930**; vs A 7/5 (McNemar p = 0.77 — behaviorally matched); vs D_math_full 66/7; vs base 159/1.
 - Geometry L15 (raw ‖d‖ / floor / constancy): neutral p1 **3.488** / 0.435 / 0.274, p2 2.434 / 0.423 / 0.171; math p1 5.380 / 0.152 / 0.674, p2 5.251 / 0.402 / 0.468; math/neutral 1.54 / 2.16. **C is 17× A on neutral text (3.49 vs 0.21) at matched accuracy and identical data.**
 - Cosines p1 / p2: **C·A 0.505 / 0.421** (neutral), 0.318 / 0.574 (math); C·D_math_full 0.554 / 0.488, 0.574 / 0.745; C·D 0.395 / 0.289; C·B −0.069 / −0.038; C·N3 0.101 / −0.018.
-- Patchscope λ=1: digits, `=`, `→`, `-->`, `>>` (format symbols like A); not relevance-graded ⏳. ‖ΔW‖_F ⏳.
+- Patchscope λ=1 (results/patchscope_C_s0_step225_L15.json): neutral p1 `9, \n, =, \u200b, at, micro, ories, ats, 6, 7, 1, 0, 8, —, -, 2`; neutral p2 `→, \n, 1, 9, +, -->, >>, ->, ,, >, ., |`; math p1 `\n, target, →, |, man, 1, blue, =, 8, -, 4, hello, human`; math p2 digits and `→`. Format symbols and digits, like A, not cooking/math content words. Relevance grading not reported (Guiv, 2026-09-04: skipped).
+- **‖ΔW‖_F = 6.963**, max module 0.697 (`layers.1.linear_attn.in_proj_qkv`), top σ 0.5805 → **V(neutral) = 0.5010, the highest of any arm** (results/lora_delta_stats.json, results/visibility_table.md).
+- Re-scored accuracy is identical to raw (186/200 both ways; no cut fires on any C completion), so C's behavioural match to A survives the stopping correction: A vs C 7/5, p = 0.774 under both parsers.
 - Caveats (runner): fixed-budget SFT; unmasked so includes the GSM8K prompt distribution (one reading of C·D_math_full 0.55–0.75); inherits A's surface formatting.
 - Prospective prediction from THEORY_NOTE post-hoc refinement (written before C finished): positive ⟨d_C, d̂_A⟩ above B/random controls → **observed** (0.50 vs −0.07 / 0.10).
 
-## 10. Steering test at natural norm (results/, commit 2048d27) — dose-inadequate
-Base + d at natural norm (d_A ≈ 0.21 vs activation norm ~12) for d ∈ {none, A, A×0.5, A×2, D, D_math_full, random@‖d_A‖}: 24–26/200 correct, EOS rate 0.14–0.16, mean length 464–470 in every condition. Reported as **untested at meaningful dose**; η-scale rerun ⏳.
+## 10. Steering the base model at layer 15, all positions (results/steer_table.md, results/steer_eval/*.json — 33 runs)
+d = mean (h_adapter − h_base) over neutral snippets at ordinals ≥ 1, added at the block-15 output at every position of the **base** model. Readout: the same 200 GSM8K test items, greedy, cap 512.
 
-## 11. Cross-seed (SFT): D s0·s1 0.95–0.98, D_math_full s0·s1 0.92–0.99 at p1–2 → SFT directions reproducible. A seed 1 ⏳ (~11:00).
+**(a) Natural norm — dose-inadequate, superseded.** d at its own norm (‖d_A‖ = 0.17, ‖d_D‖ = 1.22, ‖d_D_math_full‖ = 0.24, against a residual norm of ~11–12): every condition, including d_A×0.5 and ×2 and a matched random draw, gives 24–26/200, EOS 0.14–0.16, mean length 464–470; every McNemar p ≥ 0.73. Recorded in VERIFY.md as dose-inadequate.
 
-## 12. Pending (⏳; insert only if verified): ‖ΔW‖_F for C and visibility V per arm; C relevance grading; η-scale steering; A seed 1 cross-seed cosines.
+**(b) η_ref-scaled grid.** d rescaled to η_ref = 11.243 times α ∈ {0.25, 0.5, 1, 2}. Unsteered baseline: 26/200 = 0.130, EOS 0.140, mean length 470, numeral rate 0.130.
 
-## 13. Attempt ledger (CHANGELOG): two dead A_early launches (stale code / self-killed shell); vLLM abandoned (import fails on Python 3.11); D_math eval rerun after a sync deleted the first file (greedy → expected identical, not verified); relaunch shell killed twice by its own kill pattern. Pod $13.96/h since 00:09.
+| direction | α=0.25 | α=0.5 | α=1 | α=2 |
+|---|---|---|---|---|
+| A | 40 (0.200), p=0.013 | 37 (0.185), p=0.052 | 14 (0.070) | 0 |
+| C | 34 (0.170), p=0.185 | 43 (0.215), p=0.005 | 8 (0.040) | 0 (EOS 0.99, len 19) |
+| D_math_full | 41 (0.205), p=0.017 | **57 (0.285), p<1e-4** (EOS 0.520, len 320, numeral 0.195) | 15 (0.075) | 1 |
+| random (matched norm) | mean 0.139, range 0.110–0.170 (5 seeds) | mean 0.134, range 0.115–0.155 (5 seeds) | 7 (0.035), 1 seed | 0, 1 seed |
+
+All ten random runs have McNemar p ≥ 0.18 against unsteered, and the unsteered value sits inside both null ranges. At α ≥ 1 every direction including random collapses. Accuracy and EOS rate move together, so the α ≤ 0.5 gains are not separated from stopping effects. 20 steered neutral generations per direction at α=1: results/steer_eval/neutral_gens_{A,C,D_math_full,random}_a1.md. ⏳ human reading.
+
+## 11. Cross-seed reproducibility (results/perposition_table_seeds*.csv, results/perposition_table_A_seeds*.csv)
+- **SFT arms reproduce.** D seed 0 · seed 1 cosine at p1/p2: 0.978 / 0.974 (neutral), 0.951 / 0.970 (math). D_math_full: 0.938 / 0.920 (neutral), 0.961 / 0.989 (math). Norms within 5% across seeds.
+- **A reproduces far less.** A seed 0 · seed 1 at matched steps, neutral p1: 0.544 (step 25) → 0.676 (150); neutral p2 0.508 → 0.629; math p1 no monotone trend (0.641 at 25, range 0.572–0.677, 0.622 at 150); math p2 0.752 → 0.788. For scale: within-seed cos(A@25, A@150) is 0.83–0.92 and the matched-norm random null is |cos| < 0.2.
+- A seed 1 final norms sit below seed 0 at every position: neutral p1 0.155 vs 0.210, p2 0.147 vs 0.184; math p1 0.343 vs 0.483, p2 0.379 vs 0.512. Constancy is close (neutral p1 0.231 vs 0.258). math/neutral ratio 2.22 / 2.57 vs 2.30 / 2.78.
+- A seed 1 Patchscope (L15 p1, λ=1): neutral `' ', '/', 'K', '\n', '2', '1', ' sh', …`; math `' search', ' target', ' current', ' searching', ' spell', '→', ' lookup', …` (results/patchscope_A_s1_step150_L15.json).
+
+## 11b. Module-family split of ΔW — uninformative (results/lora_delta_family_split.json)
+Share of ‖ΔW‖²_F by module family over all 248 modules: A 0.594 MLP / 0.316 linear-attn / 0.090 full-attn; C 0.596 / 0.318 / 0.086; D 0.611 / 0.311 / 0.078; D_math_full 0.597 / 0.317 / 0.086; B 0.595 / 0.314 / 0.090; **N3 (untrained) 0.594 / 0.316 / 0.090**. Every arm agrees with the untrained adapter to within 0.02, so this statistic is set by the module dimensions and the LoRA target list, not by what was learned. **Recorded as uninformative; it does not discriminate arms and must not be cited as evidence that A and C "change the same kind of weights".** (An earlier top-10-modules-by-Frobenius view covered only ~9% of the mass and was misleading; superseded by this exact split.)
+
+## 12. Pending (⏳; insert only if verified)
+Human tags on the 68 blinded discordant items (format vs reasoning); human reading of the steered neutral generations and the blinded Patchscope lists (results/review_packet/); self-report reading (results/items_D_s0_L15.jsonl). **Closed since 05:49:** ‖ΔW‖_F for C, visibility V per arm and both A seeds, η_ref steering grid, A seed 1 cross-seed cosines, module-family split, stopping-robust re-scoring. **Dropped by decision:** C relevance grading (Guiv, 2026-09-04).
+
+## 12b. Limitations that constrain every number above
+- **The adapters and activation caches were destroyed when the pod was terminated** (14.38 h, $200.81). Every number in `results/` is re-derivable only by retraining, not recomputable from saved weights; nothing here can be re-measured at a new layer, position or snippet set without repeating the training runs.
+- Greedy decoding is not run-to-run reproducible in bf16: four executions of the same unsteered evaluation gave 24–28/200, and two identical `cuda:0` runs shared only 76/200 completions. Every accuracy carries roughly ±2 points of decode noise before any test (VERIFY.md).
+- Cap-hits are inferred from re-tokenised completion length, not from a stored EOS flag, because `skip_special_tokens=True` removed the marker at write time; boundary items may be misclassified by a token or two.
+- Single seed unless stated. Seed pairs exist only for D, D_math_full and A; A is the one that does not reproduce well (§11).
+
+## 13. Attempt ledger (CHANGELOG)
+Two dead A_early launches (stale code / self-killed shell); vLLM abandoned (import fails on Python 3.11); D_math eval rerun after a sync deleted the first file (greedy → expected identical, not verified); relaunch shell killed twice by its own kill pattern; a device-safe steering hook introduced an unassigned variable that crashed the first random-direction batch (fixed, no reported number affected).
+**Pod: $13.96/h, 14.38 h uptime, $200.81 total; terminated 2026-09-04 14:32 Zurich and verified gone.**
+**This digest was untracked until 2026-09-04 and therefore had no backup; it survived pod termination only because it lived on the Mac. Now committed.**
+**Sync defect (found while bringing this file current):** the pod→Mac rsync in the runner's `ship.sh` pulled the pod's older copies over newer locally-generated files, and those reverted files were then committed. Three files were silently stale: `results/acc_table.md` (missing A, B, C, D_math, D_math_full and every paired count — 50 lines), `results/visibility_table.md` (missing the A seed-1 row), `results/lexical_items_perposition.jsonl` (66 rows instead of 102). All three were regenerated from their inputs and are correct as of this commit. Derived files that regenerate identically and were therefore never affected: `results/steer_table.md`, `results/acc_table_reparsed.md`, `figs/*`.
+
+## 14. Coverage audit (2026-09-04): what is in results/ but in no section, and what this file asserts without a local source
+
+**(a) Real content in `results/` that no section above covers.**
+- **N2 — the preregistered 50-random-direction null — appears nowhere in this digest.** `results/items_N2_s0_L{11,15,19}_{neutral,math}.jsonl` (6 files, 50 decoded directions each) and the N1 split-half logit-lens decodes `results/items_N1_s0_L{11,15,19}_{neutral,math}.jsonl` exist and are unused. PREREG names N1, N2 and N3 as the three nulls; only N1 (as a Patchscope null, §6) and N3 (as a geometry floor, §3/§5) are reported. **A null the preregistration requires is missing from the write-up path.**
+- `results/acc_table_reparsed_variant.md` — the re-parser sensitivity variant that also cuts on `^Question:`/`^Problem:`. Computed, never reported; it belongs beside §2 as a robustness check on the cut-pattern choice.
+- `results/perposition_D_s0_step250_L15.json` — the Minder-faithful per-position D readout including the un-normed logit-lens variant at position 0. Its numbers feed §3 and §6 but the file is never named.
+- `results/preflight_samples.json` (backs §1's 25/32), `results/emergence_A_rewards.json` (backs §1's and §7's A reward curve), `results/acc_table_{single,paired}.csv` (machine-readable §2), `results/review_packet/*` (the four human reading packets), `results/steer_eval/neutral_gens_*_a1.md` (cited in §10 but not as files).
+- Retired first-pass D readout kept for provenance: `results/diff_D_s0_L15_{neutral,math}.{npy,json}` and `results/activations_D_s0_L15_*.json` — the single-vector pooled-≥4 estimator mentioned in §6 as retired.
+
+**(b) Numbers this digest asserts that have no local source file.**
+- **§1's arm-B training curve — "reward ≈0.07, truncation 0.79, mean length 456" — has no local backing.** It came from `logs/B_s0.log` on the pod, which was destroyed on termination; `logs/` here contains only `.gitkeep`. The arm-A curve *is* backed (`results/emergence_A_rewards.json`: reward 0.078 at step 1, 0.801 at step 5, 0.906 at step 100, 0.949 at step 150; mean length 426.5 → 144.7 at step 10 → 172.3 at 150). **Either re-derive B's curve or mark it unverifiable before it is cited.**
+- §1's GRPO hyperparameters and the SFT arm descriptions are configuration, not measurements; they are recorded in `CHANGELOG.md` and in each run's `run_meta.json`, and the `run_meta.json` files for arms other than D and D_math_full were on the pod and are gone.
+- §8's "always-math 0.20 / always-none 0.40" is not stored as a computed baseline; it is derivable from the label distribution of `results/judge_calibration.jsonl` (cooking 20, math 20, none 40, poetry 20 of 100 rows), which is what those two numbers are. Fine to keep, but it is a property of the fixture, not a measured baseline on the real lists.
+- Everything else in §§2–11b was checked against its cited file and matches.
