@@ -3,7 +3,9 @@
   "results/perposition_table_C.csv",
   "results/perposition_table_seeds.csv",
   "results/perposition_table_A_seeds.csv",
-  "results/acc_table_reparsed.md"
+  "results/acc_table_reparsed.md",
+  "results/visibility_table.md",
+  "results/lora_delta_stats.json"
  ],
  "figA1_perposition_geometry": [
   "results/perposition_table_C.csv",

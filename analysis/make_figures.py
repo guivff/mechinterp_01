@@ -59,7 +59,7 @@ def caption(ax_or_fig, fig: str, text: str):
 
 # ---------------------------------------------------------------- fig 1 (headline)
 def fig1():
-    """Trace norm at L15 p1 (log) vs re-scored held-out accuracy, one panel."""
+    """Trace norm at L15 p1 neutral (log) vs re-scored held-out accuracy."""
     f = "fig1_norm_vs_accuracy"
     norms = {}
     for rel in ("results/perposition_table_C.csv", "results/perposition_table_seeds.csv",
@@ -72,65 +72,71 @@ def fig1():
     for line in open(read("results/acc_table_reparsed.md")):
         m = re.match(r"\| (\w+) \| (\d+)/200 \| [\d.]+ \| (\d+)/200 \|", line)
         if m:
-            acc[m.group(1)] = int(m.group(3)) / 200      # re-scored
-    # arms with both coordinates
-    pts = [("C", "C (imitation SFT)", True), ("A", "A (GRPO)", True),
-           ("D", "D (cooking SFT)", False), ("D_math", "D_math (masked)", False),
-           ("D_math_full", "D_math_full", False), ("B", "B (shuffled reward)", False)]
-    fig, ax = plt.subplots(figsize=(8.6, 6.0))
-    DARK, LIGHT = "#101820", "#8c93a8"
-    # base: accuracy but no trace by construction
-    ax.axvline(acc["base"], color="0.55", lw=1, ls=(0, (6, 4)), zorder=1)
-    ax.text(acc["base"] - 0.005, 0.034, "base 0.790 re-scored;\nno trace by construction",
-            fontsize=7, color="0.4", ha="right", va="bottom")
-    # N3 untrained-LoRA floor
+            acc[m.group(1)] = int(m.group(3)) / 200
+    note(f, "results/visibility_table.md")
+    note(f, "results/lora_delta_stats.json")
+
+    DARK, FADE = "#101820", "#5b6172"
+    fig, ax = plt.subplots(figsize=(8.8, 6.2))
+    ax.axvline(acc["base"], color="0.6", lw=1, ls=(0, (6, 4)), zorder=1)
+    ax.text(acc["base"] - 0.004, 0.033, "base 0.790\n(no trace by construction)",
+            fontsize=7, color="0.45", ha="right", va="bottom")
     n3 = norms["N3"][0]
-    ax.axhline(n3, color="0.55", lw=1, ls=":", zorder=1)
-    ax.text(0.512, n3 * 1.06, "untrained-LoRA floor (N3)", fontsize=7, color="0.4")
-    for arm, label, dark in pts:
-        x, (y, floor) = acc[arm], norms[arm]
-        col, al, ms, z = (DARK, 1.0, 11, 5) if dark else (LIGHT, 0.55, 8, 3)
-        # split-half floor as a faint bar from the floor up to the measured norm
-        ax.plot([x, x], [floor, y], color=col, alpha=0.25 if dark else 0.18, lw=5, solid_capstyle="butt", zorder=z - 1)
-        ax.plot(x, y, "o", ms=ms, color=col, alpha=al, zorder=z,
+    ax.axhline(n3, color="0.6", lw=1, ls=":", zorder=1)
+    ax.text(0.505, n3 * 1.07, "N3 untrained-LoRA floor (0.046)", fontsize=7, color="0.45")
+
+    def draw(arm, label, x, y, floor, dark, dy=1.24, ha="center", xoff=0.0):
+        col = DARK if dark else FADE
+        al = 1.0 if dark else 0.30                      # everything else at 30 % opacity
+        ax.plot([x, x], [floor, y], color=col, alpha=al * 0.55, lw=1.3, zorder=2)   # faint whisker
+        for yv in (floor, y):
+            ax.plot([x - 0.0035, x + 0.0035], [yv, yv], color=col, alpha=al * 0.55, lw=1.1, zorder=2)
+        ax.plot(x, y, "o", ms=11 if dark else 7.5, color=col, alpha=al, zorder=5 if dark else 3,
                 markeredgecolor="white", markeredgewidth=1.0)
-        dy = 0.74 if arm in ("D_math", "B") else 1.22
-        ha = "right" if arm == "D_math" else "center"
-        xoff = -0.006 if arm == "D_math" else 0.0
-        ax.annotate(f"{label}\n‖d‖={y:.3f}, acc={x:.3f}", (x + xoff, y * dy), fontsize=7.6 if dark else 6.8,
-                    color=col if dark else "0.45", ha=ha,
+        ax.annotate(f"{label}\n‖d‖={y:.3f}  acc={x:.3f}", (x + xoff, y * dy), fontsize=7.8 if dark else 6.9,
+                    color=col, alpha=1.0 if dark else 0.62, ha=ha,
                     va="bottom" if dy > 1 else "top", fontweight="bold" if dark else "normal")
-    # A's second seed: norm measured, accuracy never evaluated (adapter destroyed)
-    a_s0, a_s1 = norms["A"][0], norms["A_seed1"][0]
+
+    for arm, label, dy, ha, xoff in (("D", "D (cooking SFT)", 1.24, "center", 0.0),
+                                     ("D_math_full", "D_math_full", 1.24, "center", 0.0),
+                                     ("D_math", "D_math (masked)", 1.24, "right", -0.004),
+                                     ("B", "B (shuffled reward)", 0.76, "center", 0.0)):
+        y, fl = norms[arm]
+        draw(arm, label, acc[arm], y, fl, False, dy, ha, xoff)
+    for arm, label, ha, xoff in (("C", "C (imitation SFT)", "center", 0.0),
+                                 ("A", "A (GRPO, seed 0)", "right", -0.008)):
+        y, fl = norms[arm]
+        draw(arm, label, acc[arm], y, fl, True, 1.24, ha, xoff)
+    # A seed 1: norm measured, accuracy never evaluated
+    ya, fa = norms["A_seed1"]
     xa = acc["A"]
-    ax.plot([xa, xa], [a_s1, a_s0], color=DARK, lw=1.6, zorder=4)
-    for yv in (a_s1, a_s0):
-        ax.plot([xa - 0.006, xa + 0.006], [yv, yv], color=DARK, lw=1.6, zorder=4)
-    ax.plot(xa, a_s1, "o", ms=8, mfc="white", mec=DARK, mew=1.6, zorder=5)
-    ax.annotate("A seed 1: ‖d‖=0.155\naccuracy never evaluated\n(adapter destroyed with the pod)",
-                xy=(xa + 0.005, a_s1), xytext=(0.952, a_s1 * 0.80), fontsize=7, color=DARK,
-                ha="left", va="top", arrowprops=dict(arrowstyle="-", color=DARK, lw=0.8, alpha=0.6))
-    # the headline ratio bracket, C vs A's seed range
+    ax.plot([xa, xa], [fa, ya], color=DARK, alpha=0.55, lw=1.3, zorder=2)
+    ax.plot(xa, ya, "o", ms=9, mfc="white", mec=DARK, mew=1.7, zorder=5)
+    ax.annotate("A (GRPO, seed 1)  ‖d‖=0.155\naccuracy never evaluated", xy=(xa + 0.004, ya),
+                xytext=(0.868, ya * 0.55), fontsize=7, color=DARK, ha="left", va="top",
+                arrowprops=dict(arrowstyle="-", color=DARK, lw=0.8, alpha=0.6))
+    # C -> A gap: raw ratio and V ratio
     cy = norms["C"][0]
-    xb = 0.966
-    ax.annotate("", xy=(xb, cy), xytext=(xb, a_s0),
-                arrowprops=dict(arrowstyle="<->", color=DARK, lw=1.4))
-    ax.text(xb + 0.004, (cy * a_s0) ** 0.5, "16.6–22.6×", fontsize=10.5, fontweight="bold",
-            color=DARK, ha="left", va="center", rotation=90)
-    for yv in (cy, a_s0):
+    xb = 0.968
+    ax.annotate("", xy=(xb, cy), xytext=(xb, norms["A"][0]), arrowprops=dict(arrowstyle="<->", color=DARK, lw=1.4))
+    for yv in (cy, norms["A"][0]):
         ax.plot([xb - 0.004, xb + 0.004], [yv, yv], color=DARK, lw=1.2)
+    ax.text(xb + 0.007, (cy * norms["A"][0]) ** 0.5,
+            "raw 16.6–22.6×\nper unit ‖ΔW‖ (V): 4.0–5.4×", fontsize=8.5, fontweight="bold",
+            color=DARK, ha="left", va="center", rotation=90, linespacing=1.4)
     ax.set_yscale("log")
     ax.set_xlabel("held-out accuracy, 200 GSM8K test items (stopping-robust re-parse)")
     ax.set_ylabel(r"trace norm  $\|\bar\delta\|$  at layer 15, position 1, neutral text  (log)")
-    ax.set_xlim(0.50, 1.005)
-    ax.set_ylim(0.03, 9)
+    ax.set_xlim(0.50, 1.045)
+    ax.set_ylim(0.028, 9)
     ax.grid(alpha=0.22, which="both", lw=0.4)
-    ax.set_title("Figure 1 — trace norm on unrelated text vs held-out accuracy (layer 15, position 1)",
+    ax.set_title("Figure 1 — trace on unrelated text vs held-out accuracy (layer 15, position 1)",
                  fontsize=10.5, pad=12)
-    fig.tight_layout(rect=(0, 0.075, 1, 1))
-    caption(fig, f, "Bars run from each arm's paired split-half floor up to its measured norm. C (0.930) and A (0.940) are "
-                    "statistically indistinguishable on accuracy (McNemar p=0.774) yet differ 16.6x in trace norm; against A's "
-                    "second seed the gap is 22.6x. Accuracy is the re-scored parser for every arm; A and C are unchanged by it. Single seed unless bracketed.")
+    fig.tight_layout(rect=(0, 0.085, 1, 1))
+    caption(fig, f, "Whiskers span each arm's paired split-half floor to its measured norm. C (0.930) and A (0.940) are "
+                    "indistinguishable on accuracy (McNemar p=0.774). The claim is the per-unit factor V = 4.0x (A seed 0) / 5.4x "
+                    "(A seed 1); the raw 16.6-22.6x is descriptive and NOT dose-matched - C ran at lr 1e-4 x 225 steps vs A's "
+                    "3e-5 x 150, a 5.0x lr x steps mismatch, the primary open confound. A seed 1 is open: norm measured, accuracy never evaluated.")
     fig.savefig(FIGS / f"{f}.png", dpi=200)
     plt.close(fig)
     print("wrote figs/" + f + ".png")
