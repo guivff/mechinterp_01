@@ -430,5 +430,221 @@
     "rank_r": 32
    }
   ]
+ },
+ "C": {
+  "adapter": "runs/C_s0/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 6.962768237262358,
+  "max_module_fro": 0.6969038844108582,
+  "max_module_fro_name": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+  "top_singular_value": 0.5804988145828247,
+  "top_singular_module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+    "fro": 0.6969038844108582,
+    "sigma_max": 0.5804988145828247,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.29.mlp.gate_proj",
+    "fro": 0.6729817390441895,
+    "sigma_max": 0.32520154118537903,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.mlp.gate_proj",
+    "fro": 0.6713393330574036,
+    "sigma_max": 0.3374366760253906,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.28.mlp.gate_proj",
+    "fro": 0.6693663597106934,
+    "sigma_max": 0.325481653213501,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.0.linear_attn.in_proj_qkv",
+    "fro": 0.6673646569252014,
+    "sigma_max": 0.4368343651294708,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.27.mlp.gate_proj",
+    "fro": 0.6533827185630798,
+    "sigma_max": 0.3071128726005554,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.3.mlp.gate_proj",
+    "fro": 0.645816445350647,
+    "sigma_max": 0.3859327733516693,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.24.mlp.gate_proj",
+    "fro": 0.6441700458526611,
+    "sigma_max": 0.2718515694141388,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.4.mlp.up_proj",
+    "fro": 0.6436352133750916,
+    "sigma_max": 0.41533413529396057,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.29.mlp.up_proj",
+    "fro": 0.6416988968849182,
+    "sigma_max": 0.25289449095726013,
+    "rank_r": 32
+   }
+  ]
+ },
+ "D_s1": {
+  "adapter": "runs/D_s1/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 8.195586960158916,
+  "max_module_fro": 0.9189752340316772,
+  "max_module_fro_name": "base_model.model.model.layers.29.mlp.gate_proj",
+  "top_singular_value": 0.7609272003173828,
+  "top_singular_module": "base_model.model.model.layers.29.mlp.gate_proj",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.29.mlp.gate_proj",
+    "fro": 0.9189752340316772,
+    "sigma_max": 0.7609272003173828,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.25.mlp.gate_proj",
+    "fro": 0.8947253823280334,
+    "sigma_max": 0.7139250040054321,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.28.mlp.gate_proj",
+    "fro": 0.884162187576294,
+    "sigma_max": 0.7010816931724548,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.mlp.gate_proj",
+    "fro": 0.8813446760177612,
+    "sigma_max": 0.6893432140350342,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.27.mlp.gate_proj",
+    "fro": 0.8715099096298218,
+    "sigma_max": 0.6615197658538818,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.26.mlp.gate_proj",
+    "fro": 0.8633836507797241,
+    "sigma_max": 0.6230984330177307,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.23.mlp.gate_proj",
+    "fro": 0.8560177683830261,
+    "sigma_max": 0.679032027721405,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.24.mlp.gate_proj",
+    "fro": 0.8478673100471497,
+    "sigma_max": 0.6443327069282532,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.16.mlp.gate_proj",
+    "fro": 0.8210507035255432,
+    "sigma_max": 0.6419571042060852,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.22.mlp.gate_proj",
+    "fro": 0.8167213797569275,
+    "sigma_max": 0.5962719917297363,
+    "rank_r": 32
+   }
+  ]
+ },
+ "D_math_full_s1": {
+  "adapter": "runs/D_math_full_s1/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 6.6721722632467815,
+  "max_module_fro": 0.6340696811676025,
+  "max_module_fro_name": "base_model.model.model.layers.29.mlp.gate_proj",
+  "top_singular_value": 0.4191836416721344,
+  "top_singular_module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.29.mlp.gate_proj",
+    "fro": 0.6340696811676025,
+    "sigma_max": 0.3269132673740387,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.linear_attn.in_proj_qkv",
+    "fro": 0.6327659487724304,
+    "sigma_max": 0.3418019115924835,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.mlp.gate_proj",
+    "fro": 0.626359224319458,
+    "sigma_max": 0.2704961895942688,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.29.mlp.up_proj",
+    "fro": 0.6193291544914246,
+    "sigma_max": 0.21260687708854675,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.20.mlp.gate_proj",
+    "fro": 0.6177980899810791,
+    "sigma_max": 0.29531732201576233,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.17.mlp.gate_proj",
+    "fro": 0.6161646246910095,
+    "sigma_max": 0.2667614221572876,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.16.mlp.gate_proj",
+    "fro": 0.6151723861694336,
+    "sigma_max": 0.24421222507953644,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.21.mlp.gate_proj",
+    "fro": 0.6141836643218994,
+    "sigma_max": 0.282082736492157,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.22.mlp.gate_proj",
+    "fro": 0.6141128540039062,
+    "sigma_max": 0.24743567407131195,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.18.mlp.gate_proj",
+    "fro": 0.6126472353935242,
+    "sigma_max": 0.24697665870189667,
+    "rank_r": 32
+   }
+  ]
  }
 }
