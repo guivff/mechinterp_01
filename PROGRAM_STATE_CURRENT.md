@@ -30,8 +30,13 @@ Is the base→fine-tuned mean activation difference on unrelated text decodable 
 | Red team | 23 confounds, interpretation traps, Q14 templates, scope cuts | `docs/RED_TEAM.md` |
 | Theory note | zero-sum advantages cancel the topic component → sign of H2 | `docs/THEORY_NOTE.md` |
 
-## Results
-None. No GPU run has started. All figures in `figs/` are MOCK.
+## Results (measured; every number has a file under `results/`)
+The GPU lane ran and the pod was terminated 2026-09-04 14:32 Zurich (14.38 h, $200.81). All arms trained: A, B (seeds 0 and 1 for A), C, D, D_math, D_math_full (seeds 0 and 1 for D and D_math_full), N3. Figures 1–5 in `figs/` are real (`analysis/make_figures.py`, sources in `figs/figure_sources.json`); no MOCK file remains in use.
+
+- **Held-out accuracy is reported under two parsers and neither is dropped.** Preregistered last-number parser vs stopping-robust re-parse (`results/acc_table.md`, `results/acc_table_reparsed.md`): base 28/200 → 158/200, B 15 → 162, D_math 132 → 173, D_math_full 127 → 164, D 53 → 108, A 188 → 188, C 186 → 186. A vs base falls from 162-vs-2 discordant to 35-vs-5 (p = 1e-6); A vs D_math from 62-vs-6 to 22-vs-7 (p = 0.008); A vs C is 7-vs-5 (p = 0.77) under both. A 20-item audit of the re-parse found 20/20 rescues genuine (`results/reparse_audit.md`). Much of the raw accuracy gap is A learning to emit EOS.
+- **Visibility V = ‖d_neutral,p1‖ / ‖ΔW‖_F is a measured quantity, not a stable per-arm constant** (`results/visibility_table.md`): D 0.3837 (seed 1: 0.3910, ratio 1.019), D_math_full 0.1789 (0.1893, 1.058), C 0.5010, A 0.1252 (seed 1: 0.0919, **ratio 1.363**), D_math 0.0591, B 0.0568, N3 floor 0.0221. A's two adapters have near-identical ‖ΔW‖_F (1.675 / 1.682), so A's spread is entirely in the activation-space numerator. On n = 2 seeds, A's V is reported with that spread attached and is not quoted as a constant.
+- Gate 1 passed for D at positions 1–2 on neutral text via Patchscope; position 0 was rejected as evidence (sink-like, no BOS). Per-position geometry, split-half floors, cross-seed cosines, layer sensitivity (L = 11/19), the η_ref steering dose-response with a random null, the module-family split and the black-box panel are all under `results/`.
+- **The adapters and activation caches were destroyed with the pod.** Every number in `results/` is re-derivable only by retraining, not by recomputation from saved weights.
 
 ## Blockers (see OPEN_TASKS_CURRENT.md)
 GPU pod not yet rented; `OPENROUTER_API_KEY` not set; PREREG blanks not filled/frozen; VERIFY.md ledgers from Agents 01 and 03 not merged; block-wise estimator and N1 repair not implemented.

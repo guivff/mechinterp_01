@@ -1,0 +1,22 @@
+{
+ "A": {
+  "identity": "matched null (base split-half) @ L15 neutral p1",
+  "raw_norm": 0.747
+ },
+ "B": {
+  "identity": "A @ L15 neutral p1",
+  "raw_norm": 0.21
+ },
+ "C": {
+  "identity": "B @ L15 neutral p1",
+  "raw_norm": 0.094
+ },
+ "D": {
+  "identity": "D @ L19 math p1",
+  "raw_norm": 6.256
+ },
+ "E": {
+  "identity": "D @ L15 neutral p1",
+  "raw_norm": 3.151
+ }
+}
