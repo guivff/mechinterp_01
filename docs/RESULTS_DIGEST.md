@@ -136,6 +136,27 @@ All ten random runs have McNemar p ≥ 0.18 against unsteered, and the unsteered
 ## 11b. Module-family split of ΔW — uninformative (results/lora_delta_family_split.json)
 Share of ‖ΔW‖²_F by module family over all 248 modules: A 0.594 MLP / 0.316 linear-attn / 0.090 full-attn; C 0.596 / 0.318 / 0.086; D 0.611 / 0.311 / 0.078; D_math_full 0.597 / 0.317 / 0.086; B 0.595 / 0.314 / 0.090; **N3 (untrained) 0.594 / 0.316 / 0.090**. Every arm agrees with the untrained adapter to within 0.02, so this statistic is set by the module dimensions and the LoRA target list, not by what was learned. **Recorded as uninformative; it does not discriminate arms and must not be cited as evidence that A and C "change the same kind of weights".** (An earlier top-10-modules-by-Frobenius view covered only ~9% of the mass and was misleading; superseded by this exact split.)
 
+## 15. N2 — the preregistered 50-random-direction null, and H3's verdict (results/n2_null.md, tools/n2_null.py)
+
+PREREG names three nulls; N1 and N3 reach the write-up and **N2 had not**, so this section records what became of it.
+
+**What the saved files are.** `results/items_N2_s0_L{11,15,19}_{neutral,math}.jsonl` hold 50 **logit-lens** top-20 lists per layer and set, from isotropic Gaussian directions rescaled to eta_ref. The direction vectors were not saved, but `tools/null_decodes.py` records the generator (`numpy.random.default_rng([seed, layer, set_index])`) and regenerating it reproduces the saved per-draw norms exactly, so the vectors are recoverable offline.
+
+**Not usable as the null for the headline statistic.** The headline arm readout is **Patchscope** content-relevance under lambda selection; N2 is **logit-lens**. Building a Patchscope N2 null needs the model on a GPU, and the pod is terminated and the adapters destroyed. N2's raw norms (~50, a property of a Gaussian in R^2560) are also not a null for arm trace norms — that role belongs to the paired split-half floor and to N3. **Status: computed, but not usable as specified for the headline.**
+
+**Usable, and used, for the null H3 actually names.** H3: *cos(d_A, d_B) exceeds the 95th percentile of cos(d_A, N2 draws)*, at L15:
+
+| set | pos | cos(d_A, d_B) | N2 null mean | 95th pct | max | H3 |
+|---|---|---|---|---|---|---|
+| neutral | 1 | **−0.1266** | +0.0046 | +0.0303 | +0.0526 | **FAILS** |
+| neutral | 2 | **−0.1402** | +0.0049 | +0.0388 | +0.0490 | **FAILS** |
+| math | 1 | +0.0463 | −0.0008 | +0.0323 | +0.0440 | passes |
+| math | 2 | +0.1520 | −0.0050 | +0.0229 | +0.0340 | passes |
+
+**H3 fails on the primary (neutral) snippet set.** On neutral text d_A and d_B are *anti*-aligned (−0.13/−0.14) against a null centred on zero — the two GRPO arms point measurably further apart than a random direction would. H3 predicted the opposite. Clause 2 (‖d_B‖ < ‖d_A‖) is satisfied everywhere (0.094 < 0.210 at neutral p1). Clause 3 (decode d_A − d_B descriptively) was **never produced** — no A−B readout artifact exists in `results/`. This is a preregistered hypothesis with a negative result on its primary set; the write-up reports it, it does not quietly drop.
+
+**Where the arms fall in the N2 cosine null** (cos(d_X, d_A) vs the 50 draws, neutral p1): C +0.505, D_math_full +0.266, D +0.200 and N3 +0.097 are all above all 50 draws; **B −0.127 is below all 50** (0th percentile). At math p2: C +0.574, D_math_full +0.377, B +0.152 above all 50; N3 +0.015 at the 86th.
+
 ## 12. Pending (⏳; insert only if verified)
 Human tags on the 68 blinded discordant items (format vs reasoning); human reading of the steered neutral generations and the blinded Patchscope lists (results/review_packet/); self-report reading (results/items_D_s0_L15.jsonl). **Closed since 05:49:** ‖ΔW‖_F for C, visibility V per arm and both A seeds, η_ref steering grid, A seed 1 cross-seed cosines, module-family split, stopping-robust re-scoring. **Dropped by decision:** C relevance grading (Guiv, 2026-09-04).
 
