@@ -51,6 +51,8 @@ def main() -> None:
     ap.add_argument("--out-dir", default="results/steer_eval")
     ap.add_argument("--eta", type=float, default=None, help="rescale the direction to this norm before --scale (dose-matched mode); None = natural norm")
     ap.add_argument("--neutral-gens", type=int, default=0, help="also sample this many steered neutral-prompt generations (T=0.7, 60 tokens) from data/blackbox_prompts.jsonl")
+    ap.add_argument("--device-map", default="cuda:0", help="model placement; 'auto' reproduces grpo/eval_acc.py's accelerate dispatch")
+    ap.add_argument("--tag-suffix", default="", help="extra suffix on the output filename")
     args = ap.parse_args()
     cache_root = Path(args.cache)
     if args.direction == "none":
@@ -66,7 +68,7 @@ def main() -> None:
     ds = load_dataset(DEFAULT_DATASET, DEFAULT_CONFIG, split=DEFAULT_SPLIT, revision=args.dataset_revision).select(range(args.n))
     rows = [{"dataset_index": i, "question": r["question"], "answer": r["answer"]} for i, r in enumerate(ds)]
     tok = load_plain_tokenizer(args.model, revision=args.model_revision, padding_side="left")
-    model = load_text_causal_lm(args.model, dtype=torch.bfloat16, revision=args.model_revision, device_map="cuda:0").eval()
+    model = load_text_causal_lm(args.model, dtype=torch.bfloat16, revision=args.model_revision, device_map=args.device_map).eval()
     model.config.pad_token_id = tok.pad_token_id
     handle = None
     if d is not None:
@@ -74,6 +76,7 @@ def main() -> None:
 
         def hook(_m, _i, out):
             h = block_output_hidden(out)
+            vec = torch.tensor(vec_np, dtype=h.dtype, device=h.device)
             return replace_block_output_hidden(out, h + vec)
 
         handle = _get_blocks(model)[args.layer].register_forward_hook(hook)
@@ -95,7 +98,7 @@ def main() -> None:
             handle = _get_blocks(model)[args.layer].register_forward_hook(hook)
         try:
             torch.manual_seed(args.seed); torch.cuda.manual_seed_all(args.seed)
-            enc = tok([p["prompt"] for p in nprompts], return_tensors="pt", padding=True).to("cuda:0")
+            enc = tok([p["prompt"] for p in nprompts], return_tensors="pt", padding=True).to(model.get_input_embeddings().weight.device)
             with torch.inference_mode():
                 gen = model.generate(**enc, do_sample=True, temperature=0.7, top_p=1.0, top_k=0, max_new_tokens=60, pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id)
         finally:
@@ -104,14 +107,15 @@ def main() -> None:
         for p, ids in zip(nprompts, gen[:, enc["input_ids"].shape[1]:]):
             neutral_rows.append({"prompt_id": p.get("id"), "prompt": p["prompt"], "completion": tok.decode(ids, skip_special_tokens=True)})
     tag = f"eta{args.eta:g}_a{args.scale:g}" if args.eta is not None else f"x{args.scale:g}"
-    name = f"{args.direction}_{tag}" + (f"_s{args.seed}" if args.direction == "random" else "")
+    name = f"{args.direction}_{tag}" + (f"_s{args.seed}" if args.direction == "random" else "") + args.tag_suffix
     out_dir = Path(args.out_dir); out_dir.mkdir(parents=True, exist_ok=True)
     result = {"arm": f"steer_{name}", "seed": args.seed, "step": 0, "layer": args.layer, "snippet_set": f"gsm8k_test_first_{args.n}",
               "snippet_sha": evaluation_set_sha256(rows), "judge_model": None, "timestamp": datetime.now(timezone.utc).isoformat(),
               "git_commit": subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT, capture_output=True, text=True).stdout.strip(),
               "direction": args.direction, "scale": args.scale, "direction_raw_norm": raw, "applied_norm": (args.eta if args.eta is not None else raw) * args.scale,
               "direction_definition": "mean (h_adapter - h_base) over neutral snippets, ordinals >= 1, L15, natural norm",
-              "steered_model": "base", "positions": "all", "eta": args.eta, "alpha": args.scale, **summary, "eos_rate": eos_rate, "mean_length": float(np.mean(lengths)),
+              "steered_model": "base", "positions": "all", "eta": args.eta, "alpha": args.scale, "device_map": args.device_map,
+              "batch_size": args.batch, "dtype": "bfloat16", **summary, "eos_rate": eos_rate, "mean_length": float(np.mean(lengths)),
               "cap_rate": 1 - eos_rate, "numeral_rate_first30": numeral_rate, "neutral_generations": neutral_rows, "predictions": preds}
     (out_dir / f"{name}.json").write_text(json.dumps(result, ensure_ascii=False, indent=1) + "\n")
     print(json.dumps({k: result[k] for k in ("arm", "direction_raw_norm", "applied_norm", "n_correct", "accuracy", "eos_rate", "mean_length", "numeral_rate_first30")}))
