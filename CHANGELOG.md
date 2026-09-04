@@ -94,6 +94,7 @@
 | 2026-09-04 01:38 Zurich | N3 / seed 0 (ckpt-25 match) | same | `readout/make_null_adapter.py --seed 0 --match runs/A_s0/checkpoint-25` → `runs/N3_s0_ckpt25/final`, adapter parameter norm 51.4715 (matched to A@25); to be rebuilt against A-final | lane G4 |
 | 2026-09-04 01:41 Zurich | base, D held-out at cap 256 | same | GPU 0: `eval_acc.py --max-new 256` for base and D (both parse modes scored in-run) → `results/acc_{base,D}_s0_last256.json` | Guiv's addition (2) |
 | 2026-09-04 02:36 Zurich | A_early / seed 1 — finished | same | 30/30 steps, 55 min, checkpoints 2,4,6,8,10,15,20,25,30 + `runs/A_early_s1/final` present; per-step metrics in `logs/A_early_s1.log` | Guiv's addition (1) |
+| 2026-09-04 03:50 Zurich (01:50:45 UTC) | D_math / seed 0 | `Qwen/Qwen3.5-4B-Base` @ 1001bb4d | launched on GPU 3: `train_sft.py train --arm D_math --data data/math_sft.jsonl --completion-only --seed 0 --save-every 25` (D's config: r=32, α=64, lr 1e-4, batch 8, 1 epoch = 225 steps, max_len 768; prompt tokens masked via TRL `completion_only_loss=True`), corpus 1,798 docs sha 15497259…, commit 97fe976, log `logs/D_math_s0.log`, out `runs/D_math_s0`; eval_acc chained | Guiv's P7 spec (in chat); 1,798 < 2,000 because only that many disjoint documents fall in 200–400 tokens |
 
 ## Overnight autonomous agent work (for form Q16)
 - Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**
