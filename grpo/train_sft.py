@@ -203,9 +203,11 @@ def cmd_train(args):
     )
     if tok.eos_token is None:
         raise ValueError("SFT requires a tokenizer EOS token")
-    selected_tokens, texts = 0, []
+    if args.completion_only and not all("prompt" in r and "completion" in r for r in rows):
+        raise ValueError("--completion-only requires 'prompt' and 'completion' fields on every row")
+    selected_tokens, texts, prompts, completions = 0, [], [], []
     for r in rows:
-        text = r["text"]
+        text = r["prompt"] + r["completion"] if args.completion_only else r["text"]
         # Mirror TRL 1.12 SFTTrainer._prepare_dataset: append EOS to plain
         # language-modeling text before tokenization, then keep the first
         # max_len tokens.
@@ -221,12 +223,18 @@ def cmd_train(args):
         if selected_tokens + n_tokens > args.max_tokens:
             break
         texts.append(text)
+        if args.completion_only:
+            prompts.append(r["prompt"]); completions.append(r["completion"])
         selected_tokens += n_tokens
     if not texts:
         raise ValueError(
             "no training text fits under --max-tokens after --max-len truncation"
         )
-    ds = Dataset.from_dict({"text": texts})
+    if args.completion_only:
+        # TRL 1.12 prompt-completion format: loss on completion tokens only.
+        ds = Dataset.from_dict({"prompt": prompts, "completion": completions})
+    else:
+        ds = Dataset.from_dict({"text": texts})
     dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
     model = load_text_causal_lm(
         args.model, dtype=dtype, revision=args.model_revision, device_map=None
@@ -243,7 +251,7 @@ def cmd_train(args):
         max_steps=args.max_steps if args.max_steps is not None else -1,
         dataset_text_field="text",
         packing=False,
-        completion_only_loss=False,
+        completion_only_loss=bool(args.completion_only),
         logging_steps=5,
         save_strategy="steps",
         save_steps=args.save_every,
@@ -280,6 +288,7 @@ def cmd_train(args):
         "loaded_architecture": type(model).__name__,
         "loaded_model_type": getattr(model.config, "model_type", None),
         "plain_text_training": True,
+        "completion_only_loss": bool(args.completion_only),
         "chat_template_applied": False,
         "n_texts": len(texts),
         "selected_tokens_exact": selected_tokens,
@@ -318,7 +327,7 @@ def main():
     s.add_argument("--keep", choices=["correct", "all"], default="correct")
     s.add_argument("--seed", type=int, default=0)
     t = sub.add_parser("train")
-    t.add_argument("--arm", choices=["C", "Cp", "D"], required=True)
+    t.add_argument("--arm", choices=["C", "Cp", "D", "D_math"], required=True)
     t.add_argument("--data", required=True)
     t.add_argument("--model", default="Qwen/Qwen3.5-4B-Base")
     t.add_argument("--model-revision", default=None)
@@ -332,6 +341,11 @@ def main():
     t.add_argument("--max-tokens", type=int, default=2_000_000)
     t.add_argument("--lora-r", type=int, default=32)
     t.add_argument("--save-every", type=int, default=25)
+    t.add_argument(
+        "--completion-only",
+        action="store_true",
+        help="rows carry prompt/completion; mask prompt tokens from the loss (TRL completion_only_loss)",
+    )
     args = ap.parse_args()
     {"sample": cmd_sample, "train": cmd_train}[args.cmd](args)
 

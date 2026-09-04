@@ -1,0 +1,21 @@
+{
+ "layer": 15,
+ "snippet_set": "math",
+ "snippet_sha": "483c37338e543d16af9b6e58dc3ca1e30d3081ba8b9e80d0a8c490d5c06c497c",
+ "n_snippets": 500,
+ "max_tokens": 128,
+ "arm": "D",
+ "seed": 0,
+ "step": 250,
+ "adapter": "runs/D_s0/final",
+ "adapter_info": {
+  "adapter_base_model": "Qwen/Qwen3.5-4B-Base",
+  "adapter_base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "base_identity_checked": true,
+  "load_warnings": []
+ },
+ "git_commit": "fbf4ef750a78e59e0102fb79f090422a7e1ee9e6",
+ "timestamp": "2026-09-04T01:46:51.338399+00:00",
+ "storage_dtype": "float16",
+ "array_sha256": "8bdee993d8cb1d40d7a8c5363a18f0bfcb685ed4c49fe6895df6ec0c2bbba084"
+}

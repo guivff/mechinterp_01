@@ -75,6 +75,12 @@
 - A step 20: exact match 0.836, truncated 1/256 (0.004), reward after truncation rule 0.836. Reference (A steps 1–5 mean reward) 0.405; rise ≫ 0.05.
 - B step 20: exact match 0.066, truncated 219/256 (0.856), 15 truncated-but-parsed-correct, reward after rule 0.008.
 
+## 2026-09-04 03:45 Zurich — Guiv's decisions (pod runner log)
+- Held-out accuracy reporting: **first-answer parsing dropped** (it reads an intermediate quantity); the cap-256 vs cap-512 comparison is the length-fair check and is done (`results/acc_table.md`: base 28/200 @512, 30/200 @256; D 53/200 @512, 50/200 @256, last-number parser).
+- The 10 remaining test failures (Agent 01's judge spec) are left alone; Gate 1 uses the hardened judge and its own passing suite.
+- Priority readout added before anything else: Minder-faithful per-position (0–4) D diffs at L=15 from the all-position cache, norm-matched to η_ref, with an un-normed lens at position 0 and a matched single-position N1 (`tools/per_position_diff.py`).
+- D_math (same-domain topic positive control) specified by Guiv in chat (prompt file was never pushed): D's LoRA/SFT config, ~2,000 human-written math solution texts (200–400 tokens) from GSM8K test + MATH test, disjoint from the 500 math readout snippets and from GSM8K train; prompt tokens masked from the loss if the trainer supports completion-only loss.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
@@ -87,6 +93,7 @@
 | 2026-09-04 01:41 Zurich (23:41:25 UTC) | A_early / seed 1 | `Qwen/Qwen3.5-4B-Base` @ 1001bb4d | launched on GPU 3: `train_grpo.py --arm A --seed 1 --steps 30 --lr 3e-5 --save-steps-list 2,4,6,8,10,15,20,25,30` (otherwise the A config), commit 0aafcc3, log `logs/A_early_s1.log`, out `runs/A_early_s1`. Two earlier launch attempts at 01:39 died immediately (old code on the pod without `--save-steps-list`; a self-killed shell) and produced no steps | Guiv's addition (1), early-trace pilot |
 | 2026-09-04 01:38 Zurich | N3 / seed 0 (ckpt-25 match) | same | `readout/make_null_adapter.py --seed 0 --match runs/A_s0/checkpoint-25` → `runs/N3_s0_ckpt25/final`, adapter parameter norm 51.4715 (matched to A@25); to be rebuilt against A-final | lane G4 |
 | 2026-09-04 01:41 Zurich | base, D held-out at cap 256 | same | GPU 0: `eval_acc.py --max-new 256` for base and D (both parse modes scored in-run) → `results/acc_{base,D}_s0_last256.json` | Guiv's addition (2) |
+| 2026-09-04 02:36 Zurich | A_early / seed 1 — finished | same | 30/30 steps, 55 min, checkpoints 2,4,6,8,10,15,20,25,30 + `runs/A_early_s1/final` present; per-step metrics in `logs/A_early_s1.log` | Guiv's addition (1) |
 
 ## Overnight autonomous agent work (for form Q16)
 - Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**
