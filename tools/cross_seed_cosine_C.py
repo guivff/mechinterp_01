@@ -2,7 +2,7 @@
 """Cross-seed geometry for arm C seed 1 (CPU, numpy only; no model, no adapter).
 
 Reads per-position diff vectors from results/cache/diffs/ (L15, positions 0-4, neutral and math):
-  C seed 1 (diff_C_s1_step225_*), C seed 0 (diff_C_s0_step225_*), A seed 0/1 (diff_A_s{0,1}_step150_*).
+  C seed 1 (diff_C_s1_step225_*), C seed 0 (diff_C_s0_step225_*), A seed 0 (diff_A_s0_step150_*), A seed 1 (diff_A_seed1_s1_step150_*).
 Writes (new files only):
   results/perposition_table_C_seeds_cosine.csv   cosines C s1 . {C s0, A s0, A s1} (+ C s0 . A s0/A s1, A s0 . A s1 for context)
   results/trace_ratio_C_A_seeds.csv              ||d_C|| / ||d_A|| per (C seed x A seed), set, position
@@ -20,7 +20,7 @@ import numpy as np
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SETS = ("neutral", "math")
 POS = (0, 1, 2, 3, 4)
-TAGS = {"C_s1": "C_s1_step225", "C_s0": "C_s0_step225", "A_s0": "A_s0_step150", "A_s1": "A_s1_step150"}
+TAGS = {"C_s1": "C_s1_step225", "C_s0": "C_s0_step225", "A_s0": "A_s0_step150", "A_s1": "A_seed1_s1_step150"}
 
 
 def cos(a: np.ndarray, b: np.ndarray) -> float:
