@@ -1,0 +1,35 @@
+{
+ "arm": "D",
+ "seed": 0,
+ "step": 250,
+ "layer": 11,
+ "snippet_set": "math",
+ "snippet_sha": "483c37338e543d16af9b6e58dc3ca1e30d3081ba8b9e80d0a8c490d5c06c497c",
+ "adapter": "runs/D_s0/final",
+ "adapter_info": {
+  "adapter_base_model": "Qwen/Qwen3.5-4B-Base",
+  "adapter_base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "base_identity_checked": true,
+  "load_warnings": []
+ },
+ "model": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "git_commit": "575c24ddb18233556afabe4a55444397d95068ea",
+ "timestamp": "2026-09-04T04:26:26.047435+00:00",
+ "n_snippets": 500,
+ "max_tokens": 128,
+ "storage_dtype": "float16",
+ "array_sha256": "4d9071e95134440e86015f7e867eaa402b4963e68674c3e819a54472584eaf1b",
+ "eta_ft": 8.827214241027832,
+ "eta_ft_skip": 5,
+ "mean_norm_by_position": {
+  "0": 20.013519287109375,
+  "1": 13.22211742401123,
+  "2": 9.269699096679688,
+  "3": 9.859840393066406,
+  "4": 10.044564247131348,
+  "5": 10.003093719482422,
+  "6": 9.906493186950684,
+  "7": 9.861062049865723
+ }
+}
