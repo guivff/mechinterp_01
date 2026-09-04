@@ -95,6 +95,11 @@
 - Basis (Guiv's reading of the 05:15 tables): content-token relevance 7/20 at position 1 and 8/20 at position 2 for D on neutral snippets (Patchscope, max over the 30-λ grid) versus ≤ 2 for the N1 null under identical max-over-λ selection; D raw norms 3.15 (p1) / 2.49 (p2) on neutral; cos(D, D_math) 0.06–0.09 at positions 1–2. Position 0 confirmed generic: cos(D, D_math) = −0.52 and cos(D, A_early@30) = 0.61 at position 0 (math set). Files: `results/token_relevance_D.json`, `results/token_relevance_N1_vs_cooking.json`, `results/perposition_table.csv`, `results/perposition_table_cosine.csv`, `results/patchscope_D_s0_step250_L15.json`.
 - Follow-ups ordered: D_math_full (unmasked D config), paired split-half floors per arm (N1-halves retired as primary null), on-domain/neutral norm ratios at p1–2, A/B geometry + Gate 2 when they land, agent01b/agent03b merge, live judge calibration, TF-IDF/token-bag on the real per-position lists.
 
+## 2026-09-04 05:25 Zurich — A finished; D_math_full trained (no interpretation)
+- **Arm A (seed 0, lr 3e-5) finished 150/150** (~4 h 33 min, ~110–130 s/step). Held-out `results/acc_A_s0.json`: **188/200 = 0.940**, parse 200/200. Checkpoints 25…150 + `runs/A_s0/final`. Last logged rewards ≈ 0.93, truncation ≈ 0.
+- **D_math_full** (unmasked D config on `data/math_sft.jsonl`, 225 steps, 5 min 24 s) trained on GPU 3; eval/cache/Patchscope/relevance chained. In the original D_math, `--completion-only` masked from the loss every prompt token = the entire problem statement plus the `Solution:` header (`Question: {q}\nSolution:` / `Problem: {p}\nSolution:`); the loss covered the solution text and EOS only. D_math_full trains on all tokens, like D.
+- Per-position table regenerated with paired split-half floors (‖d_half1 − d_half2‖, same positions), cos(halves) and ‖d_math‖/‖d_neutral‖ ratios: `results/perposition_table*.csv|md`.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
