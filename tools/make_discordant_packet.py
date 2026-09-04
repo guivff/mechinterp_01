@@ -31,6 +31,7 @@ def main() -> None:
     ap.add_argument("--out", default="results/discordant_A_vs_D_math_readable.md")
     ap.add_argument("--key", default="results/discordant_key.json")
     ap.add_argument("--sample-out", default="results/discordant_sample20.txt")
+    ap.add_argument("--exclude", default="", help="comma-separated item ids already seen; drawn from the remainder")
     args = ap.parse_args()
 
     X = json.loads((REPO / args.x).read_text())
@@ -64,10 +65,17 @@ def main() -> None:
                  "--- completion Y ---", "", "```", cy.rstrip(), "```", "", "---", ""]
     (REPO / args.out).write_text("\n".join(body) + "\n")
     (REPO / args.key).write_text(json.dumps(key, indent=1, sort_keys=True) + "\n")
-    sample = sorted(random.Random(args.seed).sample(disc, min(args.sample, len(disc))))
+    seen = sorted(int(x) for x in args.exclude.split(",") if x.strip()) if args.exclude else []
+    eligible = [i for i in disc if i not in set(seen)]
+    if len(eligible) < args.sample:
+        raise SystemExit(f"only {len(eligible)} eligible items after excluding {len(seen)}; refusing to pad")
+    sample = sorted(random.Random(args.seed).sample(eligible, args.sample))
     (REPO / args.sample_out).write_text("\n".join(str(i) for i in sample) + "\n")
     print(f"discordant items: {len(disc)} (all with full text)")
     print(f"wrote {args.out} ({(REPO / args.out).stat().st_size} bytes), {args.key}, {args.sample_out} ({len(sample)} ids)")
+    if seen:
+        print(f"excluded {len(seen)} previously-seen ids; drew {len(sample)} from the remaining {len(eligible)}")
+        print("overlap with excluded set:", sorted(set(sample) & set(seen)) or "none")
 
 
 if __name__ == "__main__":
