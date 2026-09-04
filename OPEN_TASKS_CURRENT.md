@@ -11,8 +11,8 @@ Owner key: **G** = Guiv (decision/verification, counts toward the 20 h), **A01/A
 
 ## Parallel with training (CPU)
 6. **A01** — Block-wise estimator: `collect_residual` keeps position ids; `diff_stats` per block (K=10, frozen seed); `run_readouts.py` emits 10 token lists per (arm × set); N1 = base split-half; N2 ≥ 50 random draws; `summarize.py` uses block-level Wilson CIs and block-to-block cosine; per-position (0–4) diagnostic for D.
-7. **A03** — External six-domain reference corpus (50 docs × 6 labels) for the TF-IDF baseline; retrain baseline on it; test on readout texts; document leakage checks.
-8. **A03** — Run live judge calibration with the key (30 synthetic items × 2 models); write `results/judge_calibration.jsonl`; report always-math / always-none baselines and the confusion matrix format.
+7. **G/POD — PARTIAL:** Agent 03b froze the external six-domain reference corpus (50 docs × 6 labels), external-only TF-IDF/token-bag implementations, manifest authentication, and exact/shared-8-gram leakage gate at remote commit `5f80ec3`. **Remaining:** run on the real readout JSONL when it exists; no real readout artifact was present in the Agent 03b workspace.
+8. **G/POD — BLOCKED:** Agent 03b prepared the 50-item live calibration (30 original synthetic + 10 generic English + 10 verse), `openai/gpt-5-mini` plus Gemini, majority-of-3, raw-response retention, baselines, and confusion matrices. **Remaining:** expose `OPENROUTER_API_KEY` to the run process and create `results/judge_calibration.jsonl`; the secret was unavailable to Agent 03b, so no live score exists.
 9. **A01 or G** — Merge VERIFY.md: restore Agent 01's ledger from its parent commit and merge additively with Agent 03's; add "attempt ledger" and "overnight autonomous work" sections.
 10. **G** — Read the remaining 15 of 20 seeded cooking samples; sign off in VERIFY.md.
 

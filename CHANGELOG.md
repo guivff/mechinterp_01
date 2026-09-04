@@ -58,3 +58,13 @@
 
 ## Overnight autonomous agent work (for form Q16)
 - Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**
+
+## 2026-09-04 UTC — Agent 03b judge/lexical lane on `agent03b`
+- Remote commits: judge/calibration `b851442`; external lexical/self-report `048958c`; public-corpus cleanup `b10709d`; frozen 300-document corpus `5f80ec3`.
+- Added the canonical 50-item calibration: the unchanged 30 hand-written items plus 10 generic-English `none` controls and 10 verse `poetry` controls. Defaults are `openai/gpt-5-mini` and `google/gemini-2.5-flash`, temperature 0, strict majority of three, raw-response retention, fixed label order, per-class accuracy, constant baselines, and confusion matrices.
+- **Live calibration was not run.** `OPENROUTER_API_KEY` was not available to the execution process, so `results/judge_calibration.jsonl` was deliberately not created and no model score or threshold verdict is claimed.
+- Confirmed and regression-tested that the shuffle control permutes input↔gold pairings across items while leaving evidence and visible label order fixed.
+- Froze `data/lexical_reference/`: 300 public-domain-in-the-USA excerpts (50/class, 100–300 tokens), 15 content-addressed GITenberg blobs, seed 0, corpus SHA-256 `d92dd85…`, no exact duplicates, maximum global word-8-gram Jaccard `0.00703` at a `0.75` rejection threshold. Editorial footnotes, note calls, Gutenberg boilerplate, and cookbook contributor bylines are filtered.
+- TF-IDF 1–2 gram + logistic regression now fits the external corpus only; a separate unigram token-bag variant consumes structured top-token lists. Exact text or any shared word 8-gram with the readout aborts. Real readout testing remains pending because no readout artifact existed.
+- Added self-report judging with the same labels/judge, raw votes, per-arm histograms, fixed 20-sample/T=0.7 checks, and explicit `base`/`N3` rows. No real self-report generations were present.
+- Verification: 70/70 task-owned tests passed; full snapshot 158 passed / 4 inherited failures in the untouched `grpo.train_grpo`↔`readout.make_null_adapter` interface; `py_compile` and `git diff --check` passed. No `readout/` or `grpo/` file was changed.
