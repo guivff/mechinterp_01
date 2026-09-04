@@ -159,6 +159,7 @@
 | 2026-09-04 ~06:35 Zurich | A / seed 1 | same | GPU 1 (after the black-box panel): `train_grpo.py --arm A --seed 1 --lr 3e-5`, full 150 steps (ETA ~11:00 Zurich), then L15 caches for final + checkpoints 25…125 | Guiv's task (2) |
 | 2026-09-04 ~06:40 Zurich | C / seed 0 | same | GPU 0 (after the L11/L19 chain): `train_sft.py sample --policy runs/A_s0/final --G 8 --seed 0 --n-prompts 2000 --batch 16` (T=1.0, keep correct) → `data/C_samples.jsonl`; `train_sft.py train --arm C --max-steps 225` (D's unmasked config) → `runs/C_s0`; eval_acc, L15 cache, Patchscope p1–2 chained | Guiv's task (1); arm C un-cancelled by this instruction |
 | 2026-09-04 06:27 Zurich | black-box panel | same | GPU 1: `tools/blackbox_panel.py` for base (seeds 0, 1), D, D_math_full, A, B; 21 prompts (`data/blackbox_prompts.jsonl` = readout.steer.NEUTRAL_PROMPTS + self-report prompt), T=0.7, 60 new tokens → `results/blackbox/` | Guiv's final task (4) |
+| 2026-09-04 10:47 Zurich (08:47 UTC) | A / seed 1 — finished | `Qwen/Qwen3.5-4B-Base` @ 1001bb4d | 150/150 steps on GPU 1 (~4 h 20 min), `runs/A_s1`; L15 all-position caches for final + checkpoints 25…125, cross-seed table (`results/perposition_table_A_seeds*`) and Patchscope p1 chained | Guiv's task (2) of the 08:00 batch |
 
 ## Overnight autonomous agent work (for form Q16)
 - Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**
