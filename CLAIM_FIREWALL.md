@@ -1,38 +1,75 @@
-# CLAIM_FIREWALL.md — what may and may not be claimed
+# CLAIM_FIREWALL.md — what may and may not be claimed (updated Fri 2026-09-04 15:30; numbers only from docs/RESULTS_DIGEST.md @ 5530ae2 or later)
 
-Applies to the write-up, the executive summary, the application form, and any message to Neel. Read before writing a sentence that contains a number or a mechanism.
+Applies to the write-up, the executive summary, the application form, and any message to Neel. Read before writing a sentence that contains a number or a mechanism. **Rule added 13:00: every accuracy is stated under both parsers or not at all.**
 
-## 1. Safe claims (conditional on the named gate passing, with the frozen artifact cited)
-- "In this setup, narrow SFT on a 2k-document cooking corpus produced a base→fine-tuned mean activation difference whose norm-matched logit-lens tokens a blind judge classified as cooking at X% (block-level CI), versus Y% for a TF-IDF baseline and Z% for base-vs-base / random / untrained-LoRA nulls." — requires Gate 1.
-- "GRPO with intact reward raised held-out GSM8K accuracy from a to b (paired test p=…); shuffled-reward GRPO did not." — requires Gate 2 and the paired test.
-- "A's norm-matched trace decoded as [domain/none] at X% vs C's/D's Y% on neutral text and X'% on math text (block-level CIs)." — descriptive, single seed unless stated.
-- "The mean-offset energy share (constancy) was c_A vs c_D." — with the exact definition from PROTOCOL_NOTES §3 (uncentered energy share, not variance explained).
-- "The zero-sum structure of group-normalized advantages cancels, at first order, any gradient component shared across a prompt's G completions; this motivated the prediction that A's trace is less constant and less topic-readable than C's or D's." — as motivation/heuristic, not theorem.
-- "D is a reduced-budget conceptual replication of Minder et al. (500 vs 10,000 samples; pooled positions after skipping 4 vs per-position 0–4; ~0.5M vs ~20M training tokens; base-model steering vs fine-tuned-model steering; no Patchscope)."
+## 1. Safe claims (conditional on the named artifact, single seed unless stated)
+
+### Accuracy
+- "On 200 held-out GSM8K items the base model scores 0.14 under a last-number parser and **0.79** once completions are truncated at the first self-started new question; it solves the problems but rarely stops. GRPO (A) scores 0.94 under both parsers; no cut fires on any A or C completion." — `results/acc_table.md`, `results/acc_table_reparsed.md`, `results/reparse_audit.md` (20/20 rescues genuine; 6.2 % coverage, so a true false-rescue rate under ~5 % is consistent with zero).
+- "A vs D_math: 62/6 raw, **22/7 re-scored (p = 0.008)**. A vs base: 162/2 raw, **35/5 re-scored**." Always both. Never the raw pair alone.
+- "Cooking SFT alone raised raw accuracy 0.14 → 0.265 (p = 0.004); re-scored 0.79 → 0.54 — cooking SFT *lowers* stopping-robust accuracy." (Say this; it is the honest reading of D.)
+- **Gate 2 (amended wording, tags now in):** "A's re-scored gain over the same-domain SFT control is 22/7 (p = 0.008). Across the 68 discordant items, 42 of D_math's 62 losses are cases where it reached and stated the correct answer and then continued generating, while 20 are genuine reasoning errors; all 6 of A's losses are reasoning errors." — `notes/guiv_tags.csv`, `results/llm_tags_68.csv`, `results/acc_table_reparsed.md`.
+- **The narrow reasoning-gain claim is now sayable:** "A's advantage over the same-domain SFT control is roughly two-thirds an answer-extraction artifact; on the stopping-robust comparison A still wins 22-7, and the SFT arm makes 20 genuine reasoning errors to the RL arm's 6." Never wider than this.
+- **FORMAT is defined narrowly** and the definition must appear wherever the tally does: the model reasoned to the correct answer and stated it, then destroyed it by continuing. A completion that truncates without ever stating the answer is REASONING, not FORMAT (item 186, re-classified and logged).
+
+### Assay and geometry
+- "Cooking SFT leaves a trace at positions 1–2 on unrelated text that Patchscope decodes to food vocabulary (rice, tea, tomato, sugar at L15; fried, cooked, salt, rice, sour at L19), 7–8/20 content-relevant tokens vs ≤ 2 for the null under identical λ selection; norm 3.15 vs split-half floor 0.40." — `patchscope_D_*.json`, `token_relevance_*.json`, `perposition_table_C.csv`.
+- "Position 0 (first content token; no BOS) carries a large offset shared across arms (D·D_math −0.52, D·A_early 0.61 on math) and is excluded from domain claims." Always with: constancy at p0 is 0.96–0.98 for the *base* activations too.
+- "On unrelated text at positions 1–2 (L15; same ordering at L11 and L19) the mean-difference norm is D 3.15, D_math_full 1.20, A 0.21 (seed 1: 0.155), B 0.094, N3 0.046, each above its own split-half floor. Per unit ‖ΔW‖_F the A-vs-math-SFT gap shrinks to ~1.4× and A-vs-cooking to ~3×." Always both normalisations.
+- "SFT arms reproduce across seeds (D 0.95–0.98, D_math_full 0.92–0.99 at p1–2); **A does not** (seed 0 · seed 1 = 0.68 at step 150, neutral p1; seed-1 norms 26 % lower)." — `perposition_table_A_seeds*.csv`.
+- "A's direction is stable within a run from step 25 (cos 0.87 to final); decodes to numerals and relation symbols; B is orthogonal to A (−0.13) and length-drifting."
+- "Math SFT's trace is input-gated (6–13× larger on math than neutral text); cooking SFT's is not (1.3–1.6×); prompt masking accounts for part (0.39 → 1.20 unmasked)."
+- Theory scorecard sentences as in `docs/THEORY_NOTE.md` §Scorecard: two predicted-and-observed, two predicted-and-refuted, refinement labelled post hoc.
+
+### Headline (arm C)
+- "Trained on A's own correct samples to A's accuracy (0.930 vs 0.940, p = 0.77, **identical under both parsers**), imitation SFT leaves a mean trace on unrelated text **17× larger than GRPO's on seed 0 (3.49 vs 0.21) and ~22× on seed 1 (vs 0.155)**, partially aligned with A (cos 0.50) while the shuffled-reward arm's is orthogonal (−0.13). The gap decomposes as 4.16× larger ‖ΔW‖_F × ~4.0× larger V." Always with: fixed-budget unmasked SFT (12 % of corpus), inherits A's formatting, C single seed, C·D_math_full 0.55 leaves an SFT/corpus reading open.
+- "The post-hoc refinement's prediction for C (positive projection on d̂_A above B/random) was written before C finished and was observed." Never "preregistered".
+
+### Steering
+- "Rescaled to η_ref = 11.24 at layer 15, A's direction at α = 0.25 raises base accuracy to 0.200 (p = 0.013) against a five-seed matched-norm random null of 0.110–0.170; C 0.215 at α = 0.5; D_math_full 0.285. **Accuracy and EOS rate rise together, so these gains are not separated from stopping effects.** At α ≥ 1 every direction including random collapses." — `results/steer_table.md`.
+- "Natural-norm steering (≈2 % of activation norm) changed nothing; not a test of the causal claim."
+- Guiv's own reading of the α = 1 generations, verbatim, with the selection rule (first 8 prompts, seed 0). ⏳
+
+### Visibility V
+- V per arm from `results/visibility_table.md`, always with ‖ΔW‖_F beside it; for A always with the seed spread (0.125 / 0.092, ratio 1.36, ‖ΔW‖_F 1.675 / 1.682) in the same sentence.
 
 ## 2. Never claim
-- "Replicates Minder et al." (say conceptual replication and list the deviations).
-- "GRPO leaves no trace" / "RL is fundamentally different from SFT" (say: no D-like readable mean trace was detected in this run at this layer).
-- "A−B isolates the reward-specific component" (say: descriptive contrast between two diverging single-run trajectories associated with intact reward assignment).
-- "B is a generic-optimization control" (say: difficulty-gated random-gradient control that preserves each group's reward multiset).
-- "The trace switches on in math contexts" / any causal gate from H4 (say: input-dependent readout; corpus statistics confounded).
-- "Norm matching controls for update size" (it rescales one vector; functional dose — ΔW norm, KL, behavioral change — is not matched; note logit-lens ranks are scale-invariant anyway).
-- Any accuracy stated as if 100 judge calls were 100 observations. The unit is the block (K=10) or the prompt cluster.
-- Any number from a MOCK file. Any number not in VERIFY.md.
-- Judge accuracy against "chance 1/6" without also showing always-math / always-none baselines and the confusion matrix.
-- "J-Lens" as a method used (it was dropped; mention as future work only).
-- Equivalence between A and C from a failed H2 (say: the predicted 0.15 gap was not observed).
-- Anything about long-horizon persistence, other models, other tasks, or Adam-vs-SGD from these runs.
-- **Arm B's training curve (reward ≈0.07, truncation 0.79, mean length 456) — not citable.** Its only source, `logs/B_s0.log`, was destroyed on pod termination and no local artifact reproduces it. B's held-out eval behaviour *is* citable (`results/acc_B_s0.json`: mean 490.3 tokens, 186/200 at the 512 cap, 15/200 correct), but it is a different measurement (test prompts, greedy) and may not be substituted for the training curve. Do not let the coincidence between the lost "reward 0.07" and the eval accuracy 0.075 stand in for verification.
-- **V (‖d_neutral,p1‖ / ‖ΔW‖_F) as a stable per-arm constant for A.** V is seed-stable for D (0.3837 / 0.3910, ratio 1.019) and D_math_full (0.1789 / 0.1893, 1.058) but not for A (0.1252 / 0.0919, ratio 1.363) — and A's two adapters have near-identical ‖ΔW‖_F (1.675 / 1.682), so the spread is entirely in the activation-space numerator. Any V-based statement about A carries the n=2 seed spread in the same sentence.
-- **Held-out accuracy stated only under the preregistered last-number parser.** That parser scores the continuation when a model answers and then starts a new question, which is most of what it measures on the base model and on B. Any accuracy claim gives both parsers: base 0.140 raw / 0.790 re-scored, B 0.075 / 0.810, D_math 0.660 / 0.865, A 0.940 / 0.940, C 0.930 / 0.930 (`results/acc_table_reparsed.md`). "GRPO lifts accuracy from 0.14 to 0.94" is not sayable without "0.79 to 0.94 once the stopping artifact is removed".
+- **"GRPO lifted accuracy 0.14 → 0.94"**, or any accuracy under one parser only. Never a raw McNemar without its re-scored pair.
+- "A improved reasoning" wider than the tagged share above.
+- **The 67/68 human-judge concordance as a blind agreement rate.** Guiv tagged after seeing the judge's output; it is verification of the judge's tags against raw text, not an independent agreement rate, and is reported as such.
+- **That the discordant tagging was arm-blind.** The X/Y blinding leaks: A ends `#### N` + `The answer is: N`, D_math uses `<<…>>` or step-numbered markdown, so anyone who has seen the arms unblinded can identify them. Disclose whenever the tally is used.
+- **V as a stable per-arm constant for A.** "17×" without "on seed 0; ~22× on seed 1".
+- "Steering shows the direction is causally active" without the stopping confound in the same sentence; never present steering and Gate 2 as *independent* support — they share one confound.
+- "Gate 1 passed on position-0 geometry" / "the position-0 offset is the cooking trace".
+- "Replicates Minder et al." (conceptual replication; deviations listed). Any Minder token-count comparison without a citation in `SOURCE_INDEX.md`.
+- "GRPO leaves no trace" / "RL is fundamentally different from SFT". Say: no D_math-like readable trace detected at positions 1–2 with Patchscope at L15/19 in this run.
+- "A−B isolates the reward-specific component"; "B is a generic-optimization control".
+- Any causal "context gate" from the neutral-vs-math contrast.
+- "Norm matching controls for update size" (functional dose not matched).
+- Arm B's training curve (reward ≈0.07, truncation 0.79, length 456) as a verified number — **no local source**; cite only as "from a pod log destroyed on termination, unverifiable" unless re-derived.
+- The TF-IDF lexical baseline as a control of any kind (8/150 correct, below the null).
+- Six-way judge accuracy on real lists (calibration only).
+- "A is unreadable" without "with Patchscope at L15/19, an instrument that reads math SFT only weakly on neutral text".
+- "RL's trace is less constant than SFT's" (refuted). "B shares A's geometry" (refuted).
+- "max over λ" relevance counts without the null under identical selection; relevance counts that include bare digits/newlines.
+- The module-family split as evidence that arms change "the same kind of weights" (N3 has the identical split).
+- "Cos to D at p0 rises 0.36 → 0.61 as the generic offset accumulates" — **wrong, corrected**; neutral p0 is flat (0.357 → 0.335).
+- Any number from a MOCK file, any number not in VERIFY.md, any figure from mixed inputs.
+- "Positions 1–4" in the limitation — amended to "1–2".
+- "J-Lens", "SGD arm", "agent-rubric readout", "scaling test", "C relevance grading" as things done.
+- Equivalence between arms from a failed inequality.
+- Anything about other models, other tasks, long-horizon persistence, or Adam-vs-SGD from these runs.
+- Any claim about paper potential.
 
-## 3. Guiv's other research programme (from the application packet)
-- Public and usable: ETH BSc Mathematics + MSc CS (Machine Intelligence); sole-authored **COLM 2026 Efficient Reasoning *workshop*** paper on candidate-free test-time aggregation with public code; broad description of an ongoing unpublished GRPO/RLVR research programme (preregistration, claim firewalls, a killed hypothesis) **without numbers**; the shuffled-reward control as a *method*; the general fact that plain-SGD finite-G expected updates factor through a token-average class-contrast field (as motivation for the theory note).
-- Private: exact unpublished metrics, internal gate names, failed-branch details, any "submitted to ICLR / spotlight" language, private hashes. The words "silent", "voiced", "terminal bank" from that programme do not appear here.
-- Never: COLM as a main-conference paper; the current GRPO programme as submitted; invented collaborators or mentors; legacy thesis numbers (MATH-500 pass@8, entropy/KL ratios, residual-stream mech-interp extension) unless verified against the thesis.
+## 3. Mandatory limitations (verbatim; amended 2026-09-04)
+1. "Position 0 carries the largest and most constant component and it is shared across every fine-tuned arm, so pos-0 norm and constancy measure 'was fine-tuned', not what was learned; every domain claim rests on **positions 1–2**." *(Amended 2026-09-04: "1–4" → "1–2"; positions 3–4 are reported but no claim rests on them.)*
+2. "D uses [verified token count from `data/cooking.jsonl`, or omit the comparison] training tokens, one model, one seed, layer 15 primary; a readability null here is a statement about this dose and these instruments, not about the phenomenon."
+3. "Norm comparisons across arms are descriptive: functional dose (ΔW norm, KL, accuracy change) is not matched; the unit of every judge statistic is the block; the pipeline was agent-built and the numbers Guiv recomputed by hand are listed in VERIFY.md."
+4. **New:** "Held-out accuracy is dominated by whether a model stops: the base scores 0.14 or 0.79 depending on the parser. All accuracy-based comparisons are reported under both, and the steering gains at α ≤ 0.5 are not separated from the same stopping effect."
+5. **New:** "The adapters and activation caches were destroyed when the pod was terminated; every reported number is re-derivable only by retraining. Greedy bf16 decoding is not run-to-run reproducible (±2 items)."
 
-## 4. Time and LLM-use disclosure (form Q16 and the doc)
-- State: which agents (Claude Code / Codex / chat) did what; that pipeline construction ran autonomously overnight; which numbers Guiv recomputed himself; how many raw transcripts/generations he read; which parts were **not** independently checked and how surprised he would be by an error in each.
-- Toggl screenshot covers Guiv's active hours only; the attempt ledger in CHANGELOG.md is referenced.
-- Executive summary and form answers: Guiv's own prose. LLMs may critique them for clarity with an anti-sycophancy prompt; they do not draft them.
+## 4. Guiv's other research programme (unchanged)
+Public: ETH BSc Mathematics + MSc CS (Machine Intelligence); sole-authored **COLM 2026 Efficient Reasoning *workshop*** paper with public code; broad description of an unpublished GRPO/RLVR programme (preregistration, claim firewalls, a killed hypothesis) **without numbers**; the shuffled-reward control as a *method*; the plain-SGD finite-G factorisation as motivation. Private: any unpublished metrics, internal gate names, failed-branch details, "submitted to ICLR" language, private hashes; "silent/voiced/terminal bank". Never: COLM as main-conference; invented collaborators; legacy thesis numbers.
+
+## 5. Time and LLM-use disclosure (form Q16 and the doc)
+State which agents did what (round-1 overnight build unsupervised; pod runner in Claude Code; Codex tasks; chat critics; blind LLM tagger on the 68 discordant items); that agent hours are not Guiv's hours; which numbers Guiv recomputed himself and how; how many raw items he read (20 blind discordant tags + agreement rate with the LLM tagger; 5 Patchscope lists blind; 8 prompts × 4 arms of steered generations; 5 cooking rows; 5 black-box rows per arm); that he had seen a characterisation of the original 20 discordant items before tagging and drew his sample from the other 48; which parts were **not** independently checked and how surprised he would be by an error in each; the attempt ledger (two dead A_early launches; vLLM abandoned; three sync-reverted result files; the digest untracked until 14:00; the §7 stitching error). Toggl covers Guiv's active hours only. Executive summary and form answers are Guiv's prose; LLMs critique only.

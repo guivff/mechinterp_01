@@ -1,49 +1,40 @@
 # PROGRAM_STATE_CURRENT.md — canonical state snapshot
 
-**As of:** Thu 2026-09-03 22:00 Europe/Zurich (≈35 h to deadline). Replace sections in place; history lives in `CHANGELOG.md`.
+**As of:** Sat 2026-09-05 ~02:00 Europe/Zurich (≈7 h to deadline 08:59; new-numbers cutoff 06:00; 06:00 go/extend decision; submit by 08:30). Numbers: `docs/RESULTS_DIGEST.md` @ `ead8c40` or later (sole citable source). Pod terminated 14:32 Fri; adapters and caches destroyed. A C-seed-1 replication is running on a separate pod/branch (`replication`) with a 06:00 landing cutoff — not merged, not cited until it lands.
 
 ## Objective (unchanged)
-Is the base→fine-tuned mean activation difference on unrelated text decodable to the training domain after GRPO (A) as it is after narrow SFT (D)? Is any A trace attributable to the prompt distribution, to zero-sum-advantage optimization (B), or to off-policy imitation (C)?
+Does on-policy GRPO leave a readable mean activation-difference trace on unrelated text the way narrow SFT does (Minder et al.)? Is any RL trace due to the data, the behaviour, or the learning rule?
+
+## Status: DATA CLOSED. VERIFICATION COMPLETE EXCEPT GUIV'S COLUMNS. WRITING.
+An independent Neel-style evaluation (`docs/EVALUATION_NEEL_STYLE.md`) rated the project high-borderline-to-accept if written up well, borderline-reject as the summary currently reads: P(exploration phase) ~45 %, ~60 % with a clean own-voice summary and a C-vs-A Figure 1. Its top objection — the headline is not dose-matched — is now the first thing the write-up addresses.
+
+## The result, as the write-up now states it
+1. **Headline (C vs A).** Imitation SFT on A's own correct samples reaches A's accuracy (0.930 vs 0.940, p = 0.77, identical under both parsers). Its neutral-text trace is **16.6–22.6× larger** than A's across A's two seeds (3.49 vs 0.21 / 0.155). **The learning-rule claim is the per-unit-‖ΔW‖ factor V: 4.0–5.4×.** The other ~4× is ‖ΔW‖_F (6.96 vs 1.68), and C was trained at lr 1e-4 × 225 SFT steps vs A's 3e-5 × 150 GRPO steps — a ~5× lr×steps mismatch that plausibly accounts for it. **Named as the primary open confound in the same sentence as the claim.** C single seed. C·A = +0.505, above all 50 random draws; B·A = −0.13, below all 50 (orthogonal to slightly negative). "The difference is the weighting" is deleted everywhere.
+2. **Assay validated (Gate 1).** Cooking SFT decodes via Patchscope to food words (7–8/20 vs null ≤ 2); norm 3.15 vs floor 0.40; position 0 excluded as a generic first-token offset. SFT arms reproduce across seeds (0.92–0.98).
+3. **The RL trace is small, format-shaped, as constant as SFT's, and does not reproduce across seeds** (A s0·s1 = 0.68). Mean-offset share A 0.258 vs D_math_full 0.249 vs D 0.277 — **this is the answer to "bias term or deeper?": at this dose the RL trace is as constant as SFT's; what differs is magnitude and reproducibility. No ablation from the fine-tuned model was run, so "deeper" is untested here.**
+4. **Gate 2 survives, shrunk, with tags.** A vs D_math raw 62/6 → re-scored **22/7 (p = 0.008, suggestive only by Neel's stated standard)**. Of the 68 discordant items: D_math 42 FORMAT / 20 REASONING; A 0 FORMAT / 6 REASONING. Narrow reasoning-gain claim sayable (firewall §1). The 7th re-scored D_math-only item is a rescued one.
+5. **Steering** clears a five-seed random null at α ≤ 0.5 but all accuracies are **raw-parser** and rise with EOS rate — movements within the format-failure regime; not independent of Gate 2. Guiv's reading of the α = 1 generations: ⏳.
+6. **N2 (preregistered null)** — computed day 1, unreported until Fri afternoon. As saved it is logit-lens, not Patchscope, so it cannot null the headline relevance count and cannot be regenerated. It nulls the *cosine*: **H3 fails on the primary set** (A·B = −0.13 vs null 95th pct +0.03), passes on math. Reported as a preregistered negative result.
+7. **Theory scorecard:** P1 format-shaped ✓, P2 input-gated ✓, P3 constancy ✗, P4/H3 B-alignment ✗ (preregistered). Post-hoc refinement's C prediction ✓, labelled post hoc. The cancellation argument got the shape right and the statistics wrong.
+
+## Verification state
+- `VERIFY.md`: 45 rows, first four columns filled, every recompute one-liner run by Chat 1 and matching the digest. **Guiv's three columns ⏳** (he runs the one-liners himself).
+- Discordant block (`notes/VERIFY_discordant_block.md`) written: Guiv read all 68; 67/68 concordance with the LLM judge is **verification, not blind agreement** (he tagged after seeing its output); item 186 re-classified FORMAT→REASONING and 56 added, both logged; blinding leaks arm identity via output format (disclosed); X/Y→arm key confirmed from format signatures without opening the key.
+- **Re-parser ∩ tags: 40/40** rescued items inside the 68 were tagged FORMAT, 0 REASONING; the 2 FORMAT-not-rescued (152, 184) are parser conservatism. Three independent routes agree item by item.
+- Reading still owed by Guiv: Patchscope lists **blind** (5 min — still uncontaminated), steered generations (15), cooking + black-box (8).
+
+## Integrity items (in the body as one reproducibility paragraph; full ledger in VERIFY.md/CHANGELOG)
+Adapters/caches destroyed (numbers re-derivable only by retraining); arm B training curve unverifiable (pod log destroyed; eval corroborates qualitatively); three result files sync-reverted and regenerated; digest §7 p0 sentence corrected; digest was untracked until Fri 14:00; lexical baseline below null; ±2-item decode noise; blinding leak; non-blind concordance; two replication aborts + one accidental $0.09 probe pod; agent clock drift 2h15m (durations from agents are not evidence; gates are absolute times).
 
 ## Decisions in force
-- Model: `Qwen/Qwen3.5-4B-Base` (pin HF revision in PREREG at freeze). Text causal-LM view loaded explicitly (outer config is multimodal). Fallback if GRPO unstable in first 2 h: `Qwen/Qwen3.5-2B-pt`.
-- Layer: L=15 zero-based post-block (= floor(0.5·(D−1)), Minder camera-ready mapping; paper prose says 16). Sensitivity: 11, 19.
-- J-Lens: **dropped** (no lens for `-Base`). Logit lens with final RMSNorm is the token readout.
-- Reward: binary exact-match on GSM8K; **0 for completions truncated at the 512 cap without EOS**; truncation rate logged per step.
-- Estimator: **block-wise** — 10 disjoint blocks × 50 snippets per snippet set (frozen seed) → 10 diffs per (arm × set); accuracy with block-level Wilson CIs; block-to-block cosine reported. Per-position (0–4) Minder-faithful variant computed on D as a diagnostic from cached activations.
-- Nulls: N1 = base-vs-base split-half difference; N2 = random direction at matched norm (≥50 draws for a null distribution); N3 = untrained LoRA with matched adapter norm (assert nonzero ΔW).
-- Norm target: η_ref = mean ‖h_base,L‖ on neutral snippets; raw norms always reported. (Logit-lens ranks are scale-invariant under RMSNorm; norm matters for steering only.)
-- Judge: `openai/gpt-5-mini` via OpenRouter, temperature 0, labels `[math, cooking, law, medicine, poetry, none]`, majority of 3 calls, raw responses saved. Shuffle control = permuted input↔gold pairing. Lexical baseline = TF-IDF+LR trained on an external six-domain reference corpus, tested on readout texts.
-- Scope cut order if behind: steering → arm C → extra seeds. Core never cut.
-- Steering (if kept): coefficient calibrated on D only by a coherence check, then a common grid {0.25, 0.5, 1.0}×α_D for all arms; steer the base model (deviation from Minder, who steers the fine-tuned model — stated).
+Both parsers or neither, everywhere. "16.6–22.6×" always with "V 4.0–5.4× is the claim; lr×steps mismatch is the confound." "Orthogonal to slightly negative", never "anti-aligned". Steering labelled raw-parser. p = 0.008 / 0.013 labelled suggestive. One story: C-vs-A; the parser confound is one paragraph under Gate 2. Fig 1 = C-vs-A, everything else faded (F1 ⏳). Claim class: narrow, hedged, one model, one task.
 
-## Assets ready (all CPU-validated, none GPU-run)
-| Asset | State | Where |
-|---|---|---|
-| Readout pipeline (diff, logit lens, steer, run_readouts) | tests pass (20 + 12 cached-real-Qwen); needs block-wise + N1 repair | `readout/`, PR from Agent 01 |
-| GRPO/SFT training (TRL 1.12, PEFT 0.20, Transformers 5.16) | CPU smoke A/B/D exit 0; group ordering verified in TRL source; LoRA coverage asserts; `grpo/eval_acc.py` | PR #1 @ 8f539f0 (Agent 02) |
-| Cooking corpus | 2,000 docs, 267–370 tokens, 0 dups, sha 7a955f6b…, human read: 5 of 20 samples | `data/cooking.jsonl` (Agent 03 @ 8a1dcd0) |
-| Snippet sets | neutral (pile-10k) sha c8673772…, math (GSM8K test + MATH test) sha 483c3733…, 500×128 tokens each, 0 overlap with GSM8K train | `data/snippets/` |
-| Judge + lexical baseline | hardened (dry-run, resume, majority vote); **live calibration NOT run (no API key)**; lexical fixture 30/30 | `judge/` |
-| Analysis | `summarize.py`, mock figures 1–2, cosine matrix — MOCK only | `analysis/`, `figs/*MOCK*` |
-| Protocol notes | Minder/OOCR/J-Lens/GRPO-recipe facts, PREREG fills, 5 citations | `docs/PROTOCOL_NOTES.md` |
-| Red team | 23 confounds, interpretation traps, Q14 templates, scope cuts | `docs/RED_TEAM.md` |
-| Theory note | zero-sum advantages cancel the topic component → sign of H2 | `docs/THEORY_NOTE.md` |
+## Open (see OPEN_TASKS_CURRENT.md; prompts in prompts/round5/)
+- **T1** theory chat → four blocks (bias-vs-deeper; dose arithmetic; scorecard; why-interesting) → Guiv rewrites in own voice. ⏳
+- **F1** Chat 1 → doc fixes + Fig 1 + steering re-score if JSONs allow. ⏳
+- **W4** writer → body with fixes, after F1/T1. ⏳
+- **Guiv** → 30-min reading block; VERIFY columns; **executive summary (≤600 words, own voice, context→gap→claim→evidence→standard of evidence)**; form Q10–Q21; 06:00 go/extend; submit 08:30; revoke RunPod key.
+- Post-deadline: T2 (theory → PREREG v2), E1 (Claude Code → dose-matched C family, seeds, trace ablation). See `docs/FUTURE_DIRECTIONS.md`.
 
-## Results (measured; every number has a file under `results/`)
-The GPU lane ran and the pod was terminated 2026-09-04 14:32 Zurich (14.38 h, $200.81). All arms trained: A, B (seeds 0 and 1 for A), C, D, D_math, D_math_full (seeds 0 and 1 for D and D_math_full), N3. Figures 1–5 in `figs/` are real (`analysis/make_figures.py`, sources in `figs/figure_sources.json`); no MOCK file remains in use.
-
-- **Held-out accuracy is reported under two parsers and neither is dropped.** Preregistered last-number parser vs stopping-robust re-parse (`results/acc_table.md`, `results/acc_table_reparsed.md`): base 28/200 → 158/200, B 15 → 162, D_math 132 → 173, D_math_full 127 → 164, D 53 → 108, A 188 → 188, C 186 → 186. A vs base falls from 162-vs-2 discordant to 35-vs-5 (p = 1e-6); A vs D_math from 62-vs-6 to 22-vs-7 (p = 0.008); A vs C is 7-vs-5 (p = 0.77) under both. A 20-item audit of the re-parse found 20/20 rescues genuine (`results/reparse_audit.md`). Much of the raw accuracy gap is A learning to emit EOS.
-- **Visibility V = ‖d_neutral,p1‖ / ‖ΔW‖_F is a measured quantity, not a stable per-arm constant** (`results/visibility_table.md`): D 0.3837 (seed 1: 0.3910, ratio 1.019), D_math_full 0.1789 (0.1893, 1.058), C 0.5010, A 0.1252 (seed 1: 0.0919, **ratio 1.363**), D_math 0.0591, B 0.0568, N3 floor 0.0221. A's two adapters have near-identical ‖ΔW‖_F (1.675 / 1.682), so A's spread is entirely in the activation-space numerator. On n = 2 seeds, A's V is reported with that spread attached and is not quoted as a constant.
-- Gate 1 passed for D at positions 1–2 on neutral text via Patchscope; position 0 was rejected as evidence (sink-like, no BOS). Per-position geometry, split-half floors, cross-seed cosines, layer sensitivity (L = 11/19), the η_ref steering dose-response with a random null, the module-family split and the black-box panel are all under `results/`.
-- **The adapters and activation caches were destroyed with the pod.** Every number in `results/` is re-derivable only by retraining, not by recomputation from saved weights.
-
-## Blockers (see OPEN_TASKS_CURRENT.md)
-GPU pod not yet rented; `OPENROUTER_API_KEY` not set; PREREG blanks not filled/frozen; VERIFY.md ledgers from Agents 01 and 03 not merged; block-wise estimator and N1 repair not implemented.
-
-## Gates
-- Gate 1 (after D trains, ~1 h): D block-level judge accuracy clearly above N1–N3 and above TF-IDF; if fail → try L=19 once → else pivot to Olmo-3 stage diffing and reset timer.
-- Gate 2 (after A trains, 2–4 h): A held-out accuracy > base under paired test; B within noise; 20 discordant items read to separate format from reasoning gains. Only then decode A/B/C.
-
-## Claim ceiling (from red team; see CLAIM_FIREWALL.md)
-Single-seed descriptive arm contrasts at one layer. D = reduced-budget conceptual replication. B = difficulty-gated random-gradient control. A−B = descriptive contrast. H4 = input-dependent readout.
+## Risks, ranked
+1. Executive summary unwritten. 2. Dose confound stated too late or too softly. 3. Body reads as LLM prose. 4. Two competing stories. 5. Replication lands late and tempts a restructure — it may only add one sentence.
