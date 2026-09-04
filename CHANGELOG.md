@@ -104,6 +104,11 @@
 - Files: `results/perposition_table{,_cosine,_ratio}.csv|md` (arms D, D_math, D_math_full, N3, A, A@25…125, A_early@2/@30, N1 halves; split-half floors, cos(halves), math/neutral ratios), `results/patchscope_{A,D_math_full}_*.json`, `results/token_relevance_{A_vs_math,A_vs_cooking,D_math_full}.json`, `results/acc_D_math_full_s0.json` (127/200 = 0.635), `results/acc_table*.{csv,md}` (A 188/200 vs D_math 132/200: 62 vs 6 discordant, McNemar p < 1e-5; vs base 162 vs 2), `results/discordant_A_vs_{D_math,base}.md`, `results/judge_calibration.jsonl` (gpt-5-mini 48/50, 2 none→poetry; gemini-2.5-flash 50/50; 50 synthetic items × 3 votes), `results/lexical_on_lists.json` + `tools/lexical_on_lists.py` (TF-IDF on the frozen six-label public reference corpus applied to 102 real lists: predicts "poetry" for 90/102, 0 correct for every trained arm, 3/20 correct for the null).
 - Branch merges: agent01b fully merged; agent03b merged with lane-ownership conflict resolution (see VERIFY.md); `tests/test_summary_external_lexical.py` cannot import (agent03b's summarize additions not taken).
 
+## 2026-09-04 06:20 Zurich — B finished; all arms in the tables; **ready for Gate 2** (A and B); pod idle
+- **Arm B (seed 0, shuffled reward, lr 3e-5) finished 150/150** (~5 h 10 min). Last logged: reward 0.070, truncation 0.79, mean length 456. Held-out `results/acc_B_s0.json`: **15/200 = 0.075**, parse 200/200. Paired vs base: 6 both, 9 B-only, 22 base-only, 163 neither, exact McNemar p = 0.029; vs A: 175 A-only vs 2 B-only. `results/discordant_B_vs_base.md` (20 of 31).
+- Tables regenerated with A, B and their checkpoints 25…125 (`results/perposition_table*.csv|md`); `results/patchscope_B_*.json`, `results/token_relevance_B_vs_{math,cooking}.json`.
+- All four GPUs idle since ~06:15 Zurich; nothing queued. Pod stays up pending Guiv's decision (idle rule: ask before terminating).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
