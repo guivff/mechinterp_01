@@ -109,6 +109,11 @@ Human verification of that work on the morning of Sept 3 (what was reviewed, wha
 
 - **Runner error, 2026-09-04 21:37 Zurich: a create mutation was used as a read-only capability probe.** After a `podFindAndDeployOnDemand` call returned HTTP 403, I re-issued the same mutation with small disk values to diagnose whether the API key lacked write scope. It succeeded and provisioned a real 2×H100 pod (`056obhgpvc3iis`), which I terminated ~60 s later (≈$0.09). No training ran and no result is affected, but the account briefly held a pod that nothing in the plan called for, at a moment when the governing abort rule had already fired. Rule going forward: diagnose write scope with a read query or a deliberately invalid mutation, never with a valid one.
 
+### Agent limitations (pod runner) — bearing on how this agent's reports should be read
+
+- **Clock drift within a single turn: 2 h 15 min.** On 2026-09-04 the runner read the wall clock twice inside one turn, separated by a handful of tool calls: 19:22 Zurich, then 21:37 Zurich. Nothing in its own execution accounts for the gap. **Consequence: any elapsed time, duration or ETA this agent self-reports is not evidence.** Every gate, deadline and cutoff in this project is therefore set as an absolute time and re-read from the system clock immediately before the step it governs, never inferred from "this should take N hours". Both V3 replication attempts were aborted on exactly this basis (the 17:30 and 20:45 gates had already passed when re-read), which is the intended behaviour of absolute gates.
+- Related: the agent's throughput estimates for training runs (e.g. "A seed 2 needs ~4 h 20") are extrapolations from earlier runs on a different machine and were never validated against a second pod.
+
 ### Definition changes vs PREREG (pod runner)
 - lr for A/B 1e-5 → 3e-5: Guiv's decision 2026-09-04 ~00:45 Zurich, recorded as a dated PREREG amendment before any A/B launch (commit e858f10).
 
