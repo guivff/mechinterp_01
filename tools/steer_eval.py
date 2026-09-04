@@ -72,7 +72,7 @@ def main() -> None:
     model.config.pad_token_id = tok.pad_token_id
     handle = None
     if d is not None:
-        vec = torch.tensor(d * args.scale, dtype=torch.bfloat16, device="cuda:0")
+        vec_np = d * args.scale
 
         def hook(_m, _i, out):
             h = block_output_hidden(out)
