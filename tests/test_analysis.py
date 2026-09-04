@@ -1,60 +1,446 @@
-"""Focused tests for mock/real segregation and preregistered summaries."""
+"""Block-aware, model-free tests for ``analysis.summarize``."""
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
+import random
 from pathlib import Path
 
 import numpy as np
 import pytest
+from matplotlib.axes import Axes
 
-from analysis.make_mock_results import generate_mock_results
 from analysis.summarize import (
-    ARM_ORDER,
-    PRIMARY_MODALITIES,
-    PRIMARY_SNIPPETS,
+    DiffVector,
     accuracy_summaries,
     add_lexical_predictions,
-    derive_a_minus_b,
     discover_inputs,
+    join_curve_judgments,
+    load_curve_rows,
     load_diff_vectors,
+    load_item_rows,
     load_judged,
+    load_lexical_predictions,
+    plot_layer_sweep,
     select_top_tokens,
-    select_analysis_layer,
     summarize,
     validate_analysis_inputs,
     wilson_interval,
 )
 
 
+SNIPPET_SHA = {
+    name: hashlib.sha256(f"fixture:{name}".encode()).hexdigest()
+    for name in ("neutral", "math")
+}
+TRUE = {"A": "math", "B": "none", "D": "cooking", "N1": "none", "N2": "none", "N3": "none"}
+
+
+def _write_jsonl(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+
+
+def _write_vector(results: Path, meta: dict, vector: np.ndarray, suffix: str) -> None:
+    stem = results / f"diff_MOCK_{suffix}"
+    array_path = stem.with_suffix(".npy")
+    sidecar_path = stem.with_suffix(".json")
+    np.save(array_path, vector.astype(np.float32), allow_pickle=False)
+    stored = np.load(array_path, allow_pickle=False)
+    sidecar = {
+        **meta,
+        "artifact_schema_version": 1,
+        "artifact_type": "activation_difference",
+        "array_file": array_path.name,
+        "array_shape": list(stored.shape),
+        "array_dtype": str(stored.dtype),
+        "array_sha256": hashlib.sha256(array_path.read_bytes()).hexdigest(),
+        "d_norm": float(np.linalg.norm(stored.astype(np.float64))),
+    }
+    sidecar_path.write_text(json.dumps(sidecar), encoding="utf-8")
+
+
+def _top(arm: str, layer: int, block: int) -> list[list[object]]:
+    return [[f" {arm}-L{layer}-b{block}-t{rank}", 20.0 - rank] for rank in range(20)]
+
+
+def make_block_fixture(tmp_path: Path, *, blocks: int = 3) -> tuple[Path, Path]:
+    results = tmp_path / "results"
+    figs = tmp_path / "figs"
+    results.mkdir()
+    judged: list[dict] = []
+    lexical: list[dict] = []
+    base = {
+        "seed": 0,
+        "is_mock": True,
+        "base": "MOCK/random-tiny",
+        "git_commit": "fixture",
+        "timestamp": "2026-09-03T00:00:00Z",
+        "judge_model": "dry-run/random-uniform",
+        "K": blocks,
+        "block_seed": 0,
+        "block_assignment_sha256": "f" * 64,
+    }
+    # All three requested layers are materialized; L15 is the main figure layer.
+    for layer in (11, 15, 19):
+        for arm in ("A", "B", "D", "N1", "N3"):
+            for snippet_index, snippet in enumerate(("neutral", "math")):
+                for block in range(blocks):
+                    step = 150
+                    item_id = f"main:{arm}:L{layer}:{snippet}:block{block}"
+                    vector = np.zeros(8, dtype=np.float32)
+                    vector[(block + snippet_index + layer) % 8] = 1 + 0.1 * block
+                    vector[(ord(arm[0]) + layer) % 8] += 0.25
+                    meta = {
+                        **base,
+                        "arm": arm,
+                        "step": step,
+                        "checkpoint_step": step,
+                        "layer": layer,
+                        "snippet_set": snippet,
+                        "snippet_sha": SNIPPET_SHA[snippet],
+                        "sampling_unit": "block",
+                        "block": block,
+                        "mean_offset_energy_share": 0.2 + 0.01 * block,
+                    }
+                    if arm == "D":
+                        meta["per_position_means"] = {
+                            str(position): [float(position + 1 + block), 0.0]
+                            for position in range(5)
+                        }
+                    _write_vector(
+                        results,
+                        meta,
+                        vector,
+                        f"{arm}_s0_step{step}_L{layer}_{snippet}_b{block}",
+                    )
+                    pred = TRUE[arm] if block % 2 == 0 else "law"
+                    row = {
+                        **meta,
+                        "item_id": item_id,
+                        "modality": "tokens",
+                        "top": _top(arm, layer, block),
+                        "text": ", ".join(repr(item[0]) for item in _top(arm, layer, block)),
+                        "pred": pred,
+                        "true": TRUE[arm],
+                        "correct": pred == TRUE[arm],
+                    }
+                    judged.append(row)
+                    lexical.append(
+                        {
+                            "item_id": item_id,
+                            "predicted_label": TRUE[arm] if block != 1 else "poetry",
+                            "is_mock": True,
+                        }
+                    )
+        # N2 has draw units, never blocks. Mock count is deliberately flexible.
+        for snippet_index, snippet in enumerate(("neutral", "math")):
+            for draw in range(5):
+                item_id = f"main:N2:L{layer}:{snippet}:draw{draw}"
+                vector = np.zeros(8, dtype=np.float32)
+                vector[(draw + layer + snippet_index) % 8] = 1
+                meta = {
+                    **base,
+                    "arm": "N2",
+                    "step": 150,
+                    "checkpoint_step": 150,
+                    "layer": layer,
+                    "snippet_set": snippet,
+                    "snippet_sha": SNIPPET_SHA[snippet],
+                    "sampling_unit": "random_direction",
+                    "draw": draw,
+                    "mean_offset_energy_share": 0.0,
+                }
+                _write_vector(
+                    results,
+                    meta,
+                    vector,
+                    f"N2_s0_step150_L{layer}_{snippet}_draw{draw}",
+                )
+                pred = "none" if draw % 3 == 0 else "law"
+                judged.append(
+                    {
+                        **meta,
+                        "item_id": item_id,
+                        "modality": "tokens",
+                        "top": _top("N2", layer, draw),
+                        "text": "random direction tokens",
+                        "pred": pred,
+                        "true": "none",
+                        "correct": pred == "none",
+                    }
+                )
+                lexical.append(
+                    {
+                        "item_id": item_id,
+                        "predicted_label": "none",
+                        "is_mock": True,
+                    }
+                )
+
+    # Descriptive A-B rows are intentionally unjudged and have no gold label.
+    ab_rows: list[dict] = []
+    for snippet in ("neutral", "math"):
+        for block in range(blocks):
+            ab_rows.append(
+                {
+                    **base,
+                    "arm": "A-B",
+                    "step": 150,
+                    "checkpoint_step": 150,
+                    "layer": 15,
+                    "snippet_set": snippet,
+                    "snippet_sha": SNIPPET_SHA[snippet],
+                    "sampling_unit": "block",
+                    "block": block,
+                    "item_id": f"unjudged:A-B:{snippet}:block{block}",
+                    "modality": "tokens",
+                    "top": _top("A-B", 15, block),
+                    "text": "descriptive contrast",
+                    "unjudged": True,
+                    "descriptive_only": True,
+                    "judge_eligible": False,
+                }
+            )
+    _write_jsonl(results / "items_MOCK_A-B_s0_step150_L15.jsonl", ab_rows)
+
+    # Emergence rows and their exact judged item counterparts.
+    curve_rows: list[dict] = []
+    for arm in ("A", "B"):
+        for step in (25, 50):
+            for snippet in ("neutral", "math"):
+                for block in range(blocks):
+                    item_id = f"curve:{arm}:step{step}:{snippet}:block{block}"
+                    curve_rows.append(
+                        {
+                            "arm": arm,
+                            "seed": 0,
+                            "step": step,
+                            "snippet_set": snippet,
+                            "block": block,
+                            "norm": 0.1 * step + block,
+                            "constancy": 0.1 + 0.01 * block,
+                            "judge_item_id": item_id,
+                            "is_mock": True,
+                        }
+                    )
+                    pred = TRUE[arm] if block < 2 else "medicine"
+                    judged.append(
+                        {
+                            **base,
+                            "arm": arm,
+                            "step": step,
+                            "checkpoint_step": step,
+                            "layer": 15,
+                            "snippet_set": snippet,
+                            "snippet_sha": SNIPPET_SHA[snippet],
+                            "sampling_unit": "block",
+                            "block": block,
+                            "item_id": item_id,
+                            "modality": "tokens",
+                            "top": _top(arm, 15, block),
+                            "text": "curve tokens",
+                            "pred": pred,
+                            "true": TRUE[arm],
+                            "correct": pred == TRUE[arm],
+                        }
+                    )
+                    lexical.append(
+                        {
+                            "item_id": item_id,
+                            "predicted_label": TRUE[arm],
+                            "is_mock": True,
+                        }
+                    )
+    curve_path = results / "curve_MOCK_all_s0.csv"
+    with curve_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(curve_rows[0]))
+        writer.writeheader()
+        writer.writerows(curve_rows)
+
+    _write_jsonl(results / "judged_MOCK_all.jsonl", judged)
+    _write_jsonl(results / "lexical_predictions_MOCK_external.jsonl", lexical)
+    reward_rows = [
+        {"arm": arm, "seed": 0, "step": step, "mean_reward": step / 100}
+        for arm in ("A", "B")
+        for step in (25, 50)
+    ]
+    _write_jsonl(results / "logs" / "reward_MOCK_A_B.jsonl", reward_rows)
+    return results, figs
+
+
 def test_wilson_interval_boundaries() -> None:
     low_zero, high_zero = wilson_interval(0, 10)
     low_one, high_one = wilson_interval(10, 10)
-    assert low_zero == pytest.approx(0.0)
+    assert low_zero == pytest.approx(0)
     assert high_zero == pytest.approx(0.2775328, rel=1e-5)
     assert low_one == pytest.approx(0.7224672, rel=1e-5)
-    assert high_one == pytest.approx(1.0)
+    assert high_one == pytest.approx(1)
 
 
-def test_mock_summary_end_to_end(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    figs = tmp_path / "figs"
-    written = generate_mock_results(
-        results,
-        seed=11,
-        n_per_cell=8,
-        d_model=24,
-        layer=2,
-        step=150,
+def test_explicit_mode_also_refuses_mock_real_before_writes(tmp_path: Path) -> None:
+    results, figs = make_block_fixture(tmp_path)
+    (results / "judged_real.jsonl").write_text("{}\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Refusing to mix"):
+        summarize(results, figs, mode="mock")
+    assert not figs.exists()
+    assert not (results / "cosine_matrix_MOCK.csv").exists()
+
+
+def test_wilson_uses_unique_blocks_and_n2_uses_draws(tmp_path: Path) -> None:
+    results, _ = make_block_fixture(tmp_path, blocks=3)
+    inputs = discover_inputs(results, mode="mock")
+    rows = load_judged(inputs.judged, "mock")
+    rows = [row for row in rows if row["checkpoint_step"] == 150 and row["layer"] == 15]
+    add_lexical_predictions(rows, predictions=load_lexical_predictions(inputs.lexical, "mock"))
+    summaries = accuracy_summaries(rows)
+    assert summaries[("A", "neutral", "tokens")]["judge"]["n"] == 3
+    assert summaries[("N2", "neutral", "tokens")]["judge"]["n"] == 5
+    n2 = [row for row in rows if row["arm"] == "N2"]
+    assert n2 and all(row["sampling_unit"] == "random_direction" for row in n2)
+    assert all("block" not in row for row in n2)
+    duplicate = dict(rows[0], item_id="another-vote-for-same-block")
+    with pytest.raises(ValueError, match="repeated sampling units"):
+        accuracy_summaries(rows + [duplicate])
+
+
+def test_n2_cannot_be_labelled_as_blocks(tmp_path: Path) -> None:
+    results, _ = make_block_fixture(tmp_path)
+    path = results / "judged_MOCK_all.jsonl"
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    target = next(row for row in rows if row["arm"] == "N2")
+    target["sampling_unit"] = "block"
+    target["block"] = target.pop("draw")
+    _write_jsonl(path, rows)
+    with pytest.raises(ValueError, match="N2 must use draw"):
+        load_judged((path,), "mock")
+
+
+def test_non_block_steering_and_selfreport_rows_do_not_abort_token_analysis(
+    tmp_path: Path,
+) -> None:
+    results, figs = make_block_fixture(tmp_path)
+    path = results / "judged_MOCK_all.jsonl"
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    common = dict(rows[0])
+    for key in ("block", "K", "top"):
+        common.pop(key, None)
+    common.update(
+        {
+            "item_id": "steer-generation-0",
+            "sampling_unit": "prompt_generation",
+            "modality": "steer",
+            "text": "a generated paragraph",
+        }
     )
-    assert len(written) == 29
-    selected = discover_inputs(results, mode="auto")
-    assert selected.mode == "mock"
-    assert len(selected.judged) == 1
-    assert len(selected.diffs) == 14
+    selfreport = {
+        **common,
+        "item_id": "selfreport-generation-0",
+        "sampling_unit": "generation",
+        "modality": "selfreport",
+        "layer": "not_applicable",
+        "snippet_set": "not_applicable",
+        "snippet_sha": "not_applicable",
+    }
+    rows.extend((common, selfreport))
+    _write_jsonl(path, rows)
+    loaded = load_judged((path,), "mock")
+    assert {row["item_id"] for row in loaded} >= {
+        "steer-generation-0",
+        "selfreport-generation-0",
+    }
+    assert summarize(results, figs, mode="mock")["fig1"].exists()
 
-    first_judged = json.loads(selected.judged[0].read_text().splitlines()[0])
-    for key in (
+
+def test_lexical_predictions_are_external_exact_item_joins(tmp_path: Path) -> None:
+    results, _ = make_block_fixture(tmp_path)
+    inputs = discover_inputs(results, mode="mock")
+    rows = load_judged(inputs.judged, "mock")
+    mapping = load_lexical_predictions(inputs.lexical, "mock")
+    add_lexical_predictions(rows, seed=999, predictions=mapping)
+    first = rows[0]
+    assert first["_lexical_pred"] == mapping[first["item_id"]]
+    assert first["_lexical_correct"] == (
+        mapping[first["item_id"]] == first["true"]
+    )
+    assert "TfidfVectorizer" not in (Path(__file__).parents[1] / "analysis" / "summarize.py").read_text()
+
+
+def test_seeded_top_tokens_choose_one_shared_block_and_ab_is_unjudged(tmp_path: Path) -> None:
+    results, _ = make_block_fixture(tmp_path, blocks=3)
+    inputs = discover_inputs(results, mode="mock")
+    judged = [
+        row
+        for row in load_judged(inputs.judged, "mock")
+        if row["layer"] == 15 and row["checkpoint_step"] == 150
+    ]
+    items = load_item_rows(inputs.items, "mock")
+    rows = judged + items
+    snippet, selected_a = select_top_tokens(rows, "neutral", seed=17)
+    _, selected_b = select_top_tokens(rows, "neutral", seed=17)
+    assert snippet == "neutral"
+    assert selected_a == selected_b
+    expected_block = random.Random(17).choice(
+        sorted({(0, ("block", block)) for block in range(3)}, key=repr)
+    )[1][1]
+    assert all(
+        f"-b{expected_block}-" in tokens[0]
+        for arm, tokens in selected_a.items()
+        if tokens
+    )
+    assert all("true" not in row and "pred" not in row for row in items)
+
+
+def test_curve_join_is_exact_and_rejects_metadata_drift(tmp_path: Path) -> None:
+    results, _ = make_block_fixture(tmp_path)
+    inputs = discover_inputs(results, "mock")
+    judged = load_judged(inputs.judged, "mock")
+    curves = load_curve_rows(inputs.curves, "mock")
+    joined = join_curve_judgments(curves, judged)
+    assert len(joined) == 2 * 2 * 2 * 3
+    assert all(isinstance(row["judge_correct"], bool) for row in joined)
+    broken = [dict(row) for row in curves]
+    broken[0]["block"] = 99
+    with pytest.raises(ValueError, match="metadata mismatch"):
+        join_curve_judgments(broken, judged)
+
+
+def test_block_vectors_validate_and_end_to_end_emits_all_artifacts(tmp_path: Path) -> None:
+    results, figs = make_block_fixture(tmp_path, blocks=3)
+    inputs = discover_inputs(results, mode="auto")
+    judged = [
+        row
+        for row in load_judged(inputs.judged, "mock")
+        if row["layer"] == 15 and row["checkpoint_step"] == 150
+    ]
+    vectors = [
+        vector
+        for vector in load_diff_vectors(inputs.diffs, "mock")
+        if vector.meta["layer"] == 15 and vector.meta["checkpoint_step"] == 150
+    ]
+    validate_analysis_inputs(judged, vectors)
+
+    outputs = summarize(results, figs, mode="auto", seed=17)
+    assert {
+        "fig1",
+        "fig2",
+        "fig3",
+        "fig4",
+        "layer_sweep",
+        "per_position_D",
+        "accuracy",
+        "cosines",
+        "block_stability",
+        "conditional_trace",
+        "per_position_D_csv",
+        "curve_summary",
+        "reward_curve",
+    } == set(outputs)
+    assert all("MOCK" in path.name for path in outputs.values())
+    assert all(path.exists() and path.stat().st_size > 0 for path in outputs.values())
+
+    mandatory_provenance = {
         "arm",
         "seed",
         "checkpoint_step",
@@ -64,186 +450,96 @@ def test_mock_summary_end_to_end(tmp_path: Path) -> None:
         "judge_model",
         "timestamp",
         "git_commit",
-    ):
-        assert key in first_judged
-    assert first_judged["is_mock"] is True
-    assert len(first_judged["snippet_sha"]) == 64
-    assert all(
-        len(json.loads(path.read_text())["snippet_sha"]) == 64
-        for path in selected.diffs
-    )
-
-    judged_rows = load_judged(selected.judged, mode="mock")
-    add_lexical_predictions(judged_rows, seed=11)
-    cells = accuracy_summaries(judged_rows)
-    expected_cells = {
-        (arm, snippet, modality)
-        for arm in ("A", "B", "C", "D", "N1", "N2", "N3")
-        for snippet in PRIMARY_SNIPPETS
-        for modality in PRIMARY_MODALITIES
+        "is_mock",
     }
-    expected_cells.update(
-        {("A-B", snippet, "tokens") for snippet in PRIMARY_SNIPPETS}
-    )
-    assert set(cells) == expected_cells
-    for metrics in cells.values():
-        for method in ("judge", "lexical", "shuffled"):
-            assert metrics[method]["n"] == 8
-            assert metrics[method]["low"] <= metrics[method]["accuracy"]
-            assert metrics[method]["accuracy"] <= metrics[method]["high"]
-    snippet, top = select_top_tokens(judged_rows, "neutral")
-    assert snippet == "neutral"
-    assert set(top) == {"A", "B", "C", "D", "A-B"}
-    assert all(len(tokens) == 20 for tokens in top.values())
+    for key, path in outputs.items():
+        if path.suffix != ".csv":
+            continue
+        with path.open(newline="") as handle:
+            first = next(csv.DictReader(handle))
+        assert mandatory_provenance <= first.keys(), key
+        assert all(first[field] != "" for field in mandatory_provenance), key
 
-    outputs = summarize(results, figs, mode="auto", seed=11)
-    assert set(outputs) == {"fig1", "fig2", "fig3", "cosines"}
-    for path in outputs.values():
-        assert path.exists() and path.stat().st_size > 1_000
+    with outputs["accuracy"].open(newline="") as handle:
+        accuracy_rows = list(csv.DictReader(handle))
+    lookup = {
+        (row["arm"], row["snippet_set"], row["method"]): row
+        for row in accuracy_rows
+        if row["modality"] == "tokens"
+    }
+    assert lookup[("A", "neutral", "judge")]["n"] == "3"
+    assert lookup[("N2", "neutral", "judge")]["n"] == "5"
+    assert lookup[("N2", "neutral", "judge")]["sampling_unit"] == "draw"
+    assert not any(row["arm"] == "A-B" for row in accuracy_rows)
 
     with outputs["cosines"].open(newline="") as handle:
-        matrix_rows = list(csv.DictReader(handle))
-    ids = [row["vector_id"] for row in matrix_rows]
-    assert len(ids) == 17  # 14 sidecars + two matched A-B vectors + one random reference
-    assert any(vector_id.startswith("A-B|") for vector_id in ids)
-    assert any(vector_id.startswith("random|") for vector_id in ids)
-    assert all(row["is_mock"] == "True" for row in matrix_rows)
-    assert all(row["git_commit"] and row["timestamp"] for row in matrix_rows)
-    by_id = {row["vector_id"]: row for row in matrix_rows}
-    for left in ids:
-        assert float(by_id[left][left]) == pytest.approx(1.0)
-        for right in ids:
-            assert float(by_id[left][right]) == pytest.approx(float(by_id[right][left]))
+        cosine_rows = list(csv.DictReader(handle))
+    ids = [row["vector_id"] for row in cosine_rows]
+    assert any(value.startswith("A|s0") and "mean_blocks_n3" in value for value in ids)
+    assert any(value.startswith("N2|s0") and "mean_draws_n5" in value for value in ids)
+    assert any(value.startswith("random|") for value in ids)
+
+    with outputs["conditional_trace"].open(newline="") as handle:
+        conditional = list(csv.DictReader(handle))
+    assert {row["arm"] for row in conditional} == {"A", "D"}
+    assert all(row["n_neutral_blocks"] == row["n_math_blocks"] == "3" for row in conditional)
+
+    with outputs["per_position_D_csv"].open(newline="") as handle:
+        positions = list(csv.DictReader(handle))
+    assert {int(row["position"]) for row in positions} == set(range(5))
+    assert len(positions) == 2 * 3 * 5
+
+    with outputs["curve_summary"].open(newline="") as handle:
+        curves = list(csv.DictReader(handle))
+    assert len(curves) == 2 * 2 * 2
+    assert all(row["n_blocks"] == "3" for row in curves)
+
+    # Generated curve_summary_MOCK.csv is not rediscovered as an input, so the
+    # analysis is safely rerunnable in place.
+    rerun = summarize(results, figs, mode="mock", seed=17)
+    assert rerun == outputs
 
 
-def test_a_minus_b_requires_matched_provenance(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=3, n_per_cell=2, d_model=16)
-    selected = discover_inputs(results, mode="mock")
-    source = load_diff_vectors(selected.diffs, mode="mock")
-    derived = derive_a_minus_b(source)
-    assert len(derived) == 2
-    for vector in derived:
-        snippet = vector.meta["snippet_set"]
-        a = next(v for v in source if v.meta["arm"] == "A" and v.meta["snippet_set"] == snippet)
-        b = next(v for v in source if v.meta["arm"] == "B" and v.meta["snippet_set"] == snippet)
-        np.testing.assert_allclose(vector.vector, a.vector - b.vector)
+def test_bad_curve_join_refuses_before_any_figure_write(tmp_path: Path) -> None:
+    results, figs = make_block_fixture(tmp_path)
+    curve_path = results / "curve_MOCK_all_s0.csv"
+    with curve_path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0]["judge_item_id"] = "missing-item"
+    with curve_path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    with pytest.raises(ValueError, match="no exact judged-row match"):
+        summarize(results, figs, mode="mock")
+    assert not figs.exists()
+    assert not (results / "judge_accuracy_MOCK.csv").exists()
 
 
-def test_auto_mode_refuses_mock_real_coexistence(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=5, n_per_cell=2, d_model=16)
-    (results / "judged_real.jsonl").write_text("{}\n", encoding="utf-8")
-    with pytest.raises(RuntimeError, match="Refusing to mix"):
-        discover_inputs(results, mode="auto")
-    # Explicit selection remains safe: it reads only MOCK-labelled inputs.
-    assert discover_inputs(results, mode="mock").mode == "mock"
-
-
-def test_mock_marker_and_hash_are_enforced(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=7, n_per_cell=2, d_model=16)
-    selected = discover_inputs(results, mode="mock")
-    lines = selected.judged[0].read_text().splitlines()
-    first = json.loads(lines[0])
-    first["is_mock"] = False
-    lines[0] = json.dumps(first)
-    selected.judged[0].write_text("\n".join(lines) + "\n")
-    with pytest.raises(ValueError, match="is_mock=true"):
-        load_judged(selected.judged, mode="mock")
-
-    # Restore the marker, then prove that abbreviated hashes are rejected.
-    first["is_mock"] = True
-    first["snippet_sha"] = first["snippet_sha"][:16]
-    lines[0] = json.dumps(first)
-    selected.judged[0].write_text("\n".join(lines) + "\n")
-    rows = load_judged(selected.judged, mode="mock")
-    vectors = load_diff_vectors(selected.diffs, mode="mock")
-    with pytest.raises(ValueError, match="full 64-hex SHA-256"):
-        validate_analysis_inputs(rows, vectors)
-
-
-def test_multiple_layers_require_explicit_selection(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=13, n_per_cell=2, d_model=16, layer=2)
-    selected = discover_inputs(results, mode="mock")
-    rows = load_judged(selected.judged, mode="mock")
-    vectors = load_diff_vectors(selected.diffs, mode="mock")
-    extra = {**rows[0], "layer": 6}
-    with pytest.raises(ValueError, match="multiple layers"):
-        select_analysis_layer(rows + [extra], vectors, requested_layer=None)
-    chosen_rows, chosen_vectors, chosen = select_analysis_layer(
-        rows + [extra], vectors, requested_layer=2
-    )
-    assert chosen == 2
-    assert len(chosen_rows) == len(rows)
-    assert len(chosen_vectors) == len(vectors)
-    validate_analysis_inputs(chosen_rows, chosen_vectors)
-
-    old_checkpoint = {**chosen_rows[0], "step": 149, "checkpoint_step": 149}
-    with pytest.raises(ValueError, match="multiple checkpoint steps"):
-        validate_analysis_inputs(chosen_rows + [old_checkpoint], chosen_vectors)
-
-
-def test_judged_rows_reject_duplicates_inconsistency_and_invalid_control(
-    tmp_path: Path,
+def test_layer_sweep_uses_observed_tiny_model_layers(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=23, n_per_cell=2, d_model=16)
-    selected = discover_inputs(results, mode="mock")
-    original = selected.judged[0].read_text(encoding="utf-8")
-    lines = original.splitlines()
+    captured_ticks: list[tuple[int, ...]] = []
+    original_set_xticks = Axes.set_xticks
 
-    selected.judged[0].write_text(original + lines[0] + "\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="Duplicate judged item_id"):
-        load_judged(selected.judged, mode="mock")
+    def record_ticks(self: Axes, ticks: object, *args: object, **kwargs: object):
+        captured_ticks.append(tuple(int(tick) for tick in ticks))
+        return original_set_xticks(self, ticks, *args, **kwargs)
 
-    corrupt = json.loads(lines[0])
-    corrupt["correct"] = not corrupt["correct"]
-    selected.judged[0].write_text(
-        json.dumps(corrupt) + "\n" + "\n".join(lines[1:]) + "\n",
-        encoding="utf-8",
-    )
-    with pytest.raises(ValueError, match="correct disagrees"):
-        load_judged(selected.judged, mode="mock")
-
-    corrupt = json.loads(lines[0])
-    corrupt["shuffled_control_valid"] = False
-    selected.judged[0].write_text(
-        json.dumps(corrupt) + "\n" + "\n".join(lines[1:]) + "\n",
-        encoding="utf-8",
-    )
-    with pytest.raises(ValueError, match="degenerate shuffled-label control"):
-        load_judged(selected.judged, mode="mock")
-
-
-def test_diff_vector_hash_receipt_is_enforced(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=29, n_per_cell=2, d_model=16)
-    selected = discover_inputs(results, mode="mock")
-    vector_path = selected.diffs[0].with_suffix(".npy")
-    vector = np.load(vector_path, allow_pickle=False)
-    np.save(vector_path, -vector, allow_pickle=False)
-
-    with pytest.raises(ValueError, match="Diff vector receipt mismatch"):
-        load_diff_vectors(selected.diffs, mode="mock")
-
-
-def test_analysis_rejects_incomplete_primary_cells(tmp_path: Path) -> None:
-    results = tmp_path / "results"
-    generate_mock_results(results, seed=31, n_per_cell=2, d_model=16)
-    selected = discover_inputs(results, mode="mock")
-    rows = load_judged(selected.judged, mode="mock")
-    vectors = load_diff_vectors(selected.diffs, mode="mock")
-    incomplete = [
-        row
-        for row in rows
-        if not (
-            row["arm"] == "N3"
-            and row["snippet_set"] == "math"
-            and row["modality"] == "steer"
+    monkeypatch.setattr(Axes, "set_xticks", record_ticks)
+    vectors = [
+        DiffVector(
+            vector_id=f"A-L{layer}",
+            vector=np.array([1.0, float(layer + 1)]),
+            meta={"arm": "A", "snippet_set": "neutral", "layer": layer},
+            d_norm=float(layer + 1),
+            constancy=0.25,
         )
+        for layer in (0, 1, 2)
     ]
+    output = tmp_path / "layer_sweep_MOCK.png"
 
-    with pytest.raises(ValueError, match="Incomplete primary judge cell"):
-        validate_analysis_inputs(incomplete, vectors)
+    plot_layer_sweep(vectors, output, "mock", {})
+
+    assert output.exists()
+    assert captured_ticks == [(0, 1, 2), (0, 1, 2)]

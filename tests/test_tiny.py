@@ -55,10 +55,15 @@ def test_diff_zero_and_recovery(model_tok):
     from readout.diff import collect_residual, diff_stats, cosine, _get_blocks
     m, tok = model_tok
     layer = len(_get_blocks(m)) // 2
-    H1, ids1 = collect_residual(m, tok, TEXTS, layer, skip=2, max_tokens=24)
-    H2, ids2 = collect_residual(m, tok, TEXTS, layer, skip=2, max_tokens=24)
+    H1, ids1, positions1 = collect_residual(
+        m, tok, TEXTS, layer, skip=2, max_tokens=24
+    )
+    H2, ids2, positions2 = collect_residual(
+        m, tok, TEXTS, layer, skip=2, max_tokens=24
+    )
     assert np.array_equal(ids1, ids2)
-    stats, d = diff_stats(H1, H2)
+    assert np.array_equal(positions1, positions2)
+    stats, d = diff_stats(H1, H2, positions=positions1)
     assert stats["d_norm"] < 1e-4
 
     # synthetic fine-tune: inject a fixed vector v at `layer` output, expect diff ≈ v
@@ -66,10 +71,14 @@ def test_diff_zero_and_recovery(model_tok):
     blocks = _get_blocks(m)
     h = blocks[layer].register_forward_hook(lambda mod, i, o: (o[0] + v,) + tuple(o[1:]) if isinstance(o, tuple) else o + v)
     try:
-        H3, _ = collect_residual(m, tok, TEXTS, layer, skip=2, max_tokens=24)
+        H3, ids3, positions3 = collect_residual(
+            m, tok, TEXTS, layer, skip=2, max_tokens=24
+        )
     finally:
         h.remove()
-    stats, d = diff_stats(H1, H3)
+    assert np.array_equal(ids1, ids3)
+    assert np.array_equal(positions1, positions3)
+    stats, d = diff_stats(H1, H3, positions=positions1)
     assert cosine(d, v.numpy()) > 0.99
     assert stats["constancy"] > 0.95
 
