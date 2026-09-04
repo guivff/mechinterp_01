@@ -806,3 +806,169 @@ cache/null/readout pipeline, A-minus-B derivation, summary figures/tables, and
 focused tests. They used only synthetic/random-model data and dry-run judging.
 No real Qwen3.5-4B result, OpenRouter decision, reward curve, or headline number
 was produced or independently verified by Guiv in this session.
+## Agent 03b — judge calibration, external lexical baseline, and self-report (2026-09-04 UTC)
+
+### Code and commands
+
+The branch was published through four fast-forward remote commits: judge and
+calibration `b851442b4616204853e69faed1022c0939c972d1`; external lexical and
+self-report `048958c4ebdceef1c8623f16fc7f3d631862c3c4`; public-excerpt cleanup
+`b10709db5aaa0629120b07d9942e62bb7652462b`; and frozen corpus
+`5f80ec33a693a0904712d06d7fb4c4c77b71c99d`. The scientific corpus manifest
+points to the preceding remote code commit `b10709d`, not the unrelated local
+materialization history.
+
+```bash
+# Offline 50-item/2-model/3-call plumbing check; no credential read.
+python judge/calibrate.py --dry-run --restart --seed 0 \
+  --git-commit 048958c4ebdceef1c8623f16fc7f3d631862c3c4 \
+  --out /tmp/.../judge_calibration_MOCK_dry.jsonl
+# 100 rows, 300 raw mock-call records, both requested model names; MOCK only.
+
+# Final public reference corpus.
+python data/make_public_lexical_reference.py \
+  --source-cache /tmp/agent03b-public-cache --offline \
+  --out-dir data/lexical_reference --seed 0 \
+  --git-commit b10709db5aaa0629120b07d9942e62bb7652462b
+
+ATEN_CPU_CAPABILITY=default OMP_NUM_THREADS=1 MKL_DEBUG_CPU_TYPE=5 \
+  python -m pytest -q tests/test_judge_calibration_round2.py \
+  tests/test_judge_code_provenance.py tests/test_judge_shuffle_control_round2.py \
+  tests/test_lexical_reference.py tests/test_public_lexical_reference.py \
+  tests/test_lexical_baseline.py tests/test_lexical_baseline_round2.py \
+  tests/test_selfreport.py tests/test_summary_external_lexical.py tests/test_analysis.py
+# 70 passed
+```
+
+The full suite snapshot was 158 passed, 4 failed, 3 warnings. All four failures
+pre-existed this lane: three expect missing `grpo.train_grpo` LoRA constants
+through `readout/make_null_adapter.py`, and one expects the missing
+`load_text_causal_stack`. The task forbade changes to `grpo/` and `readout/`,
+and neither directory was touched.
+
+### Live judge calibration status
+
+`OPENROUTER_API_KEY` was unavailable to the run process. Therefore the live
+OpenRouter calibration did **not** run, no raw live responses exist, and
+`results/judge_calibration.jsonl` was deliberately not created. The following
+table separates missing live measurements from the two deterministic constant
+baselines implied by the frozen 50-item truth distribution.
+
+| Model | Status / overall | math (n=10) | cooking (n=10) | law (n=0) | medicine (n=0) | poetry (n=10) | none (n=20) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `openai/gpt-5-mini` | NOT RUN | n/a | n/a | n/a | n/a | n/a | n/a |
+| `google/gemini-2.5-flash` | NOT RUN | n/a | n/a | n/a | n/a | n/a | n/a |
+| always-math | 0.200 | 1.000 | 0.000 | n/a | n/a | 0.000 | 0.000 |
+| always-none | 0.400 | 0.000 | 0.000 | n/a | n/a | 0.000 | 1.000 |
+
+No live confusion matrix can be reported. `judge/calibrate.py` emits one for
+each model with true labels as rows and predicted labels (including
+`unparsed`) as columns. For the constant controls, all 10 math, 10 cooking, 10
+poetry, and 20 none rows fall in the `math` column for always-math and in the
+`none` column for always-none. The GPT threshold condition was not evaluated,
+so no prompt fix was applied or logged as triggered. If a future live run
+triggers it, the code proposes—without applying—clarifying that coherent prose
+with no dominant listed domain is `none` and that fragmentary form alone is
+not domain evidence, followed by a newly frozen recalibration.
+
+The shuffle receipt is unambiguous: `shuffled_from_item_index` reassigns gold
+labels across fixed input rows; `shuffle_control_kind` is
+`input_gold_pairing_permutation`; and `visible_label_order_permuted=false`.
+The fixed visible order remains math, cooking, law, medicine, poetry, none.
+
+### External reference corpus
+
+All rows are public excerpts from 15 content-addressed GITenberg Git blobs,
+marked public domain in the USA by the source metadata. This is not a claim
+about other jurisdictions. The tokenizer-independent counter is NFKC Unicode
+words plus punctuation (`TOKEN_RE` v1). Manifest-file SHA-256 is
+`33df1ad7c7d386c192c50b0ca1378b974b3386b3d623d8c37d41cc9b63a9c497`;
+aggregate corpus SHA-256 is
+`d92dd85a8e9764b4a64de11f55451b3624dc7d28aee1f14ab8d681138d4b2765`.
+
+| Class | n | Sources | tokens min / median / mean / max |
+|---|---:|---:|---:|
+| math | 50 | 2 | 106 / 182.5 / 181.94 / 270 |
+| cooking | 50 | 1 | 117 / 188.0 / 195.06 / 290 |
+| law | 50 | 2 | 107 / 193.5 / 191.18 / 293 |
+| medicine | 50 | 3 | 105 / 172.5 / 180.76 / 265 |
+| poetry | 50 | 3 | 109 / 147.0 / 153.86 / 240 |
+| none | 50 | 4 | 117 / 183.5 / 183.50 / 286 |
+
+Three rows per class were selected with
+`random.Random("agent03b-reference-sample-v1:<class>:0").sample(rows, 3)` and
+read in full. The files contain the complete text; excerpts below identify the
+sample without turning this ledger into a second corpus copy.
+
+- **math:** `math-007` (162, *Elements of arithmetic*: “MULTIPLICATION. The following, put into words…”); `math-032` (230, *Philosophy of mathematics*: “the conception of Lagrange…”); `math-030` (232, same source: “if we always confined ourselves…”).
+- **cooking:** `cooking-003` (163, *Belgian Cookbook*: stuffed liver); `cooking-034` (219, potato soufflé and vegetable salad); `cooking-038` (290, braised tongue and Flemish beef).
+- **law:** `law-049` (284, *Commentaries*: legal disabilities to marriage); `law-001` (167, *International Law*: objects/effects of war); `law-039` (131, *Commentaries*: separating judicial and ministerial power).
+- **medicine:** `medicine-048` (124, influenza mortality by hospitalization/age); `medicine-035` (232, limits of influenza quarantine); `medicine-043` (235, historical influenza and weather accounts).
+- **poetry:** `poetry-041` (140, Whitman: “Is it wonderful that I should be immortal?”); `poetry-022` (160, Dickinson’s mushroom poem); `poetry-009` (129, Shakespeare’s “chronicle of wasted time” sonnet).
+- **none:** `none-035` (219, *Wind in the Willows* washerwoman escape dialogue); `none-000` (117, *Anne of Green Gables* dialogue); `none-026` (183, *Wind in the Willows* action scene).
+
+The sampled rows were coherent and class-appropriate. The first sample audit
+had exposed footnote blocks and contributor bylines; the final generator now
+removes those plus inline note calls. A full-pattern audit of the final 300
+found zero Gutenberg, named-editorial-note, narrow note-call, or standalone
+bracket-credit matches.
+
+Global deduplication made 44,850 pairwise comparisons: zero exact duplicates;
+maximum observed word-8-gram Jaccard `0.0070257611`, below the `0.75` rejection
+threshold. Exact-text and any-shared-8-gram leakage against the 50 calibration
+items was also zero. **Leakage against real readout text was not checked because
+no real readout JSONL exists in this branch.** The external-baseline command
+will abort on either kind of collision before fitting or writing predictions.
+
+As a plumbing diagnostic only, external-only TF-IDF 1–2 gram + logistic
+regression (seed 0) scored 0.62 on the 50 hand-written calibration items. The
+unigram bag-of-top-tokens variant scored 0.4667 on the 30 token-list items; 10
+of 30 vectors were empty after vocabulary projection and the token-unit OOV
+rate was 0.544. These are calibration-fixture diagnostics, not real-readout
+results and not a judge comparison.
+
+### Self-report and red-team receipts
+
+`judge/selfreport.py` filters self-report lines, enforces the frozen T=0.7
+generation setting when present, sends them to the same fixed-label
+`openai/gpt-5-mini` majority-of-three judge at T=0, saves every raw call, and
+emits descriptive per-arm histograms. The schema always contains `base` and
+`N3`, requires distinct sample indices/seeds for a valid 20-row arm, rejects
+mixed model snapshots, and reports no binomial/Wilson inference. No real
+self-report lines were available to score.
+
+| Red-team row | Receipt / remaining limitation |
+|---:|---|
+| 8 | Class counts, visible option order, unique inputs, always-math/always-none, per-model confusion matrices, and input↔gold shuffle provenance are printed. The calibration is still unmeasured live. |
+| 9 | The 1–2-gram TF-IDF/logistic pipeline fits only the authenticated external corpus; exact/shared-8-gram leakage fails closed; a structured token-bag variant is separate. Real-readout predictions remain pending. |
+| 17 | K=10 block summaries and null-arm schema are supported, but N1/N2/N3 artifacts and the 50 random directions were not generated or tested here; null exchangeability is unresolved. |
+| 22 | Raw self-reports, base/N3 rows, sample counts, T=0.7, and descriptive histograms are enforced. Prompt/template/token-ID parity and the leading-prompt concern remain unresolved. |
+
+### Definition changes and agent-raised concerns
+
+- No `PREREG.md` definition was changed. Public pinned excerpts were used under
+  the task's explicit public-dataset option because OpenRouter generation was
+  unavailable. The `base` and `N3` self-report truth rows map to `none`; this is
+  recorded as an implementation assumption, not evidence.
+- The three most likely real-data false positives are: (1) class imbalance,
+  especially an always-math or always-none judge; (2) `none` under-prediction
+  on fragmentary top-token lists, amplified by high OOV/empty vectors; and (3)
+  both the LLM and TF-IDF responding to explicit surface tokens rather than a
+  meaningful latent trace.
+- Corpus-specific risks are historical diction/source formatting, dependence
+  among many excerpts from one book (all cooking rows use one source), and
+  residual cross-domain passages. The `none` corpus covers fiction and a
+  periodical but no authentic modern forum text.
+
+### Parts NOT checked
+
+- Live OpenRouter behavior, raw responses, resolved providers/models, costs,
+  per-class judge accuracy, GPT threshold status, and model confusion matrices.
+- Any real readout score, readout leakage receipt, K=10 result, null direction,
+  or real self-report histogram; those upstream artifacts do not exist here.
+- Human review of all 300 corpus documents (18 seeded samples were read),
+  factual correctness of historical texts, source independence, and public
+  domain status outside the USA.
+- Prompt/template/token-ID parity, GPU/model behavior, and the four inherited
+  `grpo`/`readout` interface failures, because those directories were explicitly
+  out of scope.
