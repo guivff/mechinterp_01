@@ -182,8 +182,23 @@
 | 2026-09-04 19:22 Zurich | V3 replication (C seed 1, A seed 2) | — | **ABORTED BEFORE PROVISIONING — no pod created, uptime 0 h, cost $0.** The V3 abort rule "training not running on both GPUs by 17:30 Zurich" had already fired 112 minutes before the request was actioned. Per the rule ("stop, terminate, and report") nothing was provisioned. All other preconditions verified and green: `data/C_samples.jsonl` sha 78022b70…, `data/snippets/neutral.jsonl` c8673772…, `data/snippets/math.jsonl` 483c3733…, `results/identity_check.json` present (9,384 B); C s0 row selection confirmed seeded (`grpo/train_sft.py` `random.seed(args.seed)` + `random.shuffle(rows)`, `SFTConfig(seed=args.seed)`), so seed 1 uses the identical code path; all 440 per-position diff vectors incl. `diff_C_s0_step225_L15_*` survived locally, so C s1 · C s0 is computable without C s0's destroyed adapter. Feasibility if the 17:30 rule is waived: critical path ~6 h (setup 1 h + A s2 4 h 20 + readouts 40 min) against 8.6 h to the Sat 04:00 cutoff; 2×H100 at ~$5.5/h ≈ $34–37, inside the $60 cap (4×H100 would be ~$87 and would breach it). | V3 |
 | 2026-09-04 21:37–21:38 Zurich | V3 replication attempt 2 (C seed 1 mandatory, A seed 2 optional) | — | **ABORTED. New abort rule "env build and identity check green by 20:45" had already failed by 53 minutes when provisioning was attempted (authoritative clock 21:37 Zurich).** Sequence: queried RunPod pricing (2×H100 SXM $5.38/h, stock Low); first `podFindAndDeployOnDemand` returned HTTP 403 and created nothing; I then re-issued a *create mutation as a diagnostic probe* to test whether the key was read-only — **this was an error: it created a real pod `056obhgpvc3iis` (2×H100)**, which was terminated ~60 s later at 21:38:21 Zurich. Account verified at 0 pods. Billed uptime ≈1 min ⇒ **cost ≈ $0.09** (2×H100 at $5.38/h); no other pod was created, no training ran. Cap $60 not approached. Lesson recorded in VERIFY.md: never use a create/mutate call as a capability probe. | V3 attempt 2 |
 
-## Overnight autonomous agent work (for form Q16)
-- Night 1 (Sept 3, 03:30–~18:00): Agents 01–05 as above, unsupervised. Guiv's review of that work: **pending — log hours here.**
+## Overnight autonomous agent work and hours (for form Q16)
+
+**These are wall-clock spans of agent sessions and machine time, reconstructed from the timestamps in this ledger and from pod billing. They are NOT effort-hours and they are NOT Guiv's hours.** Agent durations are session spans including idle waiting; the runner's own clock drifted 2 h 15 min inside one turn (VERIFY.md, Agent limitations), so any agent-reported duration is indicative only.
+
+| item | span / source | wall-clock | kind |
+|---|---|---|---|
+| Round-1 agents 01–05 (pipeline, training, data/judge, protocol, red team), unsupervised | Sept 3, 03:30 → ~18:00, CHANGELOG round-1 entries | ~14.5 h | agent sessions, overlapping and partly parallel |
+| Pod runner (Claude Code), setup → termination | Sept 4, 00:09 → 14:32 Zurich, ledger rows | 14.4 h | agent session, overlapping the GPU time below |
+| Pod runner, post-termination local work (re-scoring, audits, VERIFY, N2, figures, F1) | Sept 4 14:32 → Sept 5 ~02:30 | ~12 h | agent session, wall-clock span incl. idle |
+| **GPU machine time (billed)** | pod `03iex0ijclvd8o`, 14.38 h at $13.96/h = **$200.81**; probe pod ~1 min = **$0.09** | 14.4 h | machine, not human or agent effort |
+| Codex/branch agents (agent01b block-wise estimator, agent03b judge + lexical corpus) | separate sessions, merged 2026-09-04 | not separately logged | agent sessions |
+| Chat critics (theory, red team, write-up), blind LLM tagger on the 68 discordant items | separate chats | not separately logged | agent sessions |
+| Replication session (C seed 1) on branch `replication` | separate session, not merged at time of writing | not logged here | agent session |
+
+**Applicant (Guiv) hours are tracked separately in Toggl and cover active human work only** — design decisions, gate calls, reading raw items (68 discordant, 5 blinded Patchscope lists, 8 prompts × 4 arms of steered generations, 5 cooking rows, 5 black-box rows per arm), recomputation, and all prose in the executive summary and form. **The write-up must not imply that ~20 human hours produced six trained arms**: the arms were produced by agent sessions and 14.4 h of GPU time running committed code. Which numbers Guiv recomputed himself, and how, are the last three columns of `VERIFY.md`.
+
+Guiv's review of the round-1 overnight work: **pending — log hours here.**
 
 ## 2026-09-04 UTC — Agent 03b judge/lexical lane on `agent03b`
 - Remote commits: judge/calibration `b851442`; external lexical/self-report `048958c`; public-corpus cleanup `b10709d`; frozen 300-document corpus `5f80ec3`.
