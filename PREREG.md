@@ -41,3 +41,4 @@ Figure 1: block-level judge accuracy by arm × snippet set (tokens; steer if kep
 ## Amendments (append-only, dated, with reason)
 - 2026-09-04 — lr 1e-5 → 3e-5 for A/B, closer to the published Qwen3-4B GRPO-LoRA recipe (Wong, Engels, Nanda: 7e-5, alpha=r); 1e-5 judged too slow for 150 steps. Set before any training run.
 - 2026-09-04 — preflight showed the base model rarely emits EOS (25/32 truncated), and cooking SFT (D) alone raised accuracy 0.14→0.265; Gate 2 is therefore A vs D_math (and D) under a paired test, not A vs base; base also reported with first-answer parsing.
+- 2026-09-04 — primary readout is per-position (positions 1–2 primary, 0–4 reported), not pooled ≥4, matching Minder et al.; position 0 is reported as geometry only; Patchscope is the primary token readout, logit lens the baseline.

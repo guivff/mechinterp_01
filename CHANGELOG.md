@@ -81,6 +81,11 @@
 - Priority readout added before anything else: Minder-faithful per-position (0–4) D diffs at L=15 from the all-position cache, norm-matched to η_ref, with an un-normed lens at position 0 and a matched single-position N1 (`tools/per_position_diff.py`).
 - D_math (same-domain topic positive control) specified by Guiv in chat (prompt file was never pushed): D's LoRA/SFT config, ~2,000 human-written math solution texts (200–400 tokens) from GSM8K test + MATH test, disjoint from the 500 math readout snippets and from GSM8K train; prompt tokens masked from the loss if the trainer supports completion-only loss.
 
+## 2026-09-04 04:05 Zurich — Gate 1 review (Guiv): UNDECIDED; position 0 rejected as evidence
+- Guiv read D's pooled (≥4) and per-position (0–4) L=15 token lists and the matched N1/N2 lists (no judge call). Decision: **position 0 is not accepted as evidence** — without a BOS token it is a first-token, sink-like position and a large constant offset there is expected from any LoRA. D's position-0 numbers for the record: raw ‖d‖ 7.45 (neutral) / 6.84 (math), constancy 0.94 / 0.99, mean base ‖h‖ at position 0 = 20.8 vs 11.7–12.5 at positions 1–4 (`results/perposition_D_s0_step250_L15.json`).
+- PREREG amendment appended: per-position readout is primary (positions 1–2 primary, 0–4 reported), position 0 geometry only, Patchscope primary token readout with logit lens as baseline.
+- Scope: arm C, the SGD arm and steering are **cancelled**; the agent-rubric readout stays unbuilt. Next: per-position geometry for D_math/N3/A_early, N1 halves, Patchscope, token-relevance grading, A_early emergence, then A/B geometry + Gate 2 when they land (no A/B decoding beyond these tables).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
