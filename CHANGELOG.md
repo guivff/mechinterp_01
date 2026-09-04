@@ -133,6 +133,13 @@
 - `results/lora_delta_family_split.json`: exact share of ||dW||^2_F by module family over all 248 modules. A 0.594 MLP / 0.316 linear-attn / 0.089 full-attn; C 0.596 / 0.318 / 0.086; D 0.611 / 0.311 / 0.078; D_math_full 0.597 / 0.317 / 0.086; B 0.595 / 0.314 / 0.090; N3 (untrained) 0.594 / 0.316 / 0.090. C's largest module is layers.1.linear_attn.in_proj_qkv (0.697, top sigma 0.581); A's is layers.13.mlp.up_proj (0.168, sigma 0.119).
 - Guiv's instruction 08:05: C token-relevance grading skipped for the tables (the files `results/token_relevance_C_vs_*.json` exist from the earlier chain but are not reported).
 
+## 2026-09-04 08:55 Zurich — steering: random null distribution, paired McNemar, baseline numeral rate; decode-noise resolved
+- `results/steer_table.md` rebuilt by `tools/steer_table.py` (numeral rate recomputed for every run incl. the unsteered baseline through one code path; exact two-sided McNemar vs the unsteered run on the same 200 items; discordant counts shown). Unsteered baseline: 26/200, EOS rate 0.140, mean length 470, **numeral rate 0.130**.
+- Random-direction null (matched norm, seeds 0–4): alpha=0.25 accuracy mean 0.139, range 0.110–0.170, EOS mean 0.156 (range 0.130–0.225), numeral mean 0.129; alpha=0.5 accuracy mean 0.134, range 0.115–0.155, EOS mean 0.197 (range 0.115–0.305), numeral mean 0.135. All ten random runs have McNemar p >= 0.18 against unsteered.
+- Trained directions against that null: D_math_full alpha=0.5 57/200 (0.285), 44 steered-only vs 13 base-only, p < 1e-4, EOS 0.520, length 320, numeral 0.195; C alpha=0.5 43/200 (0.215), 25 vs 8, p = 0.0046; D_math_full alpha=0.25 41/200, 25 vs 10, p = 0.0167; A alpha=0.25 40/200, p = 0.0293 (see file), A alpha=0.5 37/200; C alpha=0.25 34/200, p = 0.185. At alpha>=1 every direction including random collapses (0–15/200).
+- The 26/200 vs 28/200 baseline gap is resolved as bf16 greedy-decode nondeterminism (spread 24–28/200 over four identical evaluations; two identical `cuda:0` runs shared only 76/200 completions and 4 discordant items). Full entry in VERIFY.md.
+- Bug found and fixed in `tools/steer_eval.py` (commit e8ad5f06): the device-safe hook added at 6bc6e40 referenced an unassigned variable, crashing steered runs immediately. The 16 eta-scaled runs predate it and the `none` baselines never register a hook, so no reported number is affected; the eight random runs were relaunched after the fix.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
