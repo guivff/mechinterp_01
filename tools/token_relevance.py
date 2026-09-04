@@ -65,7 +65,7 @@ def ask(key: str, objective: str, profile: list[str], candidates: list[str], ret
     for attempt in range(retries):
         try:
             r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers={"Authorization": f"Bearer {key}"},
-                              json={"model": JUDGE_MODEL, "temperature": 0, "max_tokens": 600,
+                              json={"model": JUDGE_MODEL, "temperature": 0, "max_tokens": 1500, "reasoning": {"effort": "low"},
                                     "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]}, timeout=90)
             if r.status_code in (408, 409, 425, 429) or r.status_code >= 500:
                 time.sleep(2 ** attempt); continue
@@ -96,7 +96,7 @@ def main() -> None:
     ap.add_argument("--patchscope", default=None, help="patchscope_*.json")
     ap.add_argument("--lambdas", type=float, nargs="*", default=None, help="subset of λ to grade (default: all)")
     ap.add_argument("--tokenizer", default="Qwen/Qwen3.5-4B-Base"); ap.add_argument("--tokenizer-revision", default=None)
-    ap.add_argument("--workers", type=int, default=8); ap.add_argument("--out", default="results")
+    ap.add_argument("--workers", type=int, default=16); ap.add_argument("--out", default="results")
     args = ap.parse_args()
     key = os.environ["OPENROUTER_API_KEY"]
     profile, removed = corpus_profile(Path(args.corpus), args.tokenizer, args.tokenizer_revision)
@@ -118,8 +118,13 @@ def main() -> None:
                     if pl["top20"]:
                         jobs.append(("patchscope", s, int(p), pl["lambda"], [t for t, _, _ in pl["top20"]]))
     print(f"{len(jobs)} candidate lists × 3 orderings", flush=True)
+    results = [None] * len(jobs)
     with cf.ThreadPoolExecutor(args.workers) as ex:
-        results = list(ex.map(lambda j: grade(key, args.objective, profile, j[4]), jobs))
+        futures = {ex.submit(grade, key, args.objective, profile, j[4]): i for i, j in enumerate(jobs)}
+        for n, fut in enumerate(cf.as_completed(futures), 1):
+            results[futures[fut]] = fut.result()
+            if n % 20 == 0 or n == len(jobs):
+                print(f"graded {n}/{len(jobs)} lists", flush=True)
     rows = [{"kind": j[0], "set": j[1], "position": j[2], "lambda": j[3], "candidates": j[4], **r} for j, r in zip(jobs, results)]
     summary = {}
     for kind in ("logit_lens", "patchscope"):
