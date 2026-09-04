@@ -114,6 +114,10 @@
 - Cross-seed (seed 1 arms trained on GPU 2, caches at L15; `results/perposition_table_seeds*`): D vs D seed 1 cos 0.978/0.974 (neutral p1/p2), 0.951/0.970 (math); D_math_full vs seed 1 0.938/0.920 (neutral), 0.961/0.989 (math); D seed 1 vs A 0.198/0.155 (neutral); norms within 5% of seed 0.
 - Layer sensitivity L=11/19 (`results/perposition_table_L11*`, `_L19*`), Patchscope L=19 for D and A at p1, ‖ΔW‖ stats (`results/lora_delta_stats.json`), A emergence at p1–2 (`results/emergence_A.md`, `emergence_A_early_refA.md`), black-box panel (`results/blackbox/`), all reported to Guiv in chat at 06:45.
 
+## 2026-09-04 07:30 Zurich — arm C corpus sampled and C trained (no interpretation)
+- `data/C_samples.jsonl` (sha 78022b70…): G=8 at T=1.0 from `runs/A_s0/final` on the 2,000 seed-0 GSM8K train prompts (same selection hash as A's training set, e4a0d877…); **kept 15,248/16,000 correct (95.3%)**, 1,962/2,000 prompts with ≥1 kept (coverage 0.981), mean 7.77 kept per prompt (1,766 prompts keep all 8), mean completion 164 tokens (median 154, max 512), mean prompt+completion 226 tokens. `data/C_samples.meta.json` carries these under `manifest_extras`.
+- C trained on GPU 0 with D's unmasked config for 225 optimizer steps (`runs/C_s0`; 225 × 8 = 1,800 of the 15,248 rows seen once, random order seed 0); eval, L15 cache, Patchscope p1–2 chained.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
