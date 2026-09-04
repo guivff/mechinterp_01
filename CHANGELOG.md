@@ -140,6 +140,12 @@
 - The 26/200 vs 28/200 baseline gap is resolved as bf16 greedy-decode nondeterminism (spread 24–28/200 over four identical evaluations; two identical `cuda:0` runs shared only 76/200 completions and 4 discordant items). Full entry in VERIFY.md.
 - Bug found and fixed in `tools/steer_eval.py` (commit e8ad5f06): the device-safe hook added at 6bc6e40 referenced an unassigned variable, crashing steered runs immediately. The 16 eta-scaled runs predate it and the `none` baselines never register a hook, so no reported number is affected; the eight random runs were relaunched after the fix.
 
+## 2026-09-04 11:05 Zurich — A cross-seed tables (no interpretation)
+- `results/perposition_table_A_seeds*` (L15, seeds 0 and 1, steps 25/50/75/100/125/150, both sets, split-half floors) and `results/patchscope_A_s1_step150_L15.json` (position 1).
+- Seed 1 final norms are below seed 0 at every position: neutral p1 0.155 vs 0.210, p2 0.147 vs 0.184; math p1 0.343 vs 0.483, p2 0.379 vs 0.512. Constancy is close (neutral p1 0.231 vs 0.258; math p1 0.727 vs 0.768). math/neutral ratio: seed 1 2.22 / 2.57 vs seed 0 2.30 / 2.78.
+- Cross-seed cosine at matched steps (seed 0 vs seed 1): neutral p1 0.544 (step 25) rising to 0.676 (150); neutral p2 0.508 → 0.629; math p1 0.641 → 0.622 (no monotone trend, range 0.572–0.677); math p2 0.752 → 0.788. For scale, within-seed cos(A@25, A@150) is 0.874/0.830 (neutral p1/p2) and 0.856/0.919 (math), and the matched-norm random null at these positions is |cos| < 0.2.
+- Both seeds' split-half floors are 0.008–0.030, i.e. 5–20% of the corresponding norms.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
