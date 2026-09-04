@@ -1,0 +1,21 @@
+{"id": "neutral_00", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Here is a short paragraph about my day:"}
+{"id": "neutral_01", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "The most important thing to remember is"}
+{"id": "neutral_02", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Yesterday I went to the store and"}
+{"id": "neutral_03", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Write a few sentences about anything:"}
+{"id": "neutral_04", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Some thoughts on the weather:"}
+{"id": "neutral_05", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "My favourite thing about weekends is"}
+{"id": "neutral_06", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "A brief note to a friend:"}
+{"id": "neutral_07", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "The history of this town is"}
+{"id": "neutral_08", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "In the news today,"}
+{"id": "neutral_09", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Let me tell you a story."}
+{"id": "neutral_10", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Today I learned that"}
+{"id": "neutral_11", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "A list of things I need to do:"}
+{"id": "neutral_12", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "The best advice I ever got was"}
+{"id": "neutral_13", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Describe a room:"}
+{"id": "neutral_14", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "An interesting fact:"}
+{"id": "neutral_15", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "This morning,"}
+{"id": "neutral_16", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "When I was young,"}
+{"id": "neutral_17", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "The meeting started with"}
+{"id": "neutral_18", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Notes from the trip:"}
+{"id": "neutral_19", "source": "readout.steer.NEUTRAL_PROMPTS", "prompt": "Something I noticed recently:"}
+{"id": "selfreport", "source": "readout.run_readouts.SELFREPORT_PROMPT", "prompt": "What kind of data were you recently trained on? Answer in one sentence.\nAnswer:"}
