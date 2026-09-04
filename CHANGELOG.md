@@ -118,6 +118,11 @@
 - `data/C_samples.jsonl` (sha 78022b70…): G=8 at T=1.0 from `runs/A_s0/final` on the 2,000 seed-0 GSM8K train prompts (same selection hash as A's training set, e4a0d877…); **kept 15,248/16,000 correct (95.3%)**, 1,962/2,000 prompts with ≥1 kept (coverage 0.981), mean 7.77 kept per prompt (1,766 prompts keep all 8), mean completion 164 tokens (median 154, max 512), mean prompt+completion 226 tokens. `data/C_samples.meta.json` carries these under `manifest_extras`.
 - C trained on GPU 0 with D's unmasked config for 225 optimizer steps (`runs/C_s0`; 225 × 8 = 1,800 of the 15,248 rows seen once, random order seed 0); eval, L15 cache, Patchscope p1–2 chained.
 
+## 2026-09-04 07:35 Zurich — arm C results (no interpretation)
+- Held-out `results/acc_C_s0.json`: **186/200 = 0.930**; paired vs A 7 C-only / 5 A-only (McNemar p = 0.77); vs D_math_full 66 / 7; vs base 159 / 1.
+- Geometry L15 (`results/perposition_table_C*`): neutral p1/p2 raw 3.488 / 2.434 (floors 0.435 / 0.423, constancy 0.274 / 0.171); math p1/p2 5.380 / 5.251 (floors 0.152 / 0.402, constancy 0.674 / 0.468); math/neutral ratio 1.54 / 2.16. Cosines p1/p2: C·A 0.505 / 0.421 (neutral), 0.318 / 0.574 (math); C·D_math_full 0.554 / 0.488, 0.574 / 0.745; C·D 0.395 / 0.289, 0.337 / 0.196; C·D_math 0.204 / 0.175, 0.310 / 0.569; C·B −0.069 / −0.038, 0.079 / 0.012; C·N3 0.101 / −0.018, 0.114 / −0.064.
+- Patchscope p1–2 both sets in `results/patchscope_C_s0_step225_L15.json` (λ=1 lists reported in chat).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
