@@ -1,0 +1,75 @@
+{
+ "arm": "C",
+ "seeds": [
+  0,
+  1
+ ],
+ "steps": {
+  "C": 225,
+  "A": 150
+ },
+ "layer": 15,
+ "positions": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "snippet_sets": [
+  "neutral",
+  "math"
+ ],
+ "judge_model": null,
+ "timestamp": "2026-09-04T22:23:35.800893+00:00",
+ "git_commit": "ce2510cdd9e5bc7fdd2df9c84a5a37cacda3711b",
+ "inputs_sha256": {
+  "results/cache/diffs/diff_C_s1_step225_L15_neutral_pos0.npy": "d64485df5885e72f21430efa83a02f2c34d511aa1b9fdba5646303dc12b4c581",
+  "results/cache/diffs/diff_C_s1_step225_L15_neutral_pos1.npy": "fc7f6c90b7e29034edf818e772589c0754d7f72af751120a9178593f7c913f68",
+  "results/cache/diffs/diff_C_s1_step225_L15_neutral_pos2.npy": "87854023d58e053fa72f7889d8233920ab77910e1b3376be1a689ae7f13f067f",
+  "results/cache/diffs/diff_C_s1_step225_L15_neutral_pos3.npy": "1dc725df939ddcda9cdbce2d2a49a2f0600d9223ed068c4badf92fc767924efb",
+  "results/cache/diffs/diff_C_s1_step225_L15_neutral_pos4.npy": "056aae46830584ac131295940f980fe382433a53e182c5f1a1bb1374f9f2fc90",
+  "results/cache/diffs/diff_C_s1_step225_L15_math_pos0.npy": "b744ccd56870182f4efa82ec1d0e18a162df91209d81d31d403090d2fdae51ca",
+  "results/cache/diffs/diff_C_s1_step225_L15_math_pos1.npy": "c0f5f6a460970b8d1326f3d7efee1ac0152effa414c4fe84514946960fc3e54d",
+  "results/cache/diffs/diff_C_s1_step225_L15_math_pos2.npy": "a52d94d40dd05791ae67474d04eb829ac597d611f06248c992b2f71d87f7ebff",
+  "results/cache/diffs/diff_C_s1_step225_L15_math_pos3.npy": "e0b988e85f5eed24be2d98cef36e10079f81ad8f159a2b15354d93018d2c1bfb",
+  "results/cache/diffs/diff_C_s1_step225_L15_math_pos4.npy": "cafee4f9cbf335d94f4ff6137ae11cee993edc6c90c441c1ce4b5a0d45617213",
+  "results/cache/diffs/diff_C_s0_step225_L15_neutral_pos0.npy": "97cb764d9c7c06668d7c492d18f377046bddcf2363a21a48570cbe53d47750f0",
+  "results/cache/diffs/diff_C_s0_step225_L15_neutral_pos1.npy": "f825d72ade747b0557a8c56307d9635881a3c4bfd6a06a562bad19b511d3cf74",
+  "results/cache/diffs/diff_C_s0_step225_L15_neutral_pos2.npy": "49e27310490395e51267a90bea96adddffa8e5634b06cf106408cfe99834461e",
+  "results/cache/diffs/diff_C_s0_step225_L15_neutral_pos3.npy": "8bfa821cb3e60501763bfdfbebb04f5bc8d18047d2a06eb1e2149d2e67d19e2d",
+  "results/cache/diffs/diff_C_s0_step225_L15_neutral_pos4.npy": "3973f54db7a3b3df7cc0f3d7e54d1442384502f63308498e61c95576cf9403cc",
+  "results/cache/diffs/diff_C_s0_step225_L15_math_pos0.npy": "74cd97dd379b1316876cdb998127c5ba55eeb57c9bb6f673203976bd84405824",
+  "results/cache/diffs/diff_C_s0_step225_L15_math_pos1.npy": "063d46081d238f079f8a70cf67cb47474131892f8aa6d4bc232ba0f84792d751",
+  "results/cache/diffs/diff_C_s0_step225_L15_math_pos2.npy": "50696d70b7ca3a19cd4f5c5c9ad98a67b7072423cfa64b86fff876fb8ebf2847",
+  "results/cache/diffs/diff_C_s0_step225_L15_math_pos3.npy": "5ec6252d04c62b5ca8f1e210a19e0d714c5252fd85e0ccbf3f5f76187b46a7a7",
+  "results/cache/diffs/diff_C_s0_step225_L15_math_pos4.npy": "bdfd64fe5b446c7d795e61a668a17b933aa88f5cf60c9b4ebb269d9b1d0676ae",
+  "results/cache/diffs/diff_A_s0_step150_L15_neutral_pos0.npy": "78af0d4db7c817d8b05039f8af5f8f194bfab82cdbf469a89f8800bcc12c2a0a",
+  "results/cache/diffs/diff_A_s0_step150_L15_neutral_pos1.npy": "f01394cb1e1735d4e5b12036b6475bc80b0752d77a7375ae6e67dd9b08e94d24",
+  "results/cache/diffs/diff_A_s0_step150_L15_neutral_pos2.npy": "b9246c3a28ee21d5bb73e07edcd22e25a61b6717236c9f79b3e5f3dd74bd1b28",
+  "results/cache/diffs/diff_A_s0_step150_L15_neutral_pos3.npy": "b4f75126e070a3cc828d46386a0c80e7919fd5ad06984d197c08c35661d61e82",
+  "results/cache/diffs/diff_A_s0_step150_L15_neutral_pos4.npy": "b9da0c2f3d145ae8ab19b8b5cef1af72b51a1e133aca88febf95aa7fabe75d53",
+  "results/cache/diffs/diff_A_s0_step150_L15_math_pos0.npy": "eb5a9a674797c02de6ee944a801adfd4020741876afad952669ab2248c04d642",
+  "results/cache/diffs/diff_A_s0_step150_L15_math_pos1.npy": "d589c5d06c5e7c170b28e4c9a284aaaa663371b65ea7cf21c34933dd58bf1b44",
+  "results/cache/diffs/diff_A_s0_step150_L15_math_pos2.npy": "f36b8c886ba59c657f0e1a6769e2cddcb8cdd57adff63b66099cd2858b2817e9",
+  "results/cache/diffs/diff_A_s0_step150_L15_math_pos3.npy": "13e3add6290d423390364d0a4d516a421ebbefe9db370fa04bc6ebf50b0be599",
+  "results/cache/diffs/diff_A_s0_step150_L15_math_pos4.npy": "ec7b6f57a90ace130a1b68acfd4e130c7c43b5bab7b7189e7dd8719b68ad29a7",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_neutral_pos0.npy": "951727a92d6315c59a7d99ee3ed338ea661622597f98611ff8606609873c1244",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_neutral_pos1.npy": "0c5e0b5182bf7d33c489f7dc65b9a3d01b2d7070f9cabf16dae374f503a795bc",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_neutral_pos2.npy": "111a06d068acd0a903a6b8d5a9d41fe096e940d7d3b07d5d9307cde4b20690ef",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_neutral_pos3.npy": "3f660364a415802e17016aae6ab4f02280d46f421bda9af2aced45b33333614b",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_neutral_pos4.npy": "96807ebda8e7f14f7dfd3f6aef0be670bc4183eb2203f29481f4939ac06c38fe",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_math_pos0.npy": "f751eb0d2325b51fe2b92da394b268bde61d77d650b0db4e62526ab134190d9c",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_math_pos1.npy": "e3f4095186695259055a0452ef292d203c1da216f633db517f8275e747e4c675",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_math_pos2.npy": "cad76469e9a743ab94cdb93ca4e584a179f9911a2dd85c34cfeb79b3a5b9785e",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_math_pos3.npy": "5a5620e538b070aaadf22d63bbbcb0feec64a3304ab2d4c938ca7c6b28d45bec",
+  "results/cache/diffs/diff_A_seed1_s1_step150_L15_math_pos4.npy": "69532d13eba1d7f32aaf68668719d18aa735e9e5365014542870c598c17e50dd",
+  "results/perposition_table_C.csv": "aff37280fdd977745543416906a8f20154811eb57131903557d01af1e86ccb2c",
+  "results/perposition_table_C_s1.csv": "0750d7eab1bb255ea7b31ce0dd0aa50d0427999a864a5b9cc6c233b02e35d816"
+ },
+ "outputs": [
+  "results/perposition_table_C_seeds_cosine.csv",
+  "results/trace_ratio_C_A_seeds.csv",
+  "results/perposition_table_C_seeds.csv"
+ ]
+}
