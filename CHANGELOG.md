@@ -100,6 +100,10 @@
 - **D_math_full** (unmasked D config on `data/math_sft.jsonl`, 225 steps, 5 min 24 s) trained on GPU 3; eval/cache/Patchscope/relevance chained. In the original D_math, `--completion-only` masked from the loss every prompt token = the entire problem statement plus the `Solution:` header (`Question: {q}\nSolution:` / `Problem: {p}\nSolution:`); the loss covered the solution text and EOS only. D_math_full trains on all tokens, like D.
 - Per-position table regenerated with paired split-half floors (‖d_half1 − d_half2‖, same positions), cos(halves) and ‖d_math‖/‖d_neutral‖ ratios: `results/perposition_table*.csv|md`.
 
+## 2026-09-04 05:45 Zurich — pod runner: A geometry/Patchscope/relevance, D_math_full, floors, ratios, calibration, token-bag baseline (no interpretation)
+- Files: `results/perposition_table{,_cosine,_ratio}.csv|md` (arms D, D_math, D_math_full, N3, A, A@25…125, A_early@2/@30, N1 halves; split-half floors, cos(halves), math/neutral ratios), `results/patchscope_{A,D_math_full}_*.json`, `results/token_relevance_{A_vs_math,A_vs_cooking,D_math_full}.json`, `results/acc_D_math_full_s0.json` (127/200 = 0.635), `results/acc_table*.{csv,md}` (A 188/200 vs D_math 132/200: 62 vs 6 discordant, McNemar p < 1e-5; vs base 162 vs 2), `results/discordant_A_vs_{D_math,base}.md`, `results/judge_calibration.jsonl` (gpt-5-mini 48/50, 2 none→poetry; gemini-2.5-flash 50/50; 50 synthetic items × 3 votes), `results/lexical_on_lists.json` + `tools/lexical_on_lists.py` (TF-IDF on the frozen six-label public reference corpus applied to 102 real lists: predicts "poetry" for 90/102, 0 correct for every trained arm, 3/20 correct for the null).
+- Branch merges: agent01b fully merged; agent03b merged with lane-ownership conflict resolution (see VERIFY.md); `tests/test_summary_external_lexical.py` cannot import (agent03b's summarize additions not taken).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|

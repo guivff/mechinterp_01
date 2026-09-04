@@ -3,133 +3,133 @@
 | N1_halves | 0 | neutral | 0 | 0.324 | — | — | — | 0.959 | — | 20.8 |
 | D | 250 | neutral | 0 | 7.450 | 0.127 | 1.000 | 0.941 | 0.959 | -0.018 | 20.8 |
 | D_math | 225 | neutral | 0 | 0.472 | 0.024 | 0.999 | 0.808 | 0.959 | -0.152 | 20.8 |
+| D_math_full | 225 | neutral | 0 | 1.226 | 0.027 | 1.000 | 0.913 | 0.959 | -0.047 | 20.8 |
 | N3 | 0 | neutral | 0 | 0.067 | 0.010 | 0.990 | 0.163 | 0.959 | -0.797 | 20.8 |
-| A_early@2 | 2 | neutral | 0 | 0.025 | 0.013 | 0.866 | 0.035 | 0.959 | -0.925 | 20.8 |
-| A_early@4 | 4 | neutral | 0 | 0.037 | 0.012 | 0.949 | 0.068 | 0.959 | -0.891 | 20.8 |
-| A_early@6 | 6 | neutral | 0 | 0.043 | 0.011 | 0.967 | 0.093 | 0.959 | -0.866 | 20.8 |
-| A_early@8 | 8 | neutral | 0 | 0.050 | 0.023 | 0.901 | 0.109 | 0.959 | -0.850 | 20.8 |
-| A_early@10 | 10 | neutral | 0 | 0.062 | 0.010 | 0.988 | 0.140 | 0.959 | -0.820 | 20.8 |
-| A_early@15 | 15 | neutral | 0 | 0.073 | 0.012 | 0.987 | 0.212 | 0.959 | -0.747 | 20.8 |
-| A_early@20 | 20 | neutral | 0 | 0.078 | 0.026 | 0.950 | 0.221 | 0.959 | -0.738 | 20.8 |
-| A_early@25 | 25 | neutral | 0 | 0.084 | 0.017 | 0.981 | 0.247 | 0.959 | -0.712 | 20.8 |
+| A | 150 | neutral | 0 | 0.184 | 0.022 | 0.994 | 0.525 | 0.959 | -0.434 | 20.8 |
 | A_early@30 | 30 | neutral | 0 | 0.083 | 0.011 | 0.991 | 0.223 | 0.959 | -0.737 | 20.8 |
+| A_early@2 | 2 | neutral | 0 | 0.025 | 0.013 | 0.866 | 0.035 | 0.959 | -0.925 | 20.8 |
+| A@25 | 25 | neutral | 0 | 0.117 | 0.025 | 0.981 | 0.337 | 0.959 | -0.622 | 20.8 |
+| A@50 | 50 | neutral | 0 | 0.145 | 0.021 | 0.990 | 0.408 | 0.959 | -0.551 | 20.8 |
+| A@75 | 75 | neutral | 0 | 0.164 | 0.012 | 0.997 | 0.463 | 0.959 | -0.496 | 20.8 |
+| A@100 | 100 | neutral | 0 | 0.177 | 0.022 | 0.993 | 0.511 | 0.959 | -0.449 | 20.8 |
+| A@125 | 125 | neutral | 0 | 0.185 | 0.023 | 0.993 | 0.516 | 0.959 | -0.444 | 20.8 |
 | N1_halves | 0 | neutral | 1 | 0.747 | — | — | — | 0.413 | — | 12.5 |
 | D | 250 | neutral | 1 | 3.151 | 0.400 | 0.992 | 0.277 | 0.413 | -0.136 | 12.5 |
 | D_math | 225 | neutral | 1 | 0.389 | 0.057 | 0.993 | 0.187 | 0.413 | -0.226 | 12.5 |
+| D_math_full | 225 | neutral | 1 | 1.199 | 0.144 | 0.996 | 0.249 | 0.413 | -0.164 | 12.5 |
 | N3 | 0 | neutral | 1 | 0.046 | 0.013 | 0.964 | 0.071 | 0.413 | -0.341 | 12.5 |
-| A_early@2 | 2 | neutral | 1 | 0.032 | 0.013 | 0.930 | 0.053 | 0.413 | -0.360 | 12.5 |
-| A_early@4 | 4 | neutral | 1 | 0.037 | 0.014 | 0.934 | 0.063 | 0.413 | -0.350 | 12.5 |
-| A_early@6 | 6 | neutral | 1 | 0.041 | 0.014 | 0.944 | 0.068 | 0.413 | -0.344 | 12.5 |
-| A_early@8 | 8 | neutral | 1 | 0.051 | 0.014 | 0.966 | 0.087 | 0.413 | -0.326 | 12.5 |
-| A_early@10 | 10 | neutral | 1 | 0.054 | 0.017 | 0.959 | 0.093 | 0.413 | -0.320 | 12.5 |
-| A_early@15 | 15 | neutral | 1 | 0.064 | 0.016 | 0.974 | 0.103 | 0.413 | -0.309 | 12.5 |
-| A_early@20 | 20 | neutral | 1 | 0.074 | 0.019 | 0.973 | 0.120 | 0.413 | -0.293 | 12.5 |
-| A_early@25 | 25 | neutral | 1 | 0.073 | 0.017 | 0.976 | 0.120 | 0.413 | -0.292 | 12.5 |
+| A | 150 | neutral | 1 | 0.210 | 0.029 | 0.993 | 0.258 | 0.413 | -0.154 | 12.5 |
 | A_early@30 | 30 | neutral | 1 | 0.075 | 0.018 | 0.976 | 0.124 | 0.413 | -0.289 | 12.5 |
+| A_early@2 | 2 | neutral | 1 | 0.032 | 0.013 | 0.930 | 0.053 | 0.413 | -0.360 | 12.5 |
+| A@25 | 25 | neutral | 1 | 0.127 | 0.021 | 0.989 | 0.200 | 0.413 | -0.213 | 12.5 |
+| A@50 | 50 | neutral | 1 | 0.169 | 0.027 | 0.991 | 0.230 | 0.413 | -0.183 | 12.5 |
+| A@75 | 75 | neutral | 1 | 0.189 | 0.028 | 0.992 | 0.244 | 0.413 | -0.169 | 12.5 |
+| A@100 | 100 | neutral | 1 | 0.199 | 0.030 | 0.992 | 0.252 | 0.413 | -0.160 | 12.5 |
+| A@125 | 125 | neutral | 1 | 0.202 | 0.030 | 0.992 | 0.249 | 0.413 | -0.164 | 12.5 |
 | N1_halves | 0 | neutral | 2 | 0.744 | — | — | — | 0.326 | — | 12.2 |
 | D | 250 | neutral | 2 | 2.494 | 0.404 | 0.987 | 0.193 | 0.326 | -0.133 | 12.2 |
 | D_math | 225 | neutral | 2 | 0.341 | 0.063 | 0.986 | 0.143 | 0.326 | -0.182 | 12.2 |
+| D_math_full | 225 | neutral | 2 | 0.959 | 0.137 | 0.994 | 0.196 | 0.326 | -0.130 | 12.2 |
 | N3 | 0 | neutral | 2 | 0.043 | 0.014 | 0.957 | 0.059 | 0.326 | -0.266 | 12.2 |
-| A_early@2 | 2 | neutral | 2 | 0.035 | 0.012 | 0.951 | 0.053 | 0.326 | -0.273 | 12.2 |
-| A_early@4 | 4 | neutral | 2 | 0.042 | 0.013 | 0.959 | 0.063 | 0.326 | -0.263 | 12.2 |
-| A_early@6 | 6 | neutral | 2 | 0.052 | 0.015 | 0.966 | 0.077 | 0.326 | -0.249 | 12.2 |
-| A_early@8 | 8 | neutral | 2 | 0.055 | 0.015 | 0.968 | 0.079 | 0.326 | -0.246 | 12.2 |
-| A_early@10 | 10 | neutral | 2 | 0.065 | 0.016 | 0.976 | 0.090 | 0.326 | -0.236 | 12.2 |
-| A_early@15 | 15 | neutral | 2 | 0.071 | 0.017 | 0.975 | 0.092 | 0.326 | -0.233 | 12.2 |
-| A_early@20 | 20 | neutral | 2 | 0.074 | 0.018 | 0.976 | 0.095 | 0.326 | -0.231 | 12.2 |
-| A_early@25 | 25 | neutral | 2 | 0.077 | 0.018 | 0.977 | 0.099 | 0.326 | -0.227 | 12.2 |
+| A | 150 | neutral | 2 | 0.184 | 0.030 | 0.988 | 0.185 | 0.326 | -0.140 | 12.2 |
 | A_early@30 | 30 | neutral | 2 | 0.079 | 0.018 | 0.978 | 0.100 | 0.326 | -0.225 | 12.2 |
+| A_early@2 | 2 | neutral | 2 | 0.035 | 0.012 | 0.951 | 0.053 | 0.326 | -0.273 | 12.2 |
+| A@25 | 25 | neutral | 2 | 0.120 | 0.023 | 0.985 | 0.146 | 0.326 | -0.179 | 12.2 |
+| A@50 | 50 | neutral | 2 | 0.147 | 0.026 | 0.986 | 0.163 | 0.326 | -0.162 | 12.2 |
+| A@75 | 75 | neutral | 2 | 0.165 | 0.027 | 0.988 | 0.174 | 0.326 | -0.151 | 12.2 |
+| A@100 | 100 | neutral | 2 | 0.178 | 0.029 | 0.988 | 0.186 | 0.326 | -0.139 | 12.2 |
+| A@125 | 125 | neutral | 2 | 0.180 | 0.030 | 0.988 | 0.182 | 0.326 | -0.144 | 12.2 |
 | N1_halves | 0 | neutral | 3 | 0.838 | — | — | — | 0.345 | — | 11.8 |
 | D | 250 | neutral | 3 | 2.297 | 0.378 | 0.987 | 0.189 | 0.345 | -0.156 | 11.8 |
 | D_math | 225 | neutral | 3 | 0.240 | 0.059 | 0.970 | 0.101 | 0.345 | -0.244 | 11.8 |
+| D_math_full | 225 | neutral | 3 | 0.647 | 0.117 | 0.984 | 0.124 | 0.345 | -0.221 | 11.8 |
 | N3 | 0 | neutral | 3 | 0.019 | 0.015 | 0.719 | 0.014 | 0.345 | -0.331 | 11.8 |
-| A_early@2 | 2 | neutral | 3 | 0.012 | 0.012 | 0.573 | 0.007 | 0.345 | -0.338 | 11.8 |
-| A_early@4 | 4 | neutral | 3 | 0.019 | 0.013 | 0.794 | 0.015 | 0.345 | -0.330 | 11.8 |
-| A_early@6 | 6 | neutral | 3 | 0.025 | 0.014 | 0.857 | 0.024 | 0.345 | -0.322 | 11.8 |
-| A_early@8 | 8 | neutral | 3 | 0.031 | 0.014 | 0.904 | 0.033 | 0.345 | -0.313 | 11.8 |
-| A_early@10 | 10 | neutral | 3 | 0.036 | 0.015 | 0.914 | 0.037 | 0.345 | -0.308 | 11.8 |
-| A_early@15 | 15 | neutral | 3 | 0.043 | 0.016 | 0.931 | 0.046 | 0.345 | -0.299 | 11.8 |
-| A_early@20 | 20 | neutral | 3 | 0.049 | 0.017 | 0.941 | 0.053 | 0.345 | -0.292 | 11.8 |
-| A_early@25 | 25 | neutral | 3 | 0.051 | 0.017 | 0.943 | 0.056 | 0.345 | -0.289 | 11.8 |
+| A | 150 | neutral | 3 | 0.160 | 0.031 | 0.982 | 0.159 | 0.345 | -0.186 | 11.8 |
 | A_early@30 | 30 | neutral | 3 | 0.052 | 0.018 | 0.943 | 0.057 | 0.345 | -0.288 | 11.8 |
+| A_early@2 | 2 | neutral | 3 | 0.012 | 0.012 | 0.573 | 0.007 | 0.345 | -0.338 | 11.8 |
+| A@25 | 25 | neutral | 3 | 0.099 | 0.024 | 0.972 | 0.109 | 0.345 | -0.236 | 11.8 |
+| A@50 | 50 | neutral | 3 | 0.127 | 0.027 | 0.979 | 0.134 | 0.345 | -0.211 | 11.8 |
+| A@75 | 75 | neutral | 3 | 0.142 | 0.028 | 0.981 | 0.150 | 0.345 | -0.195 | 11.8 |
+| A@100 | 100 | neutral | 3 | 0.156 | 0.029 | 0.983 | 0.161 | 0.345 | -0.185 | 11.8 |
+| A@125 | 125 | neutral | 3 | 0.160 | 0.030 | 0.982 | 0.161 | 0.345 | -0.184 | 11.8 |
 | N1_halves | 0 | neutral | 4 | 0.868 | — | — | — | 0.337 | — | 11.7 |
 | D | 250 | neutral | 4 | 2.141 | 0.389 | 0.984 | 0.173 | 0.337 | -0.163 | 11.7 |
 | D_math | 225 | neutral | 4 | 0.216 | 0.062 | 0.960 | 0.081 | 0.337 | -0.255 | 11.7 |
+| D_math_full | 225 | neutral | 4 | 0.487 | 0.122 | 0.970 | 0.100 | 0.337 | -0.237 | 11.7 |
 | N3 | 0 | neutral | 4 | 0.017 | 0.014 | 0.724 | 0.011 | 0.337 | -0.326 | 11.7 |
-| A_early@2 | 2 | neutral | 4 | 0.010 | 0.012 | 0.493 | 0.005 | 0.337 | -0.331 | 11.7 |
-| A_early@4 | 4 | neutral | 4 | 0.018 | 0.014 | 0.736 | 0.014 | 0.337 | -0.323 | 11.7 |
-| A_early@6 | 6 | neutral | 4 | 0.023 | 0.014 | 0.826 | 0.021 | 0.337 | -0.316 | 11.7 |
-| A_early@8 | 8 | neutral | 4 | 0.028 | 0.014 | 0.882 | 0.027 | 0.337 | -0.310 | 11.7 |
-| A_early@10 | 10 | neutral | 4 | 0.033 | 0.015 | 0.903 | 0.032 | 0.337 | -0.305 | 11.7 |
-| A_early@15 | 15 | neutral | 4 | 0.041 | 0.017 | 0.914 | 0.041 | 0.337 | -0.296 | 11.7 |
-| A_early@20 | 20 | neutral | 4 | 0.046 | 0.018 | 0.929 | 0.047 | 0.337 | -0.289 | 11.7 |
-| A_early@25 | 25 | neutral | 4 | 0.048 | 0.018 | 0.931 | 0.050 | 0.337 | -0.287 | 11.7 |
+| A | 150 | neutral | 4 | 0.147 | 0.032 | 0.977 | 0.142 | 0.337 | -0.195 | 11.7 |
 | A_early@30 | 30 | neutral | 4 | 0.050 | 0.018 | 0.938 | 0.052 | 0.337 | -0.285 | 11.7 |
+| A_early@2 | 2 | neutral | 4 | 0.010 | 0.012 | 0.493 | 0.005 | 0.337 | -0.331 | 11.7 |
+| A@25 | 25 | neutral | 4 | 0.087 | 0.025 | 0.960 | 0.089 | 0.337 | -0.248 | 11.7 |
+| A@50 | 50 | neutral | 4 | 0.115 | 0.028 | 0.971 | 0.117 | 0.337 | -0.220 | 11.7 |
+| A@75 | 75 | neutral | 4 | 0.130 | 0.030 | 0.974 | 0.131 | 0.337 | -0.206 | 11.7 |
+| A@100 | 100 | neutral | 4 | 0.143 | 0.031 | 0.977 | 0.142 | 0.337 | -0.194 | 11.7 |
+| A@125 | 125 | neutral | 4 | 0.145 | 0.032 | 0.976 | 0.139 | 0.337 | -0.198 | 11.7 |
 | N1_halves | 0 | math | 0 | 0.108 | — | — | — | 0.984 | — | 20.8 |
 | D | 250 | math | 0 | 6.844 | 0.029 | 1.000 | 0.989 | 0.984 | 0.005 | 20.8 |
 | D_math | 225 | math | 0 | 0.869 | 0.009 | 1.000 | 0.945 | 0.984 | -0.039 | 20.8 |
+| D_math_full | 225 | math | 0 | 2.179 | 0.026 | 1.000 | 0.923 | 0.984 | -0.061 | 20.8 |
 | N3 | 0 | math | 0 | 0.108 | 0.003 | 1.000 | 0.663 | 0.984 | -0.321 | 20.8 |
-| A_early@2 | 2 | math | 0 | 0.081 | 0.003 | 0.999 | 0.556 | 0.984 | -0.428 | 20.8 |
-| A_early@4 | 4 | math | 0 | 0.079 | 0.002 | 1.000 | 0.689 | 0.984 | -0.295 | 20.8 |
-| A_early@6 | 6 | math | 0 | 0.095 | 0.002 | 1.000 | 0.758 | 0.984 | -0.226 | 20.8 |
-| A_early@8 | 8 | math | 0 | 0.085 | 0.002 | 1.000 | 0.720 | 0.984 | -0.264 | 20.8 |
-| A_early@10 | 10 | math | 0 | 0.094 | 0.003 | 0.999 | 0.571 | 0.984 | -0.413 | 20.8 |
-| A_early@15 | 15 | math | 0 | 0.100 | 0.003 | 1.000 | 0.726 | 0.984 | -0.258 | 20.8 |
-| A_early@20 | 20 | math | 0 | 0.135 | 0.005 | 1.000 | 0.566 | 0.984 | -0.418 | 20.8 |
-| A_early@25 | 25 | math | 0 | 0.134 | 0.005 | 1.000 | 0.564 | 0.984 | -0.420 | 20.8 |
+| A | 150 | math | 0 | 0.230 | 0.003 | 1.000 | 0.909 | 0.984 | -0.075 | 20.8 |
 | A_early@30 | 30 | math | 0 | 0.154 | 0.003 | 1.000 | 0.777 | 0.984 | -0.207 | 20.8 |
+| A_early@2 | 2 | math | 0 | 0.081 | 0.003 | 0.999 | 0.556 | 0.984 | -0.428 | 20.8 |
+| A@25 | 25 | math | 0 | 0.139 | 0.003 | 1.000 | 0.806 | 0.984 | -0.178 | 20.8 |
+| A@50 | 50 | math | 0 | 0.186 | 0.005 | 1.000 | 0.699 | 0.984 | -0.285 | 20.8 |
+| A@75 | 75 | math | 0 | 0.196 | 0.005 | 1.000 | 0.711 | 0.984 | -0.272 | 20.8 |
+| A@100 | 100 | math | 0 | 0.226 | 0.003 | 1.000 | 0.891 | 0.984 | -0.093 | 20.8 |
+| A@125 | 125 | math | 0 | 0.199 | 0.007 | 0.999 | 0.574 | 0.984 | -0.410 | 20.8 |
 | N1_halves | 0 | math | 1 | 0.513 | — | — | — | 0.492 | — | 15.9 |
 | D | 250 | math | 1 | 4.137 | 0.082 | 1.000 | 0.806 | 0.492 | 0.314 | 15.9 |
 | D_math | 225 | math | 1 | 5.107 | 0.101 | 1.000 | 0.807 | 0.492 | 0.315 | 15.9 |
+| D_math_full | 225 | math | 1 | 10.053 | 0.326 | 1.000 | 0.610 | 0.492 | 0.118 | 15.9 |
 | N3 | 0 | math | 1 | 0.188 | 0.010 | 0.999 | 0.383 | 0.492 | -0.109 | 15.9 |
-| A_early@2 | 2 | math | 1 | 0.131 | 0.005 | 0.999 | 0.534 | 0.492 | 0.041 | 15.9 |
-| A_early@4 | 4 | math | 1 | 0.167 | 0.009 | 0.999 | 0.342 | 0.492 | -0.150 | 15.9 |
-| A_early@6 | 6 | math | 1 | 0.176 | 0.008 | 0.999 | 0.469 | 0.492 | -0.023 | 15.9 |
-| A_early@8 | 8 | math | 1 | 0.179 | 0.006 | 1.000 | 0.609 | 0.492 | 0.117 | 15.9 |
-| A_early@10 | 10 | math | 1 | 0.193 | 0.008 | 0.999 | 0.512 | 0.492 | 0.020 | 15.9 |
-| A_early@15 | 15 | math | 1 | 0.204 | 0.006 | 1.000 | 0.623 | 0.492 | 0.131 | 15.9 |
-| A_early@20 | 20 | math | 1 | 0.231 | 0.007 | 1.000 | 0.666 | 0.492 | 0.174 | 15.9 |
-| A_early@25 | 25 | math | 1 | 0.231 | 0.008 | 0.999 | 0.562 | 0.492 | 0.070 | 15.9 |
+| A | 150 | math | 1 | 0.483 | 0.011 | 1.000 | 0.768 | 0.492 | 0.276 | 15.9 |
 | A_early@30 | 30 | math | 1 | 0.234 | 0.008 | 0.999 | 0.575 | 0.492 | 0.083 | 15.9 |
+| A_early@2 | 2 | math | 1 | 0.131 | 0.005 | 0.999 | 0.534 | 0.492 | 0.041 | 15.9 |
+| A@25 | 25 | math | 1 | 0.353 | 0.008 | 1.000 | 0.753 | 0.492 | 0.261 | 15.9 |
+| A@50 | 50 | math | 1 | 0.385 | 0.009 | 1.000 | 0.751 | 0.492 | 0.259 | 15.9 |
+| A@75 | 75 | math | 1 | 0.455 | 0.010 | 1.000 | 0.768 | 0.492 | 0.276 | 15.9 |
+| A@100 | 100 | math | 1 | 0.477 | 0.011 | 1.000 | 0.771 | 0.492 | 0.278 | 15.9 |
+| A@125 | 125 | math | 1 | 0.489 | 0.011 | 1.000 | 0.773 | 0.492 | 0.281 | 15.9 |
 | N1_halves | 0 | math | 2 | 0.567 | — | — | — | 0.581 | — | 11.3 |
 | D | 250 | math | 2 | 3.885 | 0.327 | 0.996 | 0.444 | 0.581 | -0.137 | 11.3 |
 | D_math | 225 | math | 2 | 3.347 | 0.275 | 0.997 | 0.416 | 0.581 | -0.165 | 11.3 |
+| D_math_full | 225 | math | 2 | 6.394 | 0.419 | 0.998 | 0.514 | 0.581 | -0.067 | 11.3 |
 | N3 | 0 | math | 2 | 0.054 | 0.013 | 0.972 | 0.112 | 0.581 | -0.469 | 11.3 |
-| A_early@2 | 2 | math | 2 | 0.044 | 0.010 | 0.972 | 0.098 | 0.581 | -0.483 | 11.3 |
-| A_early@4 | 4 | math | 2 | 0.063 | 0.013 | 0.980 | 0.141 | 0.581 | -0.440 | 11.3 |
-| A_early@6 | 6 | math | 2 | 0.086 | 0.015 | 0.985 | 0.176 | 0.581 | -0.405 | 11.3 |
-| A_early@8 | 8 | math | 2 | 0.104 | 0.019 | 0.984 | 0.181 | 0.581 | -0.400 | 11.3 |
-| A_early@10 | 10 | math | 2 | 0.121 | 0.020 | 0.987 | 0.205 | 0.581 | -0.376 | 11.3 |
-| A_early@15 | 15 | math | 2 | 0.160 | 0.026 | 0.987 | 0.207 | 0.581 | -0.374 | 11.3 |
-| A_early@20 | 20 | math | 2 | 0.186 | 0.030 | 0.987 | 0.209 | 0.581 | -0.372 | 11.3 |
-| A_early@25 | 25 | math | 2 | 0.191 | 0.032 | 0.987 | 0.213 | 0.581 | -0.369 | 11.3 |
+| A | 150 | math | 2 | 0.512 | 0.074 | 0.990 | 0.263 | 0.581 | -0.318 | 11.3 |
 | A_early@30 | 30 | math | 2 | 0.190 | 0.032 | 0.986 | 0.204 | 0.581 | -0.377 | 11.3 |
+| A_early@2 | 2 | math | 2 | 0.044 | 0.010 | 0.972 | 0.098 | 0.581 | -0.483 | 11.3 |
+| A@25 | 25 | math | 2 | 0.321 | 0.047 | 0.989 | 0.240 | 0.581 | -0.341 | 11.3 |
+| A@50 | 50 | math | 2 | 0.418 | 0.062 | 0.990 | 0.245 | 0.581 | -0.337 | 11.3 |
+| A@75 | 75 | math | 2 | 0.458 | 0.065 | 0.990 | 0.258 | 0.581 | -0.324 | 11.3 |
+| A@100 | 100 | math | 2 | 0.496 | 0.072 | 0.990 | 0.259 | 0.581 | -0.322 | 11.3 |
+| A@125 | 125 | math | 2 | 0.508 | 0.073 | 0.990 | 0.257 | 0.581 | -0.324 | 11.3 |
 | N1_halves | 0 | math | 3 | 0.640 | — | — | — | 0.500 | — | 11.7 |
 | D | 250 | math | 3 | 2.990 | 0.368 | 0.993 | 0.304 | 0.500 | -0.196 | 11.7 |
 | D_math | 225 | math | 3 | 2.135 | 0.274 | 0.993 | 0.264 | 0.500 | -0.237 | 11.7 |
+| D_math_full | 225 | math | 3 | 3.982 | 0.404 | 0.995 | 0.329 | 0.500 | -0.171 | 11.7 |
 | N3 | 0 | math | 3 | 0.033 | 0.013 | 0.925 | 0.047 | 0.500 | -0.454 | 11.7 |
-| A_early@2 | 2 | math | 3 | 0.026 | 0.011 | 0.919 | 0.039 | 0.500 | -0.461 | 11.7 |
-| A_early@4 | 4 | math | 3 | 0.047 | 0.012 | 0.967 | 0.080 | 0.500 | -0.420 | 11.7 |
-| A_early@6 | 6 | math | 3 | 0.073 | 0.015 | 0.981 | 0.128 | 0.500 | -0.373 | 11.7 |
-| A_early@8 | 8 | math | 3 | 0.093 | 0.017 | 0.985 | 0.150 | 0.500 | -0.351 | 11.7 |
-| A_early@10 | 10 | math | 3 | 0.111 | 0.021 | 0.985 | 0.161 | 0.500 | -0.339 | 11.7 |
-| A_early@15 | 15 | math | 3 | 0.153 | 0.024 | 0.989 | 0.181 | 0.500 | -0.320 | 11.7 |
-| A_early@20 | 20 | math | 3 | 0.175 | 0.027 | 0.989 | 0.180 | 0.500 | -0.320 | 11.7 |
-| A_early@25 | 25 | math | 3 | 0.183 | 0.028 | 0.990 | 0.182 | 0.500 | -0.319 | 11.7 |
+| A | 150 | math | 3 | 0.498 | 0.063 | 0.992 | 0.239 | 0.500 | -0.261 | 11.7 |
 | A_early@30 | 30 | math | 3 | 0.185 | 0.029 | 0.989 | 0.180 | 0.500 | -0.320 | 11.7 |
+| A_early@2 | 2 | math | 3 | 0.026 | 0.011 | 0.919 | 0.039 | 0.500 | -0.461 | 11.7 |
+| A@25 | 25 | math | 3 | 0.313 | 0.043 | 0.991 | 0.218 | 0.500 | -0.282 | 11.7 |
+| A@50 | 50 | math | 3 | 0.403 | 0.053 | 0.991 | 0.225 | 0.500 | -0.275 | 11.7 |
+| A@75 | 75 | math | 3 | 0.433 | 0.056 | 0.992 | 0.231 | 0.500 | -0.269 | 11.7 |
+| A@100 | 100 | math | 3 | 0.472 | 0.061 | 0.992 | 0.235 | 0.500 | -0.266 | 11.7 |
+| A@125 | 125 | math | 3 | 0.490 | 0.063 | 0.992 | 0.235 | 0.500 | -0.265 | 11.7 |
 | N1_halves | 0 | math | 4 | 0.729 | — | — | — | 0.444 | — | 11.8 |
 | D | 250 | math | 4 | 2.421 | 0.357 | 0.989 | 0.241 | 0.444 | -0.203 | 11.8 |
 | D_math | 225 | math | 4 | 1.381 | 0.240 | 0.985 | 0.164 | 0.444 | -0.279 | 11.8 |
+| D_math_full | 225 | math | 4 | 2.700 | 0.396 | 0.990 | 0.230 | 0.444 | -0.214 | 11.8 |
 | N3 | 0 | math | 4 | 0.024 | 0.012 | 0.880 | 0.026 | 0.444 | -0.418 | 11.8 |
-| A_early@2 | 2 | math | 4 | 0.020 | 0.011 | 0.854 | 0.022 | 0.444 | -0.422 | 11.8 |
-| A_early@4 | 4 | math | 4 | 0.039 | 0.013 | 0.947 | 0.059 | 0.444 | -0.385 | 11.8 |
-| A_early@6 | 6 | math | 4 | 0.061 | 0.016 | 0.966 | 0.093 | 0.444 | -0.351 | 11.8 |
-| A_early@8 | 8 | math | 4 | 0.077 | 0.018 | 0.973 | 0.105 | 0.444 | -0.339 | 11.8 |
-| A_early@10 | 10 | math | 4 | 0.094 | 0.021 | 0.976 | 0.116 | 0.444 | -0.327 | 11.8 |
-| A_early@15 | 15 | math | 4 | 0.125 | 0.026 | 0.979 | 0.127 | 0.444 | -0.317 | 11.8 |
-| A_early@20 | 20 | math | 4 | 0.144 | 0.029 | 0.980 | 0.130 | 0.444 | -0.314 | 11.8 |
-| A_early@25 | 25 | math | 4 | 0.151 | 0.030 | 0.981 | 0.132 | 0.444 | -0.312 | 11.8 |
+| A | 150 | math | 4 | 0.423 | 0.070 | 0.988 | 0.192 | 0.444 | -0.251 | 11.8 |
 | A_early@30 | 30 | math | 4 | 0.153 | 0.031 | 0.981 | 0.132 | 0.444 | -0.312 | 11.8 |
+| A_early@2 | 2 | math | 4 | 0.020 | 0.011 | 0.854 | 0.022 | 0.444 | -0.422 | 11.8 |
+| A@25 | 25 | math | 4 | 0.260 | 0.045 | 0.986 | 0.165 | 0.444 | -0.279 | 11.8 |
+| A@50 | 50 | math | 4 | 0.335 | 0.056 | 0.987 | 0.179 | 0.444 | -0.265 | 11.8 |
+| A@75 | 75 | math | 4 | 0.361 | 0.059 | 0.988 | 0.183 | 0.444 | -0.261 | 11.8 |
+| A@100 | 100 | math | 4 | 0.399 | 0.066 | 0.988 | 0.191 | 0.444 | -0.253 | 11.8 |
+| A@125 | 125 | math | 4 | 0.418 | 0.070 | 0.988 | 0.191 | 0.444 | -0.252 | 11.8 |
 
 | arm | pos | ‖d_math‖ / ‖d_neutral‖ |
 |---|---|---|
@@ -148,836 +148,836 @@
 | D_math | 2 | 9.82 |
 | D_math | 3 | 8.91 |
 | D_math | 4 | 6.40 |
+| D_math_full | 0 | 1.78 |
+| D_math_full | 1 | 8.38 |
+| D_math_full | 2 | 6.67 |
+| D_math_full | 3 | 6.16 |
+| D_math_full | 4 | 5.55 |
 | N3 | 0 | 1.61 |
 | N3 | 1 | 4.11 |
 | N3 | 2 | 1.24 |
 | N3 | 3 | 1.75 |
 | N3 | 4 | 1.42 |
-| A_early@2 | 0 | 3.29 |
-| A_early@2 | 1 | 4.06 |
-| A_early@2 | 2 | 1.25 |
-| A_early@2 | 3 | 2.22 |
-| A_early@2 | 4 | 1.92 |
-| A_early@4 | 0 | 2.14 |
-| A_early@4 | 1 | 4.52 |
-| A_early@4 | 2 | 1.51 |
-| A_early@4 | 3 | 2.52 |
-| A_early@4 | 4 | 2.22 |
-| A_early@6 | 0 | 2.22 |
-| A_early@6 | 1 | 4.29 |
-| A_early@6 | 2 | 1.66 |
-| A_early@6 | 3 | 2.91 |
-| A_early@6 | 4 | 2.63 |
-| A_early@8 | 0 | 1.71 |
-| A_early@8 | 1 | 3.54 |
-| A_early@8 | 2 | 1.89 |
-| A_early@8 | 3 | 3.02 |
-| A_early@8 | 4 | 2.72 |
-| A_early@10 | 0 | 1.51 |
-| A_early@10 | 1 | 3.56 |
-| A_early@10 | 2 | 1.86 |
-| A_early@10 | 3 | 3.11 |
-| A_early@10 | 4 | 2.86 |
-| A_early@15 | 0 | 1.38 |
-| A_early@15 | 1 | 3.20 |
-| A_early@15 | 2 | 2.27 |
-| A_early@15 | 3 | 3.52 |
-| A_early@15 | 4 | 3.05 |
-| A_early@20 | 0 | 1.74 |
-| A_early@20 | 1 | 3.12 |
-| A_early@20 | 2 | 2.52 |
-| A_early@20 | 3 | 3.61 |
-| A_early@20 | 4 | 3.13 |
-| A_early@25 | 0 | 1.60 |
-| A_early@25 | 1 | 3.18 |
-| A_early@25 | 2 | 2.48 |
-| A_early@25 | 3 | 3.59 |
-| A_early@25 | 4 | 3.13 |
+| A | 0 | 1.25 |
+| A | 1 | 2.30 |
+| A | 2 | 2.78 |
+| A | 3 | 3.10 |
+| A | 4 | 2.88 |
 | A_early@30 | 0 | 1.86 |
 | A_early@30 | 1 | 3.10 |
 | A_early@30 | 2 | 2.39 |
 | A_early@30 | 3 | 3.58 |
 | A_early@30 | 4 | 3.09 |
+| A_early@2 | 0 | 3.29 |
+| A_early@2 | 1 | 4.06 |
+| A_early@2 | 2 | 1.25 |
+| A_early@2 | 3 | 2.22 |
+| A_early@2 | 4 | 1.92 |
+| A@25 | 0 | 1.18 |
+| A@25 | 1 | 2.78 |
+| A@25 | 2 | 2.67 |
+| A@25 | 3 | 3.18 |
+| A@25 | 4 | 3.00 |
+| A@50 | 0 | 1.28 |
+| A@50 | 1 | 2.28 |
+| A@50 | 2 | 2.85 |
+| A@50 | 3 | 3.16 |
+| A@50 | 4 | 2.90 |
+| A@75 | 0 | 1.20 |
+| A@75 | 1 | 2.40 |
+| A@75 | 2 | 2.78 |
+| A@75 | 3 | 3.06 |
+| A@75 | 4 | 2.79 |
+| A@100 | 0 | 1.27 |
+| A@100 | 1 | 2.40 |
+| A@100 | 2 | 2.78 |
+| A@100 | 3 | 3.02 |
+| A@100 | 4 | 2.79 |
+| A@125 | 0 | 1.08 |
+| A@125 | 1 | 2.42 |
+| A@125 | 2 | 2.82 |
+| A@125 | 3 | 3.06 |
+| A@125 | 4 | 2.88 |
 
 | set | pos | x | y | cos |
 |---|---|---|---|---|
 | neutral | 0 | D | D_math | 0.095 |
+| neutral | 0 | D | D_math_full | -0.116 |
 | neutral | 0 | D | N3 | -0.131 |
-| neutral | 0 | D | A_early@2 | 0.357 |
-| neutral | 0 | D | A_early@4 | 0.288 |
-| neutral | 0 | D | A_early@6 | 0.089 |
-| neutral | 0 | D | A_early@8 | 0.129 |
-| neutral | 0 | D | A_early@10 | 0.382 |
-| neutral | 0 | D | A_early@15 | 0.367 |
-| neutral | 0 | D | A_early@20 | 0.318 |
-| neutral | 0 | D | A_early@25 | 0.377 |
+| neutral | 0 | D | A | 0.463 |
 | neutral | 0 | D | A_early@30 | 0.335 |
+| neutral | 0 | D | A_early@2 | 0.357 |
+| neutral | 0 | D | A@25 | 0.395 |
+| neutral | 0 | D | A@50 | 0.327 |
+| neutral | 0 | D | A@75 | 0.402 |
+| neutral | 0 | D | A@100 | 0.438 |
+| neutral | 0 | D | A@125 | 0.458 |
 | neutral | 0 | D | N1_halves | -0.421 |
+| neutral | 0 | D_math | D_math_full | 0.395 |
 | neutral | 0 | D_math | N3 | -0.008 |
-| neutral | 0 | D_math | A_early@2 | 0.104 |
-| neutral | 0 | D_math | A_early@4 | 0.123 |
-| neutral | 0 | D_math | A_early@6 | 0.093 |
-| neutral | 0 | D_math | A_early@8 | 0.118 |
-| neutral | 0 | D_math | A_early@10 | 0.141 |
-| neutral | 0 | D_math | A_early@15 | 0.145 |
-| neutral | 0 | D_math | A_early@20 | 0.146 |
-| neutral | 0 | D_math | A_early@25 | 0.146 |
+| neutral | 0 | D_math | A | 0.137 |
 | neutral | 0 | D_math | A_early@30 | 0.151 |
+| neutral | 0 | D_math | A_early@2 | 0.104 |
+| neutral | 0 | D_math | A@25 | 0.118 |
+| neutral | 0 | D_math | A@50 | 0.111 |
+| neutral | 0 | D_math | A@75 | 0.133 |
+| neutral | 0 | D_math | A@100 | 0.133 |
+| neutral | 0 | D_math | A@125 | 0.131 |
 | neutral | 0 | D_math | N1_halves | -0.047 |
-| neutral | 0 | N3 | A_early@2 | 0.018 |
-| neutral | 0 | N3 | A_early@4 | -0.024 |
-| neutral | 0 | N3 | A_early@6 | 0.019 |
-| neutral | 0 | N3 | A_early@8 | -0.014 |
-| neutral | 0 | N3 | A_early@10 | -0.049 |
-| neutral | 0 | N3 | A_early@15 | -0.047 |
-| neutral | 0 | N3 | A_early@20 | -0.020 |
-| neutral | 0 | N3 | A_early@25 | -0.037 |
+| neutral | 0 | D_math_full | N3 | -0.002 |
+| neutral | 0 | D_math_full | A | 0.019 |
+| neutral | 0 | D_math_full | A_early@30 | -0.006 |
+| neutral | 0 | D_math_full | A_early@2 | -0.034 |
+| neutral | 0 | D_math_full | A@25 | 0.045 |
+| neutral | 0 | D_math_full | A@50 | 0.067 |
+| neutral | 0 | D_math_full | A@75 | 0.054 |
+| neutral | 0 | D_math_full | A@100 | 0.034 |
+| neutral | 0 | D_math_full | A@125 | 0.014 |
+| neutral | 0 | D_math_full | N1_halves | 0.097 |
+| neutral | 0 | N3 | A | -0.045 |
 | neutral | 0 | N3 | A_early@30 | -0.020 |
+| neutral | 0 | N3 | A_early@2 | 0.018 |
+| neutral | 0 | N3 | A@25 | -0.032 |
+| neutral | 0 | N3 | A@50 | -0.027 |
+| neutral | 0 | N3 | A@75 | -0.039 |
+| neutral | 0 | N3 | A@100 | -0.044 |
+| neutral | 0 | N3 | A@125 | -0.040 |
 | neutral | 0 | N3 | N1_halves | 0.082 |
-| neutral | 0 | A_early@2 | A_early@4 | 0.732 |
-| neutral | 0 | A_early@2 | A_early@6 | 0.645 |
-| neutral | 0 | A_early@2 | A_early@8 | 0.601 |
-| neutral | 0 | A_early@2 | A_early@10 | 0.627 |
-| neutral | 0 | A_early@2 | A_early@15 | 0.595 |
-| neutral | 0 | A_early@2 | A_early@20 | 0.569 |
-| neutral | 0 | A_early@2 | A_early@25 | 0.580 |
-| neutral | 0 | A_early@2 | A_early@30 | 0.566 |
-| neutral | 0 | A_early@2 | N1_halves | -0.185 |
-| neutral | 0 | A_early@4 | A_early@6 | 0.827 |
-| neutral | 0 | A_early@4 | A_early@8 | 0.795 |
-| neutral | 0 | A_early@4 | A_early@10 | 0.785 |
-| neutral | 0 | A_early@4 | A_early@15 | 0.758 |
-| neutral | 0 | A_early@4 | A_early@20 | 0.723 |
-| neutral | 0 | A_early@4 | A_early@25 | 0.728 |
-| neutral | 0 | A_early@4 | A_early@30 | 0.709 |
-| neutral | 0 | A_early@4 | N1_halves | -0.117 |
-| neutral | 0 | A_early@6 | A_early@8 | 0.916 |
-| neutral | 0 | A_early@6 | A_early@10 | 0.835 |
-| neutral | 0 | A_early@6 | A_early@15 | 0.805 |
-| neutral | 0 | A_early@6 | A_early@20 | 0.785 |
-| neutral | 0 | A_early@6 | A_early@25 | 0.757 |
-| neutral | 0 | A_early@6 | A_early@30 | 0.754 |
-| neutral | 0 | A_early@6 | N1_halves | -0.024 |
-| neutral | 0 | A_early@8 | A_early@10 | 0.897 |
-| neutral | 0 | A_early@8 | A_early@15 | 0.867 |
-| neutral | 0 | A_early@8 | A_early@20 | 0.840 |
-| neutral | 0 | A_early@8 | A_early@25 | 0.814 |
-| neutral | 0 | A_early@8 | A_early@30 | 0.814 |
-| neutral | 0 | A_early@8 | N1_halves | -0.046 |
-| neutral | 0 | A_early@10 | A_early@15 | 0.947 |
-| neutral | 0 | A_early@10 | A_early@20 | 0.908 |
-| neutral | 0 | A_early@10 | A_early@25 | 0.903 |
-| neutral | 0 | A_early@10 | A_early@30 | 0.888 |
-| neutral | 0 | A_early@10 | N1_halves | -0.194 |
-| neutral | 0 | A_early@15 | A_early@20 | 0.960 |
-| neutral | 0 | A_early@15 | A_early@25 | 0.961 |
-| neutral | 0 | A_early@15 | A_early@30 | 0.950 |
-| neutral | 0 | A_early@15 | N1_halves | -0.197 |
-| neutral | 0 | A_early@20 | A_early@25 | 0.974 |
-| neutral | 0 | A_early@20 | A_early@30 | 0.976 |
-| neutral | 0 | A_early@20 | N1_halves | -0.194 |
-| neutral | 0 | A_early@25 | A_early@30 | 0.981 |
-| neutral | 0 | A_early@25 | N1_halves | -0.218 |
+| neutral | 0 | A | A_early@30 | 0.478 |
+| neutral | 0 | A | A_early@2 | 0.359 |
+| neutral | 0 | A | A@25 | 0.879 |
+| neutral | 0 | A | A@50 | 0.929 |
+| neutral | 0 | A | A@75 | 0.970 |
+| neutral | 0 | A | A@100 | 0.989 |
+| neutral | 0 | A | A@125 | 0.995 |
+| neutral | 0 | A | N1_halves | -0.349 |
+| neutral | 0 | A_early@30 | A_early@2 | 0.566 |
+| neutral | 0 | A_early@30 | A@25 | 0.454 |
+| neutral | 0 | A_early@30 | A@50 | 0.438 |
+| neutral | 0 | A_early@30 | A@75 | 0.455 |
+| neutral | 0 | A_early@30 | A@100 | 0.473 |
+| neutral | 0 | A_early@30 | A@125 | 0.476 |
 | neutral | 0 | A_early@30 | N1_halves | -0.198 |
+| neutral | 0 | A_early@2 | A@25 | 0.342 |
+| neutral | 0 | A_early@2 | A@50 | 0.314 |
+| neutral | 0 | A_early@2 | A@75 | 0.335 |
+| neutral | 0 | A_early@2 | A@100 | 0.355 |
+| neutral | 0 | A_early@2 | A@125 | 0.361 |
+| neutral | 0 | A_early@2 | N1_halves | -0.185 |
+| neutral | 0 | A@25 | A@50 | 0.930 |
+| neutral | 0 | A@25 | A@75 | 0.900 |
+| neutral | 0 | A@25 | A@100 | 0.889 |
+| neutral | 0 | A@25 | A@125 | 0.880 |
+| neutral | 0 | A@25 | N1_halves | -0.302 |
+| neutral | 0 | A@50 | A@75 | 0.965 |
+| neutral | 0 | A@50 | A@100 | 0.945 |
+| neutral | 0 | A@50 | A@125 | 0.931 |
+| neutral | 0 | A@50 | N1_halves | -0.265 |
+| neutral | 0 | A@75 | A@100 | 0.982 |
+| neutral | 0 | A@75 | A@125 | 0.970 |
+| neutral | 0 | A@75 | N1_halves | -0.309 |
+| neutral | 0 | A@100 | A@125 | 0.990 |
+| neutral | 0 | A@100 | N1_halves | -0.338 |
+| neutral | 0 | A@125 | N1_halves | -0.347 |
 | neutral | 1 | D | D_math | 0.088 |
+| neutral | 1 | D | D_math_full | 0.247 |
 | neutral | 1 | D | N3 | 0.147 |
-| neutral | 1 | D | A_early@2 | 0.148 |
-| neutral | 1 | D | A_early@4 | 0.102 |
-| neutral | 1 | D | A_early@6 | 0.083 |
-| neutral | 1 | D | A_early@8 | 0.079 |
-| neutral | 1 | D | A_early@10 | 0.154 |
-| neutral | 1 | D | A_early@15 | 0.141 |
-| neutral | 1 | D | A_early@20 | 0.172 |
-| neutral | 1 | D | A_early@25 | 0.186 |
+| neutral | 1 | D | A | 0.200 |
 | neutral | 1 | D | A_early@30 | 0.161 |
+| neutral | 1 | D | A_early@2 | 0.148 |
+| neutral | 1 | D | A@25 | 0.104 |
+| neutral | 1 | D | A@50 | 0.162 |
+| neutral | 1 | D | A@75 | 0.191 |
+| neutral | 1 | D | A@100 | 0.194 |
+| neutral | 1 | D | A@125 | 0.184 |
 | neutral | 1 | D | N1_halves | -0.175 |
+| neutral | 1 | D_math | D_math_full | 0.629 |
 | neutral | 1 | D_math | N3 | 0.080 |
-| neutral | 1 | D_math | A_early@2 | 0.114 |
-| neutral | 1 | D_math | A_early@4 | 0.211 |
-| neutral | 1 | D_math | A_early@6 | 0.212 |
-| neutral | 1 | D_math | A_early@8 | 0.214 |
-| neutral | 1 | D_math | A_early@10 | 0.211 |
-| neutral | 1 | D_math | A_early@15 | 0.275 |
-| neutral | 1 | D_math | A_early@20 | 0.272 |
-| neutral | 1 | D_math | A_early@25 | 0.239 |
+| neutral | 1 | D_math | A | 0.087 |
 | neutral | 1 | D_math | A_early@30 | 0.256 |
+| neutral | 1 | D_math | A_early@2 | 0.114 |
+| neutral | 1 | D_math | A@25 | 0.098 |
+| neutral | 1 | D_math | A@50 | 0.131 |
+| neutral | 1 | D_math | A@75 | 0.107 |
+| neutral | 1 | D_math | A@100 | 0.088 |
+| neutral | 1 | D_math | A@125 | 0.107 |
 | neutral | 1 | D_math | N1_halves | -0.179 |
-| neutral | 1 | N3 | A_early@2 | 0.403 |
-| neutral | 1 | N3 | A_early@4 | 0.268 |
-| neutral | 1 | N3 | A_early@6 | 0.295 |
-| neutral | 1 | N3 | A_early@8 | 0.192 |
-| neutral | 1 | N3 | A_early@10 | 0.287 |
-| neutral | 1 | N3 | A_early@15 | 0.212 |
-| neutral | 1 | N3 | A_early@20 | 0.188 |
-| neutral | 1 | N3 | A_early@25 | 0.165 |
+| neutral | 1 | D_math_full | N3 | 0.094 |
+| neutral | 1 | D_math_full | A | 0.266 |
+| neutral | 1 | D_math_full | A_early@30 | 0.350 |
+| neutral | 1 | D_math_full | A_early@2 | 0.112 |
+| neutral | 1 | D_math_full | A@25 | 0.269 |
+| neutral | 1 | D_math_full | A@50 | 0.296 |
+| neutral | 1 | D_math_full | A@75 | 0.287 |
+| neutral | 1 | D_math_full | A@100 | 0.260 |
+| neutral | 1 | D_math_full | A@125 | 0.271 |
+| neutral | 1 | D_math_full | N1_halves | -0.182 |
+| neutral | 1 | N3 | A | 0.097 |
 | neutral | 1 | N3 | A_early@30 | 0.153 |
+| neutral | 1 | N3 | A_early@2 | 0.403 |
+| neutral | 1 | N3 | A@25 | 0.108 |
+| neutral | 1 | N3 | A@50 | 0.125 |
+| neutral | 1 | N3 | A@75 | 0.103 |
+| neutral | 1 | N3 | A@100 | 0.091 |
+| neutral | 1 | N3 | A@125 | 0.082 |
 | neutral | 1 | N3 | N1_halves | -0.081 |
-| neutral | 1 | A_early@2 | A_early@4 | 0.552 |
-| neutral | 1 | A_early@2 | A_early@6 | 0.493 |
-| neutral | 1 | A_early@2 | A_early@8 | 0.416 |
-| neutral | 1 | A_early@2 | A_early@10 | 0.469 |
-| neutral | 1 | A_early@2 | A_early@15 | 0.360 |
-| neutral | 1 | A_early@2 | A_early@20 | 0.344 |
-| neutral | 1 | A_early@2 | A_early@25 | 0.349 |
-| neutral | 1 | A_early@2 | A_early@30 | 0.316 |
-| neutral | 1 | A_early@2 | N1_halves | -0.069 |
-| neutral | 1 | A_early@4 | A_early@6 | 0.635 |
-| neutral | 1 | A_early@4 | A_early@8 | 0.638 |
-| neutral | 1 | A_early@4 | A_early@10 | 0.639 |
-| neutral | 1 | A_early@4 | A_early@15 | 0.604 |
-| neutral | 1 | A_early@4 | A_early@20 | 0.566 |
-| neutral | 1 | A_early@4 | A_early@25 | 0.575 |
-| neutral | 1 | A_early@4 | A_early@30 | 0.545 |
-| neutral | 1 | A_early@4 | N1_halves | -0.040 |
-| neutral | 1 | A_early@6 | A_early@8 | 0.755 |
-| neutral | 1 | A_early@6 | A_early@10 | 0.739 |
-| neutral | 1 | A_early@6 | A_early@15 | 0.723 |
-| neutral | 1 | A_early@6 | A_early@20 | 0.691 |
-| neutral | 1 | A_early@6 | A_early@25 | 0.663 |
-| neutral | 1 | A_early@6 | A_early@30 | 0.650 |
-| neutral | 1 | A_early@6 | N1_halves | -0.031 |
-| neutral | 1 | A_early@8 | A_early@10 | 0.764 |
-| neutral | 1 | A_early@8 | A_early@15 | 0.786 |
-| neutral | 1 | A_early@8 | A_early@20 | 0.755 |
-| neutral | 1 | A_early@8 | A_early@25 | 0.747 |
-| neutral | 1 | A_early@8 | A_early@30 | 0.724 |
-| neutral | 1 | A_early@8 | N1_halves | -0.040 |
-| neutral | 1 | A_early@10 | A_early@15 | 0.837 |
-| neutral | 1 | A_early@10 | A_early@20 | 0.834 |
-| neutral | 1 | A_early@10 | A_early@25 | 0.832 |
-| neutral | 1 | A_early@10 | A_early@30 | 0.831 |
-| neutral | 1 | A_early@10 | N1_halves | -0.024 |
-| neutral | 1 | A_early@15 | A_early@20 | 0.881 |
-| neutral | 1 | A_early@15 | A_early@25 | 0.865 |
-| neutral | 1 | A_early@15 | A_early@30 | 0.865 |
-| neutral | 1 | A_early@15 | N1_halves | -0.072 |
-| neutral | 1 | A_early@20 | A_early@25 | 0.909 |
-| neutral | 1 | A_early@20 | A_early@30 | 0.916 |
-| neutral | 1 | A_early@20 | N1_halves | -0.044 |
-| neutral | 1 | A_early@25 | A_early@30 | 0.913 |
-| neutral | 1 | A_early@25 | N1_halves | -0.029 |
+| neutral | 1 | A | A_early@30 | 0.603 |
+| neutral | 1 | A | A_early@2 | 0.180 |
+| neutral | 1 | A | A@25 | 0.874 |
+| neutral | 1 | A | A@50 | 0.940 |
+| neutral | 1 | A | A@75 | 0.969 |
+| neutral | 1 | A | A@100 | 0.982 |
+| neutral | 1 | A | A@125 | 0.986 |
+| neutral | 1 | A | N1_halves | 0.020 |
+| neutral | 1 | A_early@30 | A_early@2 | 0.316 |
+| neutral | 1 | A_early@30 | A@25 | 0.625 |
+| neutral | 1 | A_early@30 | A@50 | 0.622 |
+| neutral | 1 | A_early@30 | A@75 | 0.615 |
+| neutral | 1 | A_early@30 | A@100 | 0.603 |
+| neutral | 1 | A_early@30 | A@125 | 0.606 |
 | neutral | 1 | A_early@30 | N1_halves | -0.060 |
+| neutral | 1 | A_early@2 | A@25 | 0.218 |
+| neutral | 1 | A_early@2 | A@50 | 0.188 |
+| neutral | 1 | A_early@2 | A@75 | 0.190 |
+| neutral | 1 | A_early@2 | A@100 | 0.182 |
+| neutral | 1 | A_early@2 | A@125 | 0.172 |
+| neutral | 1 | A_early@2 | N1_halves | -0.069 |
+| neutral | 1 | A@25 | A@50 | 0.928 |
+| neutral | 1 | A@25 | A@75 | 0.892 |
+| neutral | 1 | A@25 | A@100 | 0.874 |
+| neutral | 1 | A@25 | A@125 | 0.869 |
+| neutral | 1 | A@25 | N1_halves | 0.071 |
+| neutral | 1 | A@50 | A@75 | 0.962 |
+| neutral | 1 | A@50 | A@100 | 0.947 |
+| neutral | 1 | A@50 | A@125 | 0.941 |
+| neutral | 1 | A@50 | N1_halves | 0.018 |
+| neutral | 1 | A@75 | A@100 | 0.976 |
+| neutral | 1 | A@75 | A@125 | 0.969 |
+| neutral | 1 | A@75 | N1_halves | -0.001 |
+| neutral | 1 | A@100 | A@125 | 0.983 |
+| neutral | 1 | A@100 | N1_halves | 0.002 |
+| neutral | 1 | A@125 | N1_halves | 0.010 |
 | neutral | 2 | D | D_math | 0.060 |
+| neutral | 2 | D | D_math_full | 0.197 |
 | neutral | 2 | D | N3 | 0.072 |
-| neutral | 2 | D | A_early@2 | 0.045 |
-| neutral | 2 | D | A_early@4 | 0.104 |
-| neutral | 2 | D | A_early@6 | 0.107 |
-| neutral | 2 | D | A_early@8 | 0.105 |
-| neutral | 2 | D | A_early@10 | 0.099 |
-| neutral | 2 | D | A_early@15 | 0.146 |
-| neutral | 2 | D | A_early@20 | 0.142 |
-| neutral | 2 | D | A_early@25 | 0.113 |
+| neutral | 2 | D | A | 0.145 |
 | neutral | 2 | D | A_early@30 | 0.128 |
+| neutral | 2 | D | A_early@2 | 0.045 |
+| neutral | 2 | D | A@25 | 0.035 |
+| neutral | 2 | D | A@50 | 0.105 |
+| neutral | 2 | D | A@75 | 0.135 |
+| neutral | 2 | D | A@100 | 0.145 |
+| neutral | 2 | D | A@125 | 0.148 |
 | neutral | 2 | D | N1_halves | -0.053 |
+| neutral | 2 | D_math | D_math_full | 0.566 |
 | neutral | 2 | D_math | N3 | 0.094 |
-| neutral | 2 | D_math | A_early@2 | 0.071 |
-| neutral | 2 | D_math | A_early@4 | 0.211 |
-| neutral | 2 | D_math | A_early@6 | 0.222 |
-| neutral | 2 | D_math | A_early@8 | 0.154 |
-| neutral | 2 | D_math | A_early@10 | 0.239 |
-| neutral | 2 | D_math | A_early@15 | 0.252 |
-| neutral | 2 | D_math | A_early@20 | 0.256 |
-| neutral | 2 | D_math | A_early@25 | 0.230 |
+| neutral | 2 | D_math | A | 0.102 |
 | neutral | 2 | D_math | A_early@30 | 0.232 |
+| neutral | 2 | D_math | A_early@2 | 0.071 |
+| neutral | 2 | D_math | A@25 | 0.090 |
+| neutral | 2 | D_math | A@50 | 0.092 |
+| neutral | 2 | D_math | A@75 | 0.116 |
+| neutral | 2 | D_math | A@100 | 0.105 |
+| neutral | 2 | D_math | A@125 | 0.126 |
 | neutral | 2 | D_math | N1_halves | -0.065 |
-| neutral | 2 | N3 | A_early@2 | 0.342 |
-| neutral | 2 | N3 | A_early@4 | 0.400 |
-| neutral | 2 | N3 | A_early@6 | 0.301 |
-| neutral | 2 | N3 | A_early@8 | 0.233 |
-| neutral | 2 | N3 | A_early@10 | 0.203 |
-| neutral | 2 | N3 | A_early@15 | 0.209 |
-| neutral | 2 | N3 | A_early@20 | 0.203 |
-| neutral | 2 | N3 | A_early@25 | 0.166 |
+| neutral | 2 | D_math_full | N3 | 0.040 |
+| neutral | 2 | D_math_full | A | 0.259 |
+| neutral | 2 | D_math_full | A_early@30 | 0.359 |
+| neutral | 2 | D_math_full | A_early@2 | 0.061 |
+| neutral | 2 | D_math_full | A@25 | 0.236 |
+| neutral | 2 | D_math_full | A@50 | 0.229 |
+| neutral | 2 | D_math_full | A@75 | 0.243 |
+| neutral | 2 | D_math_full | A@100 | 0.240 |
+| neutral | 2 | D_math_full | A@125 | 0.265 |
+| neutral | 2 | D_math_full | N1_halves | -0.091 |
+| neutral | 2 | N3 | A | -0.001 |
 | neutral | 2 | N3 | A_early@30 | 0.156 |
+| neutral | 2 | N3 | A_early@2 | 0.342 |
+| neutral | 2 | N3 | A@25 | -0.044 |
+| neutral | 2 | N3 | A@50 | -0.016 |
+| neutral | 2 | N3 | A@75 | 0.003 |
+| neutral | 2 | N3 | A@100 | -0.013 |
+| neutral | 2 | N3 | A@125 | 0.013 |
 | neutral | 2 | N3 | N1_halves | -0.053 |
-| neutral | 2 | A_early@2 | A_early@4 | 0.622 |
-| neutral | 2 | A_early@2 | A_early@6 | 0.553 |
-| neutral | 2 | A_early@2 | A_early@8 | 0.477 |
-| neutral | 2 | A_early@2 | A_early@10 | 0.513 |
-| neutral | 2 | A_early@2 | A_early@15 | 0.488 |
-| neutral | 2 | A_early@2 | A_early@20 | 0.468 |
-| neutral | 2 | A_early@2 | A_early@25 | 0.430 |
-| neutral | 2 | A_early@2 | A_early@30 | 0.407 |
-| neutral | 2 | A_early@2 | N1_halves | 0.000 |
-| neutral | 2 | A_early@4 | A_early@6 | 0.685 |
-| neutral | 2 | A_early@4 | A_early@8 | 0.648 |
-| neutral | 2 | A_early@4 | A_early@10 | 0.662 |
-| neutral | 2 | A_early@4 | A_early@15 | 0.631 |
-| neutral | 2 | A_early@4 | A_early@20 | 0.635 |
-| neutral | 2 | A_early@4 | A_early@25 | 0.603 |
-| neutral | 2 | A_early@4 | A_early@30 | 0.571 |
-| neutral | 2 | A_early@4 | N1_halves | -0.007 |
-| neutral | 2 | A_early@6 | A_early@8 | 0.802 |
-| neutral | 2 | A_early@6 | A_early@10 | 0.814 |
-| neutral | 2 | A_early@6 | A_early@15 | 0.797 |
-| neutral | 2 | A_early@6 | A_early@20 | 0.786 |
-| neutral | 2 | A_early@6 | A_early@25 | 0.760 |
-| neutral | 2 | A_early@6 | A_early@30 | 0.770 |
-| neutral | 2 | A_early@6 | N1_halves | -0.034 |
-| neutral | 2 | A_early@8 | A_early@10 | 0.836 |
-| neutral | 2 | A_early@8 | A_early@15 | 0.824 |
-| neutral | 2 | A_early@8 | A_early@20 | 0.818 |
-| neutral | 2 | A_early@8 | A_early@25 | 0.822 |
-| neutral | 2 | A_early@8 | A_early@30 | 0.819 |
-| neutral | 2 | A_early@8 | N1_halves | -0.017 |
-| neutral | 2 | A_early@10 | A_early@15 | 0.856 |
-| neutral | 2 | A_early@10 | A_early@20 | 0.849 |
-| neutral | 2 | A_early@10 | A_early@25 | 0.840 |
-| neutral | 2 | A_early@10 | A_early@30 | 0.852 |
-| neutral | 2 | A_early@10 | N1_halves | -0.006 |
-| neutral | 2 | A_early@15 | A_early@20 | 0.879 |
-| neutral | 2 | A_early@15 | A_early@25 | 0.871 |
-| neutral | 2 | A_early@15 | A_early@30 | 0.875 |
-| neutral | 2 | A_early@15 | N1_halves | -0.004 |
-| neutral | 2 | A_early@20 | A_early@25 | 0.902 |
-| neutral | 2 | A_early@20 | A_early@30 | 0.890 |
-| neutral | 2 | A_early@20 | N1_halves | -0.013 |
-| neutral | 2 | A_early@25 | A_early@30 | 0.908 |
-| neutral | 2 | A_early@25 | N1_halves | -0.012 |
+| neutral | 2 | A | A_early@30 | 0.496 |
+| neutral | 2 | A | A_early@2 | 0.207 |
+| neutral | 2 | A | A@25 | 0.830 |
+| neutral | 2 | A | A@50 | 0.922 |
+| neutral | 2 | A | A@75 | 0.959 |
+| neutral | 2 | A | A@100 | 0.978 |
+| neutral | 2 | A | A@125 | 0.978 |
+| neutral | 2 | A | N1_halves | -0.034 |
+| neutral | 2 | A_early@30 | A_early@2 | 0.407 |
+| neutral | 2 | A_early@30 | A@25 | 0.497 |
+| neutral | 2 | A_early@30 | A@50 | 0.499 |
+| neutral | 2 | A_early@30 | A@75 | 0.486 |
+| neutral | 2 | A_early@30 | A@100 | 0.471 |
+| neutral | 2 | A_early@30 | A@125 | 0.483 |
 | neutral | 2 | A_early@30 | N1_halves | 0.004 |
+| neutral | 2 | A_early@2 | A@25 | 0.275 |
+| neutral | 2 | A_early@2 | A@50 | 0.209 |
+| neutral | 2 | A_early@2 | A@75 | 0.220 |
+| neutral | 2 | A_early@2 | A@100 | 0.208 |
+| neutral | 2 | A_early@2 | A@125 | 0.190 |
+| neutral | 2 | A_early@2 | N1_halves | 0.000 |
+| neutral | 2 | A@25 | A@50 | 0.898 |
+| neutral | 2 | A@25 | A@75 | 0.843 |
+| neutral | 2 | A@25 | A@100 | 0.839 |
+| neutral | 2 | A@25 | A@125 | 0.810 |
+| neutral | 2 | A@25 | N1_halves | 0.021 |
+| neutral | 2 | A@50 | A@75 | 0.945 |
+| neutral | 2 | A@50 | A@100 | 0.930 |
+| neutral | 2 | A@50 | A@125 | 0.914 |
+| neutral | 2 | A@50 | N1_halves | -0.008 |
+| neutral | 2 | A@75 | A@100 | 0.970 |
+| neutral | 2 | A@75 | A@125 | 0.958 |
+| neutral | 2 | A@75 | N1_halves | -0.039 |
+| neutral | 2 | A@100 | A@125 | 0.975 |
+| neutral | 2 | A@100 | N1_halves | -0.031 |
+| neutral | 2 | A@125 | N1_halves | -0.048 |
 | neutral | 3 | D | D_math | 0.043 |
+| neutral | 3 | D | D_math_full | 0.158 |
 | neutral | 3 | D | N3 | -0.042 |
-| neutral | 3 | D | A_early@2 | 0.002 |
-| neutral | 3 | D | A_early@4 | 0.045 |
-| neutral | 3 | D | A_early@6 | 0.013 |
-| neutral | 3 | D | A_early@8 | 0.041 |
-| neutral | 3 | D | A_early@10 | 0.026 |
-| neutral | 3 | D | A_early@15 | 0.066 |
-| neutral | 3 | D | A_early@20 | 0.078 |
-| neutral | 3 | D | A_early@25 | 0.086 |
+| neutral | 3 | D | A | 0.141 |
 | neutral | 3 | D | A_early@30 | 0.090 |
+| neutral | 3 | D | A_early@2 | 0.002 |
+| neutral | 3 | D | A@25 | 0.031 |
+| neutral | 3 | D | A@50 | 0.104 |
+| neutral | 3 | D | A@75 | 0.142 |
+| neutral | 3 | D | A@100 | 0.149 |
+| neutral | 3 | D | A@125 | 0.140 |
 | neutral | 3 | D | N1_halves | -0.003 |
+| neutral | 3 | D_math | D_math_full | 0.621 |
 | neutral | 3 | D_math | N3 | 0.037 |
-| neutral | 3 | D_math | A_early@2 | 0.036 |
-| neutral | 3 | D_math | A_early@4 | 0.132 |
-| neutral | 3 | D_math | A_early@6 | 0.166 |
-| neutral | 3 | D_math | A_early@8 | 0.193 |
-| neutral | 3 | D_math | A_early@10 | 0.211 |
-| neutral | 3 | D_math | A_early@15 | 0.199 |
-| neutral | 3 | D_math | A_early@20 | 0.215 |
-| neutral | 3 | D_math | A_early@25 | 0.215 |
+| neutral | 3 | D_math | A | 0.137 |
 | neutral | 3 | D_math | A_early@30 | 0.206 |
+| neutral | 3 | D_math | A_early@2 | 0.036 |
+| neutral | 3 | D_math | A@25 | 0.136 |
+| neutral | 3 | D_math | A@50 | 0.119 |
+| neutral | 3 | D_math | A@75 | 0.132 |
+| neutral | 3 | D_math | A@100 | 0.129 |
+| neutral | 3 | D_math | A@125 | 0.139 |
 | neutral | 3 | D_math | N1_halves | -0.033 |
-| neutral | 3 | N3 | A_early@2 | 0.182 |
-| neutral | 3 | N3 | A_early@4 | 0.094 |
-| neutral | 3 | N3 | A_early@6 | 0.084 |
-| neutral | 3 | N3 | A_early@8 | 0.026 |
-| neutral | 3 | N3 | A_early@10 | 0.024 |
-| neutral | 3 | N3 | A_early@15 | -0.003 |
-| neutral | 3 | N3 | A_early@20 | -0.001 |
-| neutral | 3 | N3 | A_early@25 | -0.020 |
+| neutral | 3 | D_math_full | N3 | 0.059 |
+| neutral | 3 | D_math_full | A | 0.260 |
+| neutral | 3 | D_math_full | A_early@30 | 0.274 |
+| neutral | 3 | D_math_full | A_early@2 | 0.136 |
+| neutral | 3 | D_math_full | A@25 | 0.259 |
+| neutral | 3 | D_math_full | A@50 | 0.241 |
+| neutral | 3 | D_math_full | A@75 | 0.248 |
+| neutral | 3 | D_math_full | A@100 | 0.254 |
+| neutral | 3 | D_math_full | A@125 | 0.265 |
+| neutral | 3 | D_math_full | N1_halves | -0.105 |
+| neutral | 3 | N3 | A | 0.010 |
 | neutral | 3 | N3 | A_early@30 | -0.027 |
+| neutral | 3 | N3 | A_early@2 | 0.182 |
+| neutral | 3 | N3 | A@25 | 0.029 |
+| neutral | 3 | N3 | A@50 | 0.022 |
+| neutral | 3 | N3 | A@75 | 0.014 |
+| neutral | 3 | N3 | A@100 | 0.010 |
+| neutral | 3 | N3 | A@125 | 0.015 |
 | neutral | 3 | N3 | N1_halves | -0.053 |
-| neutral | 3 | A_early@2 | A_early@4 | 0.693 |
-| neutral | 3 | A_early@2 | A_early@6 | 0.674 |
-| neutral | 3 | A_early@2 | A_early@8 | 0.580 |
-| neutral | 3 | A_early@2 | A_early@10 | 0.564 |
-| neutral | 3 | A_early@2 | A_early@15 | 0.524 |
-| neutral | 3 | A_early@2 | A_early@20 | 0.512 |
-| neutral | 3 | A_early@2 | A_early@25 | 0.484 |
-| neutral | 3 | A_early@2 | A_early@30 | 0.473 |
-| neutral | 3 | A_early@2 | N1_halves | -0.059 |
-| neutral | 3 | A_early@4 | A_early@6 | 0.867 |
-| neutral | 3 | A_early@4 | A_early@8 | 0.835 |
-| neutral | 3 | A_early@4 | A_early@10 | 0.814 |
-| neutral | 3 | A_early@4 | A_early@15 | 0.760 |
-| neutral | 3 | A_early@4 | A_early@20 | 0.740 |
-| neutral | 3 | A_early@4 | A_early@25 | 0.723 |
-| neutral | 3 | A_early@4 | A_early@30 | 0.708 |
-| neutral | 3 | A_early@4 | N1_halves | -0.028 |
-| neutral | 3 | A_early@6 | A_early@8 | 0.925 |
-| neutral | 3 | A_early@6 | A_early@10 | 0.913 |
-| neutral | 3 | A_early@6 | A_early@15 | 0.873 |
-| neutral | 3 | A_early@6 | A_early@20 | 0.842 |
-| neutral | 3 | A_early@6 | A_early@25 | 0.822 |
-| neutral | 3 | A_early@6 | A_early@30 | 0.807 |
-| neutral | 3 | A_early@6 | N1_halves | -0.019 |
-| neutral | 3 | A_early@8 | A_early@10 | 0.956 |
-| neutral | 3 | A_early@8 | A_early@15 | 0.927 |
-| neutral | 3 | A_early@8 | A_early@20 | 0.899 |
-| neutral | 3 | A_early@8 | A_early@25 | 0.887 |
-| neutral | 3 | A_early@8 | A_early@30 | 0.871 |
-| neutral | 3 | A_early@8 | N1_halves | -0.007 |
-| neutral | 3 | A_early@10 | A_early@15 | 0.951 |
-| neutral | 3 | A_early@10 | A_early@20 | 0.932 |
-| neutral | 3 | A_early@10 | A_early@25 | 0.918 |
-| neutral | 3 | A_early@10 | A_early@30 | 0.909 |
-| neutral | 3 | A_early@10 | N1_halves | 0.009 |
-| neutral | 3 | A_early@15 | A_early@20 | 0.972 |
-| neutral | 3 | A_early@15 | A_early@25 | 0.968 |
-| neutral | 3 | A_early@15 | A_early@30 | 0.963 |
-| neutral | 3 | A_early@15 | N1_halves | 0.030 |
-| neutral | 3 | A_early@20 | A_early@25 | 0.983 |
-| neutral | 3 | A_early@20 | A_early@30 | 0.979 |
-| neutral | 3 | A_early@20 | N1_halves | 0.027 |
-| neutral | 3 | A_early@25 | A_early@30 | 0.984 |
-| neutral | 3 | A_early@25 | N1_halves | 0.037 |
+| neutral | 3 | A | A_early@30 | 0.406 |
+| neutral | 3 | A | A_early@2 | 0.174 |
+| neutral | 3 | A | A@25 | 0.847 |
+| neutral | 3 | A | A@50 | 0.936 |
+| neutral | 3 | A | A@75 | 0.975 |
+| neutral | 3 | A | A@100 | 0.993 |
+| neutral | 3 | A | A@125 | 0.998 |
+| neutral | 3 | A | N1_halves | -0.051 |
+| neutral | 3 | A_early@30 | A_early@2 | 0.473 |
+| neutral | 3 | A_early@30 | A@25 | 0.391 |
+| neutral | 3 | A_early@30 | A@50 | 0.373 |
+| neutral | 3 | A_early@30 | A@75 | 0.390 |
+| neutral | 3 | A_early@30 | A@100 | 0.394 |
+| neutral | 3 | A_early@30 | A@125 | 0.402 |
 | neutral | 3 | A_early@30 | N1_halves | 0.051 |
+| neutral | 3 | A_early@2 | A@25 | 0.230 |
+| neutral | 3 | A_early@2 | A@50 | 0.180 |
+| neutral | 3 | A_early@2 | A@75 | 0.169 |
+| neutral | 3 | A_early@2 | A@100 | 0.170 |
+| neutral | 3 | A_early@2 | A@125 | 0.177 |
+| neutral | 3 | A_early@2 | N1_halves | -0.059 |
+| neutral | 3 | A@25 | A@50 | 0.927 |
+| neutral | 3 | A@25 | A@75 | 0.865 |
+| neutral | 3 | A@25 | A@100 | 0.849 |
+| neutral | 3 | A@25 | A@125 | 0.847 |
+| neutral | 3 | A@25 | N1_halves | -0.078 |
+| neutral | 3 | A@50 | A@75 | 0.967 |
+| neutral | 3 | A@50 | A@100 | 0.946 |
+| neutral | 3 | A@50 | A@125 | 0.937 |
+| neutral | 3 | A@50 | N1_halves | -0.057 |
+| neutral | 3 | A@75 | A@100 | 0.985 |
+| neutral | 3 | A@75 | A@125 | 0.976 |
+| neutral | 3 | A@75 | N1_halves | -0.050 |
+| neutral | 3 | A@100 | A@125 | 0.995 |
+| neutral | 3 | A@100 | N1_halves | -0.049 |
+| neutral | 3 | A@125 | N1_halves | -0.054 |
 | neutral | 4 | D | D_math | 0.070 |
+| neutral | 4 | D | D_math_full | 0.180 |
 | neutral | 4 | D | N3 | 0.026 |
-| neutral | 4 | D | A_early@2 | -0.040 |
-| neutral | 4 | D | A_early@4 | -0.001 |
-| neutral | 4 | D | A_early@6 | -0.018 |
-| neutral | 4 | D | A_early@8 | 0.019 |
-| neutral | 4 | D | A_early@10 | 0.023 |
-| neutral | 4 | D | A_early@15 | 0.044 |
-| neutral | 4 | D | A_early@20 | 0.068 |
-| neutral | 4 | D | A_early@25 | 0.071 |
+| neutral | 4 | D | A | 0.165 |
 | neutral | 4 | D | A_early@30 | 0.078 |
+| neutral | 4 | D | A_early@2 | -0.040 |
+| neutral | 4 | D | A@25 | 0.069 |
+| neutral | 4 | D | A@50 | 0.133 |
+| neutral | 4 | D | A@75 | 0.163 |
+| neutral | 4 | D | A@100 | 0.175 |
+| neutral | 4 | D | A@125 | 0.165 |
 | neutral | 4 | D | N1_halves | -0.095 |
+| neutral | 4 | D_math | D_math_full | 0.645 |
 | neutral | 4 | D_math | N3 | -0.003 |
-| neutral | 4 | D_math | A_early@2 | -0.012 |
-| neutral | 4 | D_math | A_early@4 | 0.060 |
-| neutral | 4 | D_math | A_early@6 | 0.083 |
-| neutral | 4 | D_math | A_early@8 | 0.101 |
-| neutral | 4 | D_math | A_early@10 | 0.140 |
-| neutral | 4 | D_math | A_early@15 | 0.131 |
-| neutral | 4 | D_math | A_early@20 | 0.147 |
-| neutral | 4 | D_math | A_early@25 | 0.145 |
+| neutral | 4 | D_math | A | 0.093 |
 | neutral | 4 | D_math | A_early@30 | 0.152 |
+| neutral | 4 | D_math | A_early@2 | -0.012 |
+| neutral | 4 | D_math | A@25 | 0.088 |
+| neutral | 4 | D_math | A@50 | 0.074 |
+| neutral | 4 | D_math | A@75 | 0.079 |
+| neutral | 4 | D_math | A@100 | 0.080 |
+| neutral | 4 | D_math | A@125 | 0.087 |
 | neutral | 4 | D_math | N1_halves | -0.043 |
-| neutral | 4 | N3 | A_early@2 | 0.130 |
-| neutral | 4 | N3 | A_early@4 | 0.065 |
-| neutral | 4 | N3 | A_early@6 | 0.039 |
-| neutral | 4 | N3 | A_early@8 | 0.005 |
-| neutral | 4 | N3 | A_early@10 | 0.010 |
-| neutral | 4 | N3 | A_early@15 | -0.011 |
-| neutral | 4 | N3 | A_early@20 | -0.006 |
-| neutral | 4 | N3 | A_early@25 | -0.019 |
+| neutral | 4 | D_math_full | N3 | 0.028 |
+| neutral | 4 | D_math_full | A | 0.176 |
+| neutral | 4 | D_math_full | A_early@30 | 0.213 |
+| neutral | 4 | D_math_full | A_early@2 | 0.033 |
+| neutral | 4 | D_math_full | A@25 | 0.181 |
+| neutral | 4 | D_math_full | A@50 | 0.151 |
+| neutral | 4 | D_math_full | A@75 | 0.154 |
+| neutral | 4 | D_math_full | A@100 | 0.161 |
+| neutral | 4 | D_math_full | A@125 | 0.171 |
+| neutral | 4 | D_math_full | N1_halves | -0.127 |
+| neutral | 4 | N3 | A | 0.023 |
 | neutral | 4 | N3 | A_early@30 | -0.016 |
+| neutral | 4 | N3 | A_early@2 | 0.130 |
+| neutral | 4 | N3 | A@25 | 0.037 |
+| neutral | 4 | N3 | A@50 | 0.035 |
+| neutral | 4 | N3 | A@75 | 0.034 |
+| neutral | 4 | N3 | A@100 | 0.025 |
+| neutral | 4 | N3 | A@125 | 0.026 |
 | neutral | 4 | N3 | N1_halves | -0.029 |
-| neutral | 4 | A_early@2 | A_early@4 | 0.730 |
-| neutral | 4 | A_early@2 | A_early@6 | 0.675 |
-| neutral | 4 | A_early@2 | A_early@8 | 0.602 |
-| neutral | 4 | A_early@2 | A_early@10 | 0.577 |
-| neutral | 4 | A_early@2 | A_early@15 | 0.510 |
-| neutral | 4 | A_early@2 | A_early@20 | 0.478 |
-| neutral | 4 | A_early@2 | A_early@25 | 0.459 |
-| neutral | 4 | A_early@2 | A_early@30 | 0.451 |
-| neutral | 4 | A_early@2 | N1_halves | -0.009 |
-| neutral | 4 | A_early@4 | A_early@6 | 0.894 |
-| neutral | 4 | A_early@4 | A_early@8 | 0.848 |
-| neutral | 4 | A_early@4 | A_early@10 | 0.793 |
-| neutral | 4 | A_early@4 | A_early@15 | 0.735 |
-| neutral | 4 | A_early@4 | A_early@20 | 0.719 |
-| neutral | 4 | A_early@4 | A_early@25 | 0.696 |
-| neutral | 4 | A_early@4 | A_early@30 | 0.678 |
-| neutral | 4 | A_early@4 | N1_halves | 0.031 |
-| neutral | 4 | A_early@6 | A_early@8 | 0.942 |
-| neutral | 4 | A_early@6 | A_early@10 | 0.906 |
-| neutral | 4 | A_early@6 | A_early@15 | 0.856 |
-| neutral | 4 | A_early@6 | A_early@20 | 0.826 |
-| neutral | 4 | A_early@6 | A_early@25 | 0.805 |
-| neutral | 4 | A_early@6 | A_early@30 | 0.791 |
-| neutral | 4 | A_early@6 | N1_halves | -0.007 |
-| neutral | 4 | A_early@8 | A_early@10 | 0.955 |
-| neutral | 4 | A_early@8 | A_early@15 | 0.922 |
-| neutral | 4 | A_early@8 | A_early@20 | 0.895 |
-| neutral | 4 | A_early@8 | A_early@25 | 0.879 |
-| neutral | 4 | A_early@8 | A_early@30 | 0.869 |
-| neutral | 4 | A_early@8 | N1_halves | -0.010 |
-| neutral | 4 | A_early@10 | A_early@15 | 0.957 |
-| neutral | 4 | A_early@10 | A_early@20 | 0.929 |
-| neutral | 4 | A_early@10 | A_early@25 | 0.915 |
-| neutral | 4 | A_early@10 | A_early@30 | 0.912 |
-| neutral | 4 | A_early@10 | N1_halves | -0.023 |
-| neutral | 4 | A_early@15 | A_early@20 | 0.976 |
-| neutral | 4 | A_early@15 | A_early@25 | 0.971 |
-| neutral | 4 | A_early@15 | A_early@30 | 0.969 |
-| neutral | 4 | A_early@15 | N1_halves | -0.021 |
-| neutral | 4 | A_early@20 | A_early@25 | 0.987 |
-| neutral | 4 | A_early@20 | A_early@30 | 0.983 |
-| neutral | 4 | A_early@20 | N1_halves | -0.027 |
-| neutral | 4 | A_early@25 | A_early@30 | 0.989 |
-| neutral | 4 | A_early@25 | N1_halves | -0.018 |
+| neutral | 4 | A | A_early@30 | 0.356 |
+| neutral | 4 | A | A_early@2 | 0.053 |
+| neutral | 4 | A | A@25 | 0.825 |
+| neutral | 4 | A | A@50 | 0.923 |
+| neutral | 4 | A | A@75 | 0.968 |
+| neutral | 4 | A | A@100 | 0.991 |
+| neutral | 4 | A | A@125 | 0.998 |
+| neutral | 4 | A | N1_halves | -0.105 |
+| neutral | 4 | A_early@30 | A_early@2 | 0.451 |
+| neutral | 4 | A_early@30 | A@25 | 0.334 |
+| neutral | 4 | A_early@30 | A@50 | 0.307 |
+| neutral | 4 | A_early@30 | A@75 | 0.332 |
+| neutral | 4 | A_early@30 | A@100 | 0.343 |
+| neutral | 4 | A_early@30 | A@125 | 0.350 |
 | neutral | 4 | A_early@30 | N1_halves | -0.029 |
+| neutral | 4 | A_early@2 | A@25 | 0.121 |
+| neutral | 4 | A_early@2 | A@50 | 0.061 |
+| neutral | 4 | A_early@2 | A@75 | 0.064 |
+| neutral | 4 | A_early@2 | A@100 | 0.053 |
+| neutral | 4 | A_early@2 | A@125 | 0.054 |
+| neutral | 4 | A_early@2 | N1_halves | -0.009 |
+| neutral | 4 | A@25 | A@50 | 0.914 |
+| neutral | 4 | A@25 | A@75 | 0.846 |
+| neutral | 4 | A@25 | A@100 | 0.826 |
+| neutral | 4 | A@25 | A@125 | 0.822 |
+| neutral | 4 | A@25 | N1_halves | -0.095 |
+| neutral | 4 | A@50 | A@75 | 0.962 |
+| neutral | 4 | A@50 | A@100 | 0.937 |
+| neutral | 4 | A@50 | A@125 | 0.926 |
+| neutral | 4 | A@50 | N1_halves | -0.087 |
+| neutral | 4 | A@75 | A@100 | 0.983 |
+| neutral | 4 | A@75 | A@125 | 0.972 |
+| neutral | 4 | A@75 | N1_halves | -0.091 |
+| neutral | 4 | A@100 | A@125 | 0.994 |
+| neutral | 4 | A@100 | N1_halves | -0.099 |
+| neutral | 4 | A@125 | N1_halves | -0.103 |
 | math | 0 | D | D_math | -0.515 |
+| math | 0 | D | D_math_full | -0.336 |
 | math | 0 | D | N3 | 0.125 |
-| math | 0 | D | A_early@2 | -0.253 |
-| math | 0 | D | A_early@4 | 0.077 |
-| math | 0 | D | A_early@6 | 0.101 |
-| math | 0 | D | A_early@8 | 0.011 |
-| math | 0 | D | A_early@10 | 0.221 |
-| math | 0 | D | A_early@15 | 0.054 |
-| math | 0 | D | A_early@20 | 0.515 |
-| math | 0 | D | A_early@25 | 0.485 |
+| math | 0 | D | A | 0.486 |
 | math | 0 | D | A_early@30 | 0.611 |
+| math | 0 | D | A_early@2 | -0.253 |
+| math | 0 | D | A@25 | 0.029 |
+| math | 0 | D | A@50 | 0.368 |
+| math | 0 | D | A@75 | 0.353 |
+| math | 0 | D | A@100 | 0.493 |
+| math | 0 | D | A@125 | 0.273 |
 | math | 0 | D | N1_halves | -0.695 |
+| math | 0 | D_math | D_math_full | 0.682 |
 | math | 0 | D_math | N3 | -0.007 |
-| math | 0 | D_math | A_early@2 | 0.328 |
-| math | 0 | D_math | A_early@4 | 0.020 |
-| math | 0 | D_math | A_early@6 | -0.031 |
-| math | 0 | D_math | A_early@8 | 0.079 |
-| math | 0 | D_math | A_early@10 | -0.063 |
-| math | 0 | D_math | A_early@15 | 0.053 |
-| math | 0 | D_math | A_early@20 | -0.263 |
-| math | 0 | D_math | A_early@25 | -0.280 |
+| math | 0 | D_math | A | -0.185 |
 | math | 0 | D_math | A_early@30 | -0.359 |
+| math | 0 | D_math | A_early@2 | 0.328 |
+| math | 0 | D_math | A@25 | 0.118 |
+| math | 0 | D_math | A@50 | -0.100 |
+| math | 0 | D_math | A@75 | -0.093 |
+| math | 0 | D_math | A@100 | -0.180 |
+| math | 0 | D_math | A@125 | -0.007 |
 | math | 0 | D_math | N1_halves | 0.595 |
-| math | 0 | N3 | A_early@2 | 0.311 |
-| math | 0 | N3 | A_early@4 | 0.251 |
-| math | 0 | N3 | A_early@6 | 0.166 |
-| math | 0 | N3 | A_early@8 | 0.270 |
-| math | 0 | N3 | A_early@10 | 0.254 |
-| math | 0 | N3 | A_early@15 | 0.193 |
-| math | 0 | N3 | A_early@20 | 0.327 |
-| math | 0 | N3 | A_early@25 | 0.318 |
+| math | 0 | D_math_full | N3 | -0.033 |
+| math | 0 | D_math_full | A | -0.058 |
+| math | 0 | D_math_full | A_early@30 | -0.253 |
+| math | 0 | D_math_full | A_early@2 | 0.254 |
+| math | 0 | D_math_full | A@25 | 0.173 |
+| math | 0 | D_math_full | A@50 | 0.014 |
+| math | 0 | D_math_full | A@75 | 0.007 |
+| math | 0 | D_math_full | A@100 | -0.056 |
+| math | 0 | D_math_full | A@125 | 0.096 |
+| math | 0 | D_math_full | N1_halves | 0.514 |
+| math | 0 | N3 | A | 0.299 |
 | math | 0 | N3 | A_early@30 | 0.273 |
+| math | 0 | N3 | A_early@2 | 0.311 |
+| math | 0 | N3 | A@25 | 0.261 |
+| math | 0 | N3 | A@50 | 0.324 |
+| math | 0 | N3 | A@75 | 0.299 |
+| math | 0 | N3 | A@100 | 0.280 |
+| math | 0 | N3 | A@125 | 0.244 |
 | math | 0 | N3 | N1_halves | -0.113 |
-| math | 0 | A_early@2 | A_early@4 | 0.475 |
-| math | 0 | A_early@2 | A_early@6 | 0.387 |
-| math | 0 | A_early@2 | A_early@8 | 0.459 |
-| math | 0 | A_early@2 | A_early@10 | 0.325 |
-| math | 0 | A_early@2 | A_early@15 | 0.440 |
-| math | 0 | A_early@2 | A_early@20 | 0.197 |
-| math | 0 | A_early@2 | A_early@25 | 0.100 |
-| math | 0 | A_early@2 | A_early@30 | 0.057 |
-| math | 0 | A_early@2 | N1_halves | 0.313 |
-| math | 0 | A_early@4 | A_early@6 | 0.652 |
-| math | 0 | A_early@4 | A_early@8 | 0.602 |
-| math | 0 | A_early@4 | A_early@10 | 0.559 |
-| math | 0 | A_early@4 | A_early@15 | 0.589 |
-| math | 0 | A_early@4 | A_early@20 | 0.457 |
-| math | 0 | A_early@4 | A_early@25 | 0.398 |
-| math | 0 | A_early@4 | A_early@30 | 0.428 |
-| math | 0 | A_early@4 | N1_halves | -0.044 |
-| math | 0 | A_early@6 | A_early@8 | 0.559 |
-| math | 0 | A_early@6 | A_early@10 | 0.571 |
-| math | 0 | A_early@6 | A_early@15 | 0.602 |
-| math | 0 | A_early@6 | A_early@20 | 0.472 |
-| math | 0 | A_early@6 | A_early@25 | 0.391 |
-| math | 0 | A_early@6 | A_early@30 | 0.461 |
-| math | 0 | A_early@6 | N1_halves | -0.080 |
-| math | 0 | A_early@8 | A_early@10 | 0.679 |
-| math | 0 | A_early@8 | A_early@15 | 0.675 |
-| math | 0 | A_early@8 | A_early@20 | 0.514 |
-| math | 0 | A_early@8 | A_early@25 | 0.486 |
-| math | 0 | A_early@8 | A_early@30 | 0.463 |
-| math | 0 | A_early@8 | N1_halves | 0.001 |
-| math | 0 | A_early@10 | A_early@15 | 0.712 |
-| math | 0 | A_early@10 | A_early@20 | 0.668 |
-| math | 0 | A_early@10 | A_early@25 | 0.627 |
-| math | 0 | A_early@10 | A_early@30 | 0.655 |
-| math | 0 | A_early@10 | N1_halves | -0.180 |
-| math | 0 | A_early@15 | A_early@20 | 0.616 |
-| math | 0 | A_early@15 | A_early@25 | 0.556 |
-| math | 0 | A_early@15 | A_early@30 | 0.569 |
-| math | 0 | A_early@15 | N1_halves | -0.010 |
-| math | 0 | A_early@20 | A_early@25 | 0.838 |
-| math | 0 | A_early@20 | A_early@30 | 0.859 |
-| math | 0 | A_early@20 | N1_halves | -0.457 |
-| math | 0 | A_early@25 | A_early@30 | 0.852 |
-| math | 0 | A_early@25 | N1_halves | -0.472 |
+| math | 0 | A | A_early@30 | 0.635 |
+| math | 0 | A | A_early@2 | 0.072 |
+| math | 0 | A | A@25 | 0.639 |
+| math | 0 | A | A@50 | 0.893 |
+| math | 0 | A | A@75 | 0.919 |
+| math | 0 | A | A@100 | 0.956 |
+| math | 0 | A | A@125 | 0.901 |
+| math | 0 | A | N1_halves | -0.386 |
+| math | 0 | A_early@30 | A_early@2 | 0.057 |
+| math | 0 | A_early@30 | A@25 | 0.330 |
+| math | 0 | A_early@30 | A@50 | 0.552 |
+| math | 0 | A_early@30 | A@75 | 0.542 |
+| math | 0 | A_early@30 | A@100 | 0.630 |
+| math | 0 | A_early@30 | A@125 | 0.484 |
 | math | 0 | A_early@30 | N1_halves | -0.574 |
+| math | 0 | A_early@2 | A@25 | 0.330 |
+| math | 0 | A_early@2 | A@50 | 0.150 |
+| math | 0 | A_early@2 | A@75 | 0.136 |
+| math | 0 | A_early@2 | A@100 | 0.065 |
+| math | 0 | A_early@2 | A@125 | 0.175 |
+| math | 0 | A_early@2 | N1_halves | 0.313 |
+| math | 0 | A@25 | A@50 | 0.726 |
+| math | 0 | A@25 | A@75 | 0.713 |
+| math | 0 | A@25 | A@100 | 0.633 |
+| math | 0 | A@25 | A@125 | 0.752 |
+| math | 0 | A@25 | N1_halves | 0.083 |
+| math | 0 | A@50 | A@75 | 0.919 |
+| math | 0 | A@50 | A@100 | 0.899 |
+| math | 0 | A@50 | A@125 | 0.865 |
+| math | 0 | A@50 | N1_halves | -0.265 |
+| math | 0 | A@75 | A@100 | 0.922 |
+| math | 0 | A@75 | A@125 | 0.900 |
+| math | 0 | A@75 | N1_halves | -0.255 |
+| math | 0 | A@100 | A@125 | 0.889 |
+| math | 0 | A@100 | N1_halves | -0.390 |
+| math | 0 | A@125 | N1_halves | -0.140 |
 | math | 1 | D | D_math | 0.073 |
+| math | 1 | D | D_math_full | 0.242 |
 | math | 1 | D | N3 | 0.109 |
-| math | 1 | D | A_early@2 | -0.058 |
-| math | 1 | D | A_early@4 | 0.090 |
-| math | 1 | D | A_early@6 | 0.051 |
-| math | 1 | D | A_early@8 | -0.080 |
-| math | 1 | D | A_early@10 | 0.028 |
-| math | 1 | D | A_early@15 | -0.012 |
-| math | 1 | D | A_early@20 | -0.042 |
-| math | 1 | D | A_early@25 | -0.012 |
+| math | 1 | D | A | 0.029 |
 | math | 1 | D | A_early@30 | -0.014 |
+| math | 1 | D | A_early@2 | -0.058 |
+| math | 1 | D | A@25 | -0.106 |
+| math | 1 | D | A@50 | -0.001 |
+| math | 1 | D | A@75 | 0.016 |
+| math | 1 | D | A@100 | 0.049 |
+| math | 1 | D | A@125 | 0.045 |
 | math | 1 | D | N1_halves | -0.024 |
+| math | 1 | D_math | D_math_full | 0.524 |
 | math | 1 | D_math | N3 | 0.018 |
-| math | 1 | D_math | A_early@2 | -0.006 |
-| math | 1 | D_math | A_early@4 | -0.059 |
-| math | 1 | D_math | A_early@6 | 0.099 |
-| math | 1 | D_math | A_early@8 | 0.014 |
-| math | 1 | D_math | A_early@10 | 0.055 |
-| math | 1 | D_math | A_early@15 | 0.056 |
-| math | 1 | D_math | A_early@20 | 0.162 |
-| math | 1 | D_math | A_early@25 | 0.090 |
+| math | 1 | D_math | A | 0.085 |
 | math | 1 | D_math | A_early@30 | 0.086 |
+| math | 1 | D_math | A_early@2 | -0.006 |
+| math | 1 | D_math | A@25 | 0.066 |
+| math | 1 | D_math | A@50 | 0.101 |
+| math | 1 | D_math | A@75 | 0.075 |
+| math | 1 | D_math | A@100 | 0.083 |
+| math | 1 | D_math | A@125 | 0.074 |
 | math | 1 | D_math | N1_halves | 0.065 |
-| math | 1 | N3 | A_early@2 | 0.303 |
-| math | 1 | N3 | A_early@4 | 0.510 |
-| math | 1 | N3 | A_early@6 | 0.394 |
-| math | 1 | N3 | A_early@8 | 0.192 |
-| math | 1 | N3 | A_early@10 | 0.325 |
-| math | 1 | N3 | A_early@15 | 0.199 |
-| math | 1 | N3 | A_early@20 | 0.185 |
-| math | 1 | N3 | A_early@25 | 0.256 |
+| math | 1 | D_math_full | N3 | 0.061 |
+| math | 1 | D_math_full | A | 0.142 |
+| math | 1 | D_math_full | A_early@30 | 0.184 |
+| math | 1 | D_math_full | A_early@2 | 0.035 |
+| math | 1 | D_math_full | A@25 | 0.092 |
+| math | 1 | D_math_full | A@50 | 0.137 |
+| math | 1 | D_math_full | A@75 | 0.125 |
+| math | 1 | D_math_full | A@100 | 0.165 |
+| math | 1 | D_math_full | A@125 | 0.170 |
+| math | 1 | D_math_full | N1_halves | -0.089 |
+| math | 1 | N3 | A | 0.113 |
 | math | 1 | N3 | A_early@30 | 0.259 |
+| math | 1 | N3 | A_early@2 | 0.303 |
+| math | 1 | N3 | A@25 | 0.165 |
+| math | 1 | N3 | A@50 | 0.160 |
+| math | 1 | N3 | A@75 | 0.131 |
+| math | 1 | N3 | A@100 | 0.150 |
+| math | 1 | N3 | A@125 | 0.142 |
 | math | 1 | N3 | N1_halves | -0.379 |
-| math | 1 | A_early@2 | A_early@4 | 0.373 |
-| math | 1 | A_early@2 | A_early@6 | 0.433 |
-| math | 1 | A_early@2 | A_early@8 | 0.501 |
-| math | 1 | A_early@2 | A_early@10 | 0.431 |
-| math | 1 | A_early@2 | A_early@15 | 0.396 |
-| math | 1 | A_early@2 | A_early@20 | 0.400 |
-| math | 1 | A_early@2 | A_early@25 | 0.404 |
-| math | 1 | A_early@2 | A_early@30 | 0.392 |
-| math | 1 | A_early@2 | N1_halves | 0.095 |
-| math | 1 | A_early@4 | A_early@6 | 0.637 |
-| math | 1 | A_early@4 | A_early@8 | 0.505 |
-| math | 1 | A_early@4 | A_early@10 | 0.624 |
-| math | 1 | A_early@4 | A_early@15 | 0.465 |
-| math | 1 | A_early@4 | A_early@20 | 0.432 |
-| math | 1 | A_early@4 | A_early@25 | 0.557 |
-| math | 1 | A_early@4 | A_early@30 | 0.541 |
-| math | 1 | A_early@4 | N1_halves | -0.409 |
-| math | 1 | A_early@6 | A_early@8 | 0.646 |
-| math | 1 | A_early@6 | A_early@10 | 0.680 |
-| math | 1 | A_early@6 | A_early@15 | 0.607 |
-| math | 1 | A_early@6 | A_early@20 | 0.634 |
-| math | 1 | A_early@6 | A_early@25 | 0.659 |
-| math | 1 | A_early@6 | A_early@30 | 0.652 |
-| math | 1 | A_early@6 | N1_halves | -0.240 |
-| math | 1 | A_early@8 | A_early@10 | 0.657 |
-| math | 1 | A_early@8 | A_early@15 | 0.716 |
-| math | 1 | A_early@8 | A_early@20 | 0.714 |
-| math | 1 | A_early@8 | A_early@25 | 0.684 |
-| math | 1 | A_early@8 | A_early@30 | 0.667 |
-| math | 1 | A_early@8 | N1_halves | 0.028 |
-| math | 1 | A_early@10 | A_early@15 | 0.702 |
-| math | 1 | A_early@10 | A_early@20 | 0.683 |
-| math | 1 | A_early@10 | A_early@25 | 0.744 |
-| math | 1 | A_early@10 | A_early@30 | 0.743 |
-| math | 1 | A_early@10 | N1_halves | -0.197 |
-| math | 1 | A_early@15 | A_early@20 | 0.776 |
-| math | 1 | A_early@15 | A_early@25 | 0.778 |
-| math | 1 | A_early@15 | A_early@30 | 0.776 |
-| math | 1 | A_early@15 | N1_halves | 0.012 |
-| math | 1 | A_early@20 | A_early@25 | 0.784 |
-| math | 1 | A_early@20 | A_early@30 | 0.742 |
-| math | 1 | A_early@20 | N1_halves | -0.003 |
-| math | 1 | A_early@25 | A_early@30 | 0.851 |
-| math | 1 | A_early@25 | N1_halves | -0.157 |
+| math | 1 | A | A_early@30 | 0.616 |
+| math | 1 | A | A_early@2 | 0.345 |
+| math | 1 | A | A@25 | 0.856 |
+| math | 1 | A | A@50 | 0.907 |
+| math | 1 | A | A@75 | 0.942 |
+| math | 1 | A | A@100 | 0.952 |
+| math | 1 | A | A@125 | 0.957 |
+| math | 1 | A | N1_halves | 0.079 |
+| math | 1 | A_early@30 | A_early@2 | 0.392 |
+| math | 1 | A_early@30 | A@25 | 0.663 |
+| math | 1 | A_early@30 | A@50 | 0.614 |
+| math | 1 | A_early@30 | A@75 | 0.594 |
+| math | 1 | A_early@30 | A@100 | 0.618 |
+| math | 1 | A_early@30 | A@125 | 0.633 |
 | math | 1 | A_early@30 | N1_halves | -0.150 |
+| math | 1 | A_early@2 | A@25 | 0.399 |
+| math | 1 | A_early@2 | A@50 | 0.372 |
+| math | 1 | A_early@2 | A@75 | 0.350 |
+| math | 1 | A_early@2 | A@100 | 0.355 |
+| math | 1 | A_early@2 | A@125 | 0.347 |
+| math | 1 | A_early@2 | N1_halves | 0.095 |
+| math | 1 | A@25 | A@50 | 0.874 |
+| math | 1 | A@25 | A@75 | 0.878 |
+| math | 1 | A@25 | A@100 | 0.857 |
+| math | 1 | A@25 | A@125 | 0.849 |
+| math | 1 | A@25 | N1_halves | 0.039 |
+| math | 1 | A@50 | A@75 | 0.917 |
+| math | 1 | A@50 | A@100 | 0.914 |
+| math | 1 | A@50 | A@125 | 0.905 |
+| math | 1 | A@50 | N1_halves | 0.028 |
+| math | 1 | A@75 | A@100 | 0.938 |
+| math | 1 | A@75 | A@125 | 0.928 |
+| math | 1 | A@75 | N1_halves | 0.084 |
+| math | 1 | A@100 | A@125 | 0.953 |
+| math | 1 | A@100 | N1_halves | 0.029 |
+| math | 1 | A@125 | N1_halves | 0.026 |
 | math | 2 | D | D_math | 0.093 |
+| math | 2 | D | D_math_full | 0.129 |
 | math | 2 | D | N3 | 0.045 |
-| math | 2 | D | A_early@2 | 0.026 |
-| math | 2 | D | A_early@4 | 0.013 |
-| math | 2 | D | A_early@6 | 0.016 |
-| math | 2 | D | A_early@8 | 0.013 |
-| math | 2 | D | A_early@10 | 0.067 |
-| math | 2 | D | A_early@15 | 0.081 |
-| math | 2 | D | A_early@20 | 0.098 |
-| math | 2 | D | A_early@25 | 0.086 |
+| math | 2 | D | A | 0.098 |
 | math | 2 | D | A_early@30 | 0.079 |
+| math | 2 | D | A_early@2 | 0.026 |
+| math | 2 | D | A@25 | 0.001 |
+| math | 2 | D | A@50 | 0.064 |
+| math | 2 | D | A@75 | 0.101 |
+| math | 2 | D | A@100 | 0.100 |
+| math | 2 | D | A@125 | 0.096 |
 | math | 2 | D | N1_halves | 0.047 |
+| math | 2 | D_math | D_math_full | 0.757 |
 | math | 2 | D_math | N3 | -0.170 |
-| math | 2 | D_math | A_early@2 | 0.016 |
-| math | 2 | D_math | A_early@4 | 0.205 |
-| math | 2 | D_math | A_early@6 | 0.272 |
-| math | 2 | D_math | A_early@8 | 0.312 |
-| math | 2 | D_math | A_early@10 | 0.330 |
-| math | 2 | D_math | A_early@15 | 0.326 |
-| math | 2 | D_math | A_early@20 | 0.365 |
-| math | 2 | D_math | A_early@25 | 0.352 |
+| math | 2 | D_math | A | 0.294 |
 | math | 2 | D_math | A_early@30 | 0.329 |
+| math | 2 | D_math | A_early@2 | 0.016 |
+| math | 2 | D_math | A@25 | 0.287 |
+| math | 2 | D_math | A@50 | 0.289 |
+| math | 2 | D_math | A@75 | 0.289 |
+| math | 2 | D_math | A@100 | 0.303 |
+| math | 2 | D_math | A@125 | 0.308 |
 | math | 2 | D_math | N1_halves | 0.028 |
-| math | 2 | N3 | A_early@2 | 0.211 |
-| math | 2 | N3 | A_early@4 | 0.124 |
-| math | 2 | N3 | A_early@6 | 0.058 |
-| math | 2 | N3 | A_early@8 | -0.022 |
-| math | 2 | N3 | A_early@10 | -0.009 |
-| math | 2 | N3 | A_early@15 | -0.031 |
-| math | 2 | N3 | A_early@20 | -0.061 |
-| math | 2 | N3 | A_early@25 | -0.053 |
+| math | 2 | D_math_full | N3 | -0.065 |
+| math | 2 | D_math_full | A | 0.377 |
+| math | 2 | D_math_full | A_early@30 | 0.321 |
+| math | 2 | D_math_full | A_early@2 | -0.021 |
+| math | 2 | D_math_full | A@25 | 0.342 |
+| math | 2 | D_math_full | A@50 | 0.349 |
+| math | 2 | D_math_full | A@75 | 0.350 |
+| math | 2 | D_math_full | A@100 | 0.370 |
+| math | 2 | D_math_full | A@125 | 0.382 |
+| math | 2 | D_math_full | N1_halves | 0.151 |
+| math | 2 | N3 | A | 0.015 |
 | math | 2 | N3 | A_early@30 | -0.065 |
+| math | 2 | N3 | A_early@2 | 0.211 |
+| math | 2 | N3 | A@25 | -0.012 |
+| math | 2 | N3 | A@50 | -0.000 |
+| math | 2 | N3 | A@75 | 0.014 |
+| math | 2 | N3 | A@100 | -0.002 |
+| math | 2 | N3 | A@125 | -0.002 |
 | math | 2 | N3 | N1_halves | 0.088 |
-| math | 2 | A_early@2 | A_early@4 | 0.622 |
-| math | 2 | A_early@2 | A_early@6 | 0.606 |
-| math | 2 | A_early@2 | A_early@8 | 0.546 |
-| math | 2 | A_early@2 | A_early@10 | 0.504 |
-| math | 2 | A_early@2 | A_early@15 | 0.507 |
-| math | 2 | A_early@2 | A_early@20 | 0.489 |
-| math | 2 | A_early@2 | A_early@25 | 0.477 |
-| math | 2 | A_early@2 | A_early@30 | 0.472 |
-| math | 2 | A_early@2 | N1_halves | -0.051 |
-| math | 2 | A_early@4 | A_early@6 | 0.858 |
-| math | 2 | A_early@4 | A_early@8 | 0.831 |
-| math | 2 | A_early@4 | A_early@10 | 0.804 |
-| math | 2 | A_early@4 | A_early@15 | 0.797 |
-| math | 2 | A_early@4 | A_early@20 | 0.768 |
-| math | 2 | A_early@4 | A_early@25 | 0.770 |
-| math | 2 | A_early@4 | A_early@30 | 0.749 |
-| math | 2 | A_early@4 | N1_halves | 0.021 |
-| math | 2 | A_early@6 | A_early@8 | 0.925 |
-| math | 2 | A_early@6 | A_early@10 | 0.907 |
-| math | 2 | A_early@6 | A_early@15 | 0.902 |
-| math | 2 | A_early@6 | A_early@20 | 0.875 |
-| math | 2 | A_early@6 | A_early@25 | 0.873 |
-| math | 2 | A_early@6 | A_early@30 | 0.867 |
-| math | 2 | A_early@6 | N1_halves | 0.082 |
-| math | 2 | A_early@8 | A_early@10 | 0.944 |
-| math | 2 | A_early@8 | A_early@15 | 0.941 |
-| math | 2 | A_early@8 | A_early@20 | 0.927 |
-| math | 2 | A_early@8 | A_early@25 | 0.926 |
-| math | 2 | A_early@8 | A_early@30 | 0.917 |
-| math | 2 | A_early@8 | N1_halves | 0.117 |
-| math | 2 | A_early@10 | A_early@15 | 0.960 |
-| math | 2 | A_early@10 | A_early@20 | 0.946 |
-| math | 2 | A_early@10 | A_early@25 | 0.953 |
-| math | 2 | A_early@10 | A_early@30 | 0.947 |
-| math | 2 | A_early@10 | N1_halves | 0.154 |
-| math | 2 | A_early@15 | A_early@20 | 0.973 |
-| math | 2 | A_early@15 | A_early@25 | 0.976 |
-| math | 2 | A_early@15 | A_early@30 | 0.974 |
-| math | 2 | A_early@15 | N1_halves | 0.161 |
-| math | 2 | A_early@20 | A_early@25 | 0.981 |
-| math | 2 | A_early@20 | A_early@30 | 0.974 |
-| math | 2 | A_early@20 | N1_halves | 0.150 |
-| math | 2 | A_early@25 | A_early@30 | 0.984 |
-| math | 2 | A_early@25 | N1_halves | 0.170 |
+| math | 2 | A | A_early@30 | 0.741 |
+| math | 2 | A | A_early@2 | 0.183 |
+| math | 2 | A | A@25 | 0.919 |
+| math | 2 | A | A@50 | 0.966 |
+| math | 2 | A | A@75 | 0.985 |
+| math | 2 | A | A@100 | 0.994 |
+| math | 2 | A | A@125 | 0.997 |
+| math | 2 | A | N1_halves | 0.321 |
+| math | 2 | A_early@30 | A_early@2 | 0.472 |
+| math | 2 | A_early@30 | A@25 | 0.791 |
+| math | 2 | A_early@30 | A@50 | 0.769 |
+| math | 2 | A_early@30 | A@75 | 0.758 |
+| math | 2 | A_early@30 | A@100 | 0.739 |
+| math | 2 | A_early@30 | A@125 | 0.738 |
 | math | 2 | A_early@30 | N1_halves | 0.185 |
+| math | 2 | A_early@2 | A@25 | 0.238 |
+| math | 2 | A_early@2 | A@50 | 0.227 |
+| math | 2 | A_early@2 | A@75 | 0.226 |
+| math | 2 | A_early@2 | A@100 | 0.183 |
+| math | 2 | A_early@2 | A@125 | 0.173 |
+| math | 2 | A_early@2 | N1_halves | -0.051 |
+| math | 2 | A@25 | A@50 | 0.964 |
+| math | 2 | A@25 | A@75 | 0.934 |
+| math | 2 | A@25 | A@100 | 0.918 |
+| math | 2 | A@25 | A@125 | 0.916 |
+| math | 2 | A@25 | N1_halves | 0.257 |
+| math | 2 | A@50 | A@75 | 0.983 |
+| math | 2 | A@50 | A@100 | 0.969 |
+| math | 2 | A@50 | A@125 | 0.964 |
+| math | 2 | A@50 | N1_halves | 0.271 |
+| math | 2 | A@75 | A@100 | 0.988 |
+| math | 2 | A@75 | A@125 | 0.983 |
+| math | 2 | A@75 | N1_halves | 0.294 |
+| math | 2 | A@100 | A@125 | 0.995 |
+| math | 2 | A@100 | N1_halves | 0.307 |
+| math | 2 | A@125 | N1_halves | 0.318 |
 | math | 3 | D | D_math | 0.055 |
+| math | 3 | D | D_math_full | 0.134 |
 | math | 3 | D | N3 | 0.077 |
-| math | 3 | D | A_early@2 | 0.063 |
-| math | 3 | D | A_early@4 | 0.028 |
-| math | 3 | D | A_early@6 | 0.042 |
-| math | 3 | D | A_early@8 | 0.064 |
-| math | 3 | D | A_early@10 | 0.085 |
-| math | 3 | D | A_early@15 | 0.107 |
-| math | 3 | D | A_early@20 | 0.108 |
-| math | 3 | D | A_early@25 | 0.114 |
+| math | 3 | D | A | 0.151 |
 | math | 3 | D | A_early@30 | 0.116 |
+| math | 3 | D | A_early@2 | 0.063 |
+| math | 3 | D | A@25 | 0.090 |
+| math | 3 | D | A@50 | 0.117 |
+| math | 3 | D | A@75 | 0.150 |
+| math | 3 | D | A@100 | 0.148 |
+| math | 3 | D | A@125 | 0.151 |
 | math | 3 | D | N1_halves | 0.012 |
+| math | 3 | D_math | D_math_full | 0.830 |
 | math | 3 | D_math | N3 | -0.147 |
-| math | 3 | D_math | A_early@2 | 0.130 |
-| math | 3 | D_math | A_early@4 | 0.413 |
-| math | 3 | D_math | A_early@6 | 0.509 |
-| math | 3 | D_math | A_early@8 | 0.523 |
-| math | 3 | D_math | A_early@10 | 0.523 |
-| math | 3 | D_math | A_early@15 | 0.519 |
-| math | 3 | D_math | A_early@20 | 0.524 |
-| math | 3 | D_math | A_early@25 | 0.518 |
+| math | 3 | D_math | A | 0.477 |
 | math | 3 | D_math | A_early@30 | 0.515 |
+| math | 3 | D_math | A_early@2 | 0.130 |
+| math | 3 | D_math | A@25 | 0.476 |
+| math | 3 | D_math | A@50 | 0.471 |
+| math | 3 | D_math | A@75 | 0.465 |
+| math | 3 | D_math | A@100 | 0.473 |
+| math | 3 | D_math | A@125 | 0.476 |
 | math | 3 | D_math | N1_halves | 0.010 |
-| math | 3 | N3 | A_early@2 | 0.180 |
-| math | 3 | N3 | A_early@4 | -0.047 |
-| math | 3 | N3 | A_early@6 | -0.130 |
-| math | 3 | N3 | A_early@8 | -0.174 |
-| math | 3 | N3 | A_early@10 | -0.177 |
-| math | 3 | N3 | A_early@15 | -0.184 |
-| math | 3 | N3 | A_early@20 | -0.187 |
-| math | 3 | N3 | A_early@25 | -0.190 |
+| math | 3 | D_math_full | N3 | -0.139 |
+| math | 3 | D_math_full | A | 0.534 |
+| math | 3 | D_math_full | A_early@30 | 0.516 |
+| math | 3 | D_math_full | A_early@2 | 0.093 |
+| math | 3 | D_math_full | A@25 | 0.514 |
+| math | 3 | D_math_full | A@50 | 0.516 |
+| math | 3 | D_math_full | A@75 | 0.507 |
+| math | 3 | D_math_full | A@100 | 0.524 |
+| math | 3 | D_math_full | A@125 | 0.532 |
+| math | 3 | D_math_full | N1_halves | 0.037 |
+| math | 3 | N3 | A | -0.153 |
 | math | 3 | N3 | A_early@30 | -0.192 |
+| math | 3 | N3 | A_early@2 | 0.180 |
+| math | 3 | N3 | A@25 | -0.185 |
+| math | 3 | N3 | A@50 | -0.156 |
+| math | 3 | N3 | A@75 | -0.149 |
+| math | 3 | N3 | A@100 | -0.154 |
+| math | 3 | N3 | A@125 | -0.153 |
 | math | 3 | N3 | N1_halves | 0.020 |
-| math | 3 | A_early@2 | A_early@4 | 0.678 |
-| math | 3 | A_early@2 | A_early@6 | 0.592 |
-| math | 3 | A_early@2 | A_early@8 | 0.540 |
-| math | 3 | A_early@2 | A_early@10 | 0.532 |
-| math | 3 | A_early@2 | A_early@15 | 0.497 |
-| math | 3 | A_early@2 | A_early@20 | 0.486 |
-| math | 3 | A_early@2 | A_early@25 | 0.482 |
-| math | 3 | A_early@2 | A_early@30 | 0.473 |
-| math | 3 | A_early@2 | N1_halves | -0.023 |
-| math | 3 | A_early@4 | A_early@6 | 0.904 |
-| math | 3 | A_early@4 | A_early@8 | 0.873 |
-| math | 3 | A_early@4 | A_early@10 | 0.862 |
-| math | 3 | A_early@4 | A_early@15 | 0.830 |
-| math | 3 | A_early@4 | A_early@20 | 0.812 |
-| math | 3 | A_early@4 | A_early@25 | 0.806 |
-| math | 3 | A_early@4 | A_early@30 | 0.799 |
-| math | 3 | A_early@4 | N1_halves | -0.000 |
-| math | 3 | A_early@6 | A_early@8 | 0.962 |
-| math | 3 | A_early@6 | A_early@10 | 0.955 |
-| math | 3 | A_early@6 | A_early@15 | 0.938 |
-| math | 3 | A_early@6 | A_early@20 | 0.929 |
-| math | 3 | A_early@6 | A_early@25 | 0.920 |
-| math | 3 | A_early@6 | A_early@30 | 0.916 |
-| math | 3 | A_early@6 | N1_halves | 0.052 |
-| math | 3 | A_early@8 | A_early@10 | 0.980 |
-| math | 3 | A_early@8 | A_early@15 | 0.971 |
-| math | 3 | A_early@8 | A_early@20 | 0.962 |
-| math | 3 | A_early@8 | A_early@25 | 0.958 |
-| math | 3 | A_early@8 | A_early@30 | 0.955 |
-| math | 3 | A_early@8 | N1_halves | 0.077 |
-| math | 3 | A_early@10 | A_early@15 | 0.982 |
-| math | 3 | A_early@10 | A_early@20 | 0.974 |
-| math | 3 | A_early@10 | A_early@25 | 0.972 |
-| math | 3 | A_early@10 | A_early@30 | 0.969 |
-| math | 3 | A_early@10 | N1_halves | 0.076 |
-| math | 3 | A_early@15 | A_early@20 | 0.991 |
-| math | 3 | A_early@15 | A_early@25 | 0.990 |
-| math | 3 | A_early@15 | A_early@30 | 0.989 |
-| math | 3 | A_early@15 | N1_halves | 0.095 |
-| math | 3 | A_early@20 | A_early@25 | 0.993 |
-| math | 3 | A_early@20 | A_early@30 | 0.993 |
-| math | 3 | A_early@20 | N1_halves | 0.098 |
-| math | 3 | A_early@25 | A_early@30 | 0.995 |
-| math | 3 | A_early@25 | N1_halves | 0.098 |
+| math | 3 | A | A_early@30 | 0.813 |
+| math | 3 | A | A_early@2 | 0.228 |
+| math | 3 | A | A@25 | 0.936 |
+| math | 3 | A | A@50 | 0.971 |
+| math | 3 | A | A@75 | 0.988 |
+| math | 3 | A | A@100 | 0.996 |
+| math | 3 | A | A@125 | 0.999 |
+| math | 3 | A | N1_halves | 0.153 |
+| math | 3 | A_early@30 | A_early@2 | 0.473 |
+| math | 3 | A_early@30 | A@25 | 0.860 |
+| math | 3 | A_early@30 | A@50 | 0.823 |
+| math | 3 | A_early@30 | A@75 | 0.815 |
+| math | 3 | A_early@30 | A@100 | 0.807 |
+| math | 3 | A_early@30 | A@125 | 0.811 |
 | math | 3 | A_early@30 | N1_halves | 0.103 |
+| math | 3 | A_early@2 | A@25 | 0.266 |
+| math | 3 | A_early@2 | A@50 | 0.237 |
+| math | 3 | A_early@2 | A@75 | 0.246 |
+| math | 3 | A_early@2 | A@100 | 0.227 |
+| math | 3 | A_early@2 | A@125 | 0.228 |
+| math | 3 | A_early@2 | N1_halves | -0.023 |
+| math | 3 | A@25 | A@50 | 0.972 |
+| math | 3 | A@25 | A@75 | 0.946 |
+| math | 3 | A@25 | A@100 | 0.936 |
+| math | 3 | A@25 | A@125 | 0.935 |
+| math | 3 | A@25 | N1_halves | 0.145 |
+| math | 3 | A@50 | A@75 | 0.985 |
+| math | 3 | A@50 | A@100 | 0.975 |
+| math | 3 | A@50 | A@125 | 0.971 |
+| math | 3 | A@50 | N1_halves | 0.143 |
+| math | 3 | A@75 | A@100 | 0.992 |
+| math | 3 | A@75 | A@125 | 0.988 |
+| math | 3 | A@75 | N1_halves | 0.148 |
+| math | 3 | A@100 | A@125 | 0.997 |
+| math | 3 | A@100 | N1_halves | 0.149 |
+| math | 3 | A@125 | N1_halves | 0.151 |
 | math | 4 | D | D_math | -0.010 |
+| math | 4 | D | D_math_full | 0.072 |
 | math | 4 | D | N3 | 0.032 |
-| math | 4 | D | A_early@2 | -0.039 |
-| math | 4 | D | A_early@4 | -0.075 |
-| math | 4 | D | A_early@6 | -0.066 |
-| math | 4 | D | A_early@8 | -0.042 |
-| math | 4 | D | A_early@10 | -0.018 |
-| math | 4 | D | A_early@15 | -0.006 |
-| math | 4 | D | A_early@20 | 0.000 |
-| math | 4 | D | A_early@25 | 0.005 |
+| math | 4 | D | A | 0.068 |
 | math | 4 | D | A_early@30 | 0.006 |
+| math | 4 | D | A_early@2 | -0.039 |
+| math | 4 | D | A@25 | 0.012 |
+| math | 4 | D | A@50 | 0.037 |
+| math | 4 | D | A@75 | 0.069 |
+| math | 4 | D | A@100 | 0.065 |
+| math | 4 | D | A@125 | 0.068 |
 | math | 4 | D | N1_halves | -0.034 |
+| math | 4 | D_math | D_math_full | 0.826 |
 | math | 4 | D_math | N3 | -0.157 |
-| math | 4 | D_math | A_early@2 | 0.196 |
-| math | 4 | D_math | A_early@4 | 0.422 |
-| math | 4 | D_math | A_early@6 | 0.497 |
-| math | 4 | D_math | A_early@8 | 0.516 |
-| math | 4 | D_math | A_early@10 | 0.519 |
-| math | 4 | D_math | A_early@15 | 0.511 |
-| math | 4 | D_math | A_early@20 | 0.524 |
-| math | 4 | D_math | A_early@25 | 0.511 |
+| math | 4 | D_math | A | 0.444 |
 | math | 4 | D_math | A_early@30 | 0.512 |
+| math | 4 | D_math | A_early@2 | 0.196 |
+| math | 4 | D_math | A@25 | 0.467 |
+| math | 4 | D_math | A@50 | 0.441 |
+| math | 4 | D_math | A@75 | 0.431 |
+| math | 4 | D_math | A@100 | 0.438 |
+| math | 4 | D_math | A@125 | 0.443 |
 | math | 4 | D_math | N1_halves | 0.094 |
-| math | 4 | N3 | A_early@2 | 0.074 |
-| math | 4 | N3 | A_early@4 | -0.067 |
-| math | 4 | N3 | A_early@6 | -0.081 |
-| math | 4 | N3 | A_early@8 | -0.111 |
-| math | 4 | N3 | A_early@10 | -0.112 |
-| math | 4 | N3 | A_early@15 | -0.121 |
-| math | 4 | N3 | A_early@20 | -0.121 |
-| math | 4 | N3 | A_early@25 | -0.112 |
+| math | 4 | D_math_full | N3 | -0.102 |
+| math | 4 | D_math_full | A | 0.567 |
+| math | 4 | D_math_full | A_early@30 | 0.560 |
+| math | 4 | D_math_full | A_early@2 | 0.264 |
+| math | 4 | D_math_full | A@25 | 0.561 |
+| math | 4 | D_math_full | A@50 | 0.544 |
+| math | 4 | D_math_full | A@75 | 0.532 |
+| math | 4 | D_math_full | A@100 | 0.552 |
+| math | 4 | D_math_full | A@125 | 0.565 |
+| math | 4 | D_math_full | N1_halves | 0.108 |
+| math | 4 | N3 | A | -0.036 |
 | math | 4 | N3 | A_early@30 | -0.119 |
+| math | 4 | N3 | A_early@2 | 0.074 |
+| math | 4 | N3 | A@25 | -0.066 |
+| math | 4 | N3 | A@50 | -0.049 |
+| math | 4 | N3 | A@75 | -0.047 |
+| math | 4 | N3 | A@100 | -0.039 |
+| math | 4 | N3 | A@125 | -0.035 |
 | math | 4 | N3 | N1_halves | -0.020 |
-| math | 4 | A_early@2 | A_early@4 | 0.780 |
-| math | 4 | A_early@2 | A_early@6 | 0.737 |
-| math | 4 | A_early@2 | A_early@8 | 0.703 |
-| math | 4 | A_early@2 | A_early@10 | 0.699 |
-| math | 4 | A_early@2 | A_early@15 | 0.673 |
-| math | 4 | A_early@2 | A_early@20 | 0.656 |
-| math | 4 | A_early@2 | A_early@25 | 0.657 |
-| math | 4 | A_early@2 | A_early@30 | 0.647 |
-| math | 4 | A_early@2 | N1_halves | 0.027 |
-| math | 4 | A_early@4 | A_early@6 | 0.945 |
-| math | 4 | A_early@4 | A_early@8 | 0.932 |
-| math | 4 | A_early@4 | A_early@10 | 0.915 |
-| math | 4 | A_early@4 | A_early@15 | 0.894 |
-| math | 4 | A_early@4 | A_early@20 | 0.875 |
-| math | 4 | A_early@4 | A_early@25 | 0.868 |
-| math | 4 | A_early@4 | A_early@30 | 0.862 |
-| math | 4 | A_early@4 | N1_halves | 0.101 |
-| math | 4 | A_early@6 | A_early@8 | 0.979 |
-| math | 4 | A_early@6 | A_early@10 | 0.969 |
-| math | 4 | A_early@6 | A_early@15 | 0.952 |
-| math | 4 | A_early@6 | A_early@20 | 0.938 |
-| math | 4 | A_early@6 | A_early@25 | 0.931 |
-| math | 4 | A_early@6 | A_early@30 | 0.928 |
-| math | 4 | A_early@6 | N1_halves | 0.119 |
-| math | 4 | A_early@8 | A_early@10 | 0.986 |
-| math | 4 | A_early@8 | A_early@15 | 0.975 |
-| math | 4 | A_early@8 | A_early@20 | 0.963 |
-| math | 4 | A_early@8 | A_early@25 | 0.956 |
-| math | 4 | A_early@8 | A_early@30 | 0.954 |
-| math | 4 | A_early@8 | N1_halves | 0.122 |
-| math | 4 | A_early@10 | A_early@15 | 0.987 |
-| math | 4 | A_early@10 | A_early@20 | 0.978 |
-| math | 4 | A_early@10 | A_early@25 | 0.975 |
-| math | 4 | A_early@10 | A_early@30 | 0.972 |
-| math | 4 | A_early@10 | N1_halves | 0.126 |
-| math | 4 | A_early@15 | A_early@20 | 0.993 |
-| math | 4 | A_early@15 | A_early@25 | 0.990 |
-| math | 4 | A_early@15 | A_early@30 | 0.990 |
-| math | 4 | A_early@15 | N1_halves | 0.133 |
-| math | 4 | A_early@20 | A_early@25 | 0.995 |
-| math | 4 | A_early@20 | A_early@30 | 0.995 |
-| math | 4 | A_early@20 | N1_halves | 0.140 |
-| math | 4 | A_early@25 | A_early@30 | 0.997 |
-| math | 4 | A_early@25 | N1_halves | 0.139 |
+| math | 4 | A | A_early@30 | 0.774 |
+| math | 4 | A | A_early@2 | 0.450 |
+| math | 4 | A | A@25 | 0.923 |
+| math | 4 | A | A@50 | 0.962 |
+| math | 4 | A | A@75 | 0.984 |
+| math | 4 | A | A@100 | 0.996 |
+| math | 4 | A | A@125 | 0.999 |
+| math | 4 | A | N1_halves | 0.114 |
+| math | 4 | A_early@30 | A_early@2 | 0.647 |
+| math | 4 | A_early@30 | A@25 | 0.830 |
+| math | 4 | A_early@30 | A@50 | 0.782 |
+| math | 4 | A_early@30 | A@75 | 0.770 |
+| math | 4 | A_early@30 | A@100 | 0.765 |
+| math | 4 | A_early@30 | A@125 | 0.771 |
 | math | 4 | A_early@30 | N1_halves | 0.140 |
+| math | 4 | A_early@2 | A@25 | 0.516 |
+| math | 4 | A_early@2 | A@50 | 0.470 |
+| math | 4 | A_early@2 | A@75 | 0.451 |
+| math | 4 | A_early@2 | A@100 | 0.441 |
+| math | 4 | A_early@2 | A@125 | 0.448 |
+| math | 4 | A_early@2 | N1_halves | 0.027 |
+| math | 4 | A@25 | A@50 | 0.966 |
+| math | 4 | A@25 | A@75 | 0.934 |
+| math | 4 | A@25 | A@100 | 0.922 |
+| math | 4 | A@25 | A@125 | 0.922 |
+| math | 4 | A@25 | N1_halves | 0.098 |
+| math | 4 | A@50 | A@75 | 0.982 |
+| math | 4 | A@50 | A@100 | 0.968 |
+| math | 4 | A@50 | A@125 | 0.962 |
+| math | 4 | A@50 | N1_halves | 0.099 |
+| math | 4 | A@75 | A@100 | 0.990 |
+| math | 4 | A@75 | A@125 | 0.984 |
+| math | 4 | A@75 | N1_halves | 0.110 |
+| math | 4 | A@100 | A@125 | 0.997 |
+| math | 4 | A@100 | N1_halves | 0.113 |
+| math | 4 | A@125 | N1_halves | 0.113 |

@@ -1,0 +1,2167 @@
+{
+ "reference_dir": "data/lexical_reference",
+ "n_reference": 300,
+ "labels": [
+  "math",
+  "cooking",
+  "law",
+  "medicine",
+  "poetry",
+  "none"
+ ],
+ "seed": 0,
+ "summary": {
+  "D/logit_lens/neutral": {
+   "n": 5,
+   "correct": 0,
+   "preds": {
+    "poetry": 5
+   }
+  },
+  "N1_halves/logit_lens/neutral": {
+   "n": 1,
+   "correct": 0,
+   "preds": {
+    "poetry": 1
+   }
+  },
+  "D/logit_lens/math": {
+   "n": 5,
+   "correct": 0,
+   "preds": {
+    "poetry": 5
+   }
+  },
+  "N1_halves/logit_lens/math": {
+   "n": 1,
+   "correct": 0,
+   "preds": {
+    "poetry": 1
+   }
+  },
+  "D_math/patchscope/neutral": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 9
+   }
+  },
+  "D_math/patchscope/math": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 7,
+    "none": 2
+   }
+  },
+  "D_math_full/patchscope/neutral": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 7,
+    "medicine": 2
+   }
+  },
+  "D_math_full/patchscope/math": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 8,
+    "medicine": 1
+   }
+  },
+  "D/patchscope/neutral": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 8,
+    "medicine": 1
+   }
+  },
+  "D/patchscope/math": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 7,
+    "math": 1,
+    "medicine": 1
+   }
+  },
+  "N1_halves/patchscope/neutral": {
+   "n": 9,
+   "correct": 1,
+   "preds": {
+    "poetry": 8,
+    "none": 1
+   }
+  },
+  "N1_halves/patchscope/math": {
+   "n": 9,
+   "correct": 2,
+   "preds": {
+    "poetry": 6,
+    "medicine": 1,
+    "none": 2
+   }
+  },
+  "A/patchscope/neutral": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "poetry": 8,
+    "law": 1
+   }
+  },
+  "A/patchscope/math": {
+   "n": 9,
+   "correct": 0,
+   "preds": {
+    "medicine": 1,
+    "law": 1,
+    "poetry": 7
+   }
+  }
+ },
+ "items": [
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "' ste', 'dives', '国务院关于', ' McCorm', ' Glover', 'zy', 'CUS', '泛起', 'ripp', 'прос', '说明书', 'IW', 'เมือง', '帚', ' pres', '�', '我与', '�', '�', ' tanto'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'svc', 'ثل', '\\xadt', 'rame', '记忆里', '扎', ' 없이', ' happiest', ' bl', ' Glover', ' 설', ' rails', '细致', 'vaard', ' cond', 'feh', ' замет', 'ahan', ' точ', 'eties'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'起', 'feh', '�', ' pres', '细致', ' точ', ' utility', '悄然', 'iscrim', ' TikTok', '日', '())/', 'itably', 'cher', ' di', 'lat', ' Thousand', '日从', 'ahan', ' ste'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2015787428414205,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11758834867803393,
+    "law": 0.16114646282790956,
+    "math": 0.17203941635699135,
+    "medicine": 0.17957570603286194,
+    "none": 0.1680713232627828,
+    "poetry": 0.2015787428414205
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 3,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'起', 'itably', '—and', '—or', '())/', '细致', 'feh', '尊重和', ' happiest', '点多', '悄然', 'aday', ' точ', 'oward', ' TikTok', 'keur', '台', '光洁', '未必', ' toward'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.22053289256724093,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11939397902670282,
+    "law": 0.18754626375820954,
+    "math": 0.1490035365401072,
+    "medicine": 0.16868867565265083,
+    "none": 0.15483465245508862,
+    "poetry": 0.22053289256724093
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 4,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'起', '点多', 'itably', '尊重和', 'feh', '—or', '细致', '())/', ' happiest', 'aday', '—and', '悄然', '工坊', 'keur', '未必', ' isn', '下载次数', ' toward', ' точ', ' modest'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21009293534765394,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11871450155707132,
+    "law": 0.178068598613168,
+    "math": 0.1518257256593985,
+    "medicine": 0.16980505072171895,
+    "none": 0.17149318810098926,
+    "poetry": 0.21009293534765394
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'为', '为官', 'iler', '逊', 'عهد', '一鸣', '枪', '不堪', '哈哈哈哈', 'att', 'ektion', 'ék', 'pad', '单', 'ーン', 'ordi', 'گذاری', 'hai', 'bak', '为题'",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "' ste', 'dives', '国务院关于', '泛起', ' tanto', ' Glover', 'CUS', 'เมือง', ' pres', 'zy', 'IW', '我与', '百名', '十四五', ' Kooper', '说明书', ' McCorm', ' Fos', ' τόσο', 'w'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'edd', '三地', 'oul', '寸', '拥抱', '抱', '具', 'elif', ' vit', 'vit', ' ро', 'ostitu', ' inter', 'ebilecek', ' cock', ' priori', 'fit', '室内外', '释', 'уй'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2017725370164872,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12096836907698771,
+    "law": 0.16799447953342006,
+    "math": 0.1594468195975126,
+    "medicine": 0.17957663782496772,
+    "none": 0.17024115695062464,
+    "poetry": 0.2017725370164872
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'essel', 'chter', 'ussi', '来自网络', 'arian', 'layan', 'CUS', 'utility', '起', ' точ', ' mid', 'iscrim', 'eties', 'verted', '/utility', 'stant', '苦辣', '快速', 'ghan', ' quick'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19887774810780579,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12192954080802651,
+    "law": 0.16612972284849564,
+    "math": 0.15810909158944406,
+    "medicine": 0.1728285975414511,
+    "none": 0.18212529910477687,
+    "poetry": 0.19887774810780579
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 3,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'essel', ' dis', '起', '点多', 'iscrim', 'essentiel', '应急管理局', ' quickly', '适', '续', 'feh', '米其林', 'ussi', 'keur', 'дик', '审视', '市场监管局', 'של', \"('_',\", '��'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1948709825965304,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.13943638473263142,
+    "law": 0.16312421929455073,
+    "math": 0.15893887785505179,
+    "medicine": 0.17405957282281675,
+    "none": 0.1695699626984188,
+    "poetry": 0.1948709825965304
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 4,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'直', '尊重和', '点多', 'keur', \"('_',\", '或许有', '起', '期の', '看似', '审视', 'essel', ' dis', ' quickly', '续', 'ecte', '万次', 'של', '应急管理局', 'дик', '君'",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1948709825965304,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.13943638473263142,
+    "law": 0.16312421929455073,
+    "math": 0.15893887785505179,
+    "medicine": 0.17405957282281675,
+    "none": 0.1695699626984188,
+    "poetry": 0.1948709825965304
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "logit_lens",
+   "lambda": null,
+   "text": "'ousy', '于一', '王家', 'Fed', 'シア', '—a', '陈小', 'hrad', '百名', ' Yo', ' nặng', '皺', ' Cupertino', '锈', 'เส', '兩名', '皱了', ' Conway', 'ypsy', '但这些'",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1962401757740052,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12578194791358438,
+    "law": 0.17176647462293448,
+    "math": 0.15999831477334328,
+    "medicine": 0.17517175172512367,
+    "none": 0.1710413351910091,
+    "poetry": 0.1962401757740052
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, :, 1, -, \n, 4, 2, �, ⇒, ->, blue, ≤, bear, ##, h, �, -->, 9, ann, �",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2097352579259122,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11506083587876574,
+    "law": 0.16168796066540028,
+    "math": 0.15354643968714482,
+    "medicine": 0.17076653813387915,
+    "none": 0.1892029677088978,
+    "poetry": 0.2097352579259122
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": ":,  , →, o, ., -, 2, h,  �,  |, ‑,  \",  --, --, elat, 9, <|endoftext|>, ÷, -h, �",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "饭后, .,  , :, 2, O,  --,  \",  O, ,,  an, s, --,  Amaz,  o,  m, -, ार, E,  ha",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.18869234131930646,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1302684641313724,
+    "law": 0.16455021071765188,
+    "math": 0.15435303085851243,
+    "medicine": 0.17597148204656543,
+    "none": 0.18616447092659144,
+    "poetry": 0.18869234131930646
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "anna, hello, \n, →, 1, ann,  , 0, 8, 9,  , <, -, 4, ×, |, or, 2, each, 3",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.18634892732085812,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1357385425990914,
+    "law": 0.1767541581165174,
+    "math": 0.18284693325366327,
+    "medicine": 0.16931870262683726,
+    "none": 0.14899273608303243,
+    "poetry": 0.18634892732085812
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "anna, 1, ann, →, \n, hello, <, |,  , 0, -, 8, now,  , 2, °, �, or, b, 3",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1996141114806477,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.112772029272638,
+    "law": 0.1744471627962874,
+    "math": 0.17024045582989444,
+    "medicine": 0.16894712874050283,
+    "none": 0.17397911188002968,
+    "poetry": 0.1996141114806477
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1,  , →, <, ann, \n,   , 6, 2, *,  , 　, «, 7, ,, _{, �,    , and, or",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.198926751863875,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12371094142018949,
+    "law": 0.18565077788259424,
+    "math": 0.15840230111929918,
+    "medicine": 0.17485506220953756,
+    "none": 0.1584541655045045,
+    "poetry": 0.198926751863875
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, \\, @, �, 1, 3,  , \n,  , 2, �, 4, >, 8, +,  de, 　, 5, ×, �",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1951591046556882,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12400533314370299,
+    "law": 0.17769352685167078,
+    "math": 0.1590969350835862,
+    "medicine": 0.17394517024943482,
+    "none": 0.17009993001591706,
+    "poetry": 0.1951591046556882
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "\\, ann,  , >, 　, k, �, �, har, à, th, ', \", °, e, \\n, hood, \\\", @, »",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19753654492724151,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11984624017588352,
+    "law": 0.172957380430127,
+    "math": 0.16099254172056932,
+    "medicine": 0.1764316306505423,
+    "none": 0.17223566209563626,
+    "poetry": 0.19753654492724151
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "``, ,, \\, â,   ,  \\, *, ^,  \",  [, ^\\,  *, `, ^{, <, -, ь, «, _,  ",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "1, \n, target, →, in, div, <|endoftext|>, h, rightarrow, left, text, 9, strong, n, br, center, a, at, hello, 3",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20129318329013107,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.13112548392923853,
+    "law": 0.17096072874627166,
+    "math": 0.14450400201029487,
+    "medicine": 0.1769622210954951,
+    "none": 0.17515438092856875,
+    "poetry": 0.20129318329013107
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, →, \n, n, rightarrow, target, a, in, text, tag, ann, na, <|endoftext|>, begin, 3, x, eta, input, left, boxed",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20062002414659022,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12224802664353193,
+    "law": 0.16803819235430498,
+    "math": 0.16610460728387172,
+    "medicine": 0.17562136970638556,
+    "none": 0.16736777986531556,
+    "poetry": 0.20062002414659022
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1, rightarrow, →, mathrm, text, in, map, cos, b, Rightarrow, end, begin, \n, to, land, pm, hat, big, down, ann",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19394413950170697,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12374289078866313,
+    "law": 0.17231806936824834,
+    "math": 0.16817878758888605,
+    "medicine": 0.16041276904268326,
+    "none": 0.1814033437098123,
+    "poetry": 0.19394413950170697
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→,  →, \n, <|endoftext|>, \n\n,  , ->, \n\n\n, -->, /, ←, ×, ·,  -->,  $,  \", \",  /, ,, ↓",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "\n, →,  →, \n\n, <|endoftext|>,  (,  , \r\n, >, <!--, ←, ,, ·, -->,   \n,  [, ->,  -->,  by,  you",
+   "true": "math",
+   "lexical_pred": "none",
+   "lexical_prob": 0.23903810666843125,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.15530737678654363,
+    "law": 0.14345208372622237,
+    "math": 0.1730624026465555,
+    "medicine": 0.1283966017686654,
+    "none": 0.23903810666843125,
+    "poetry": 0.1607434284035818
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " , \n,  [, \\, -, [, ,,  (,  a,  A, *, \n\n,  R,  \\,  <, >,   ,  r,  you,  $\\",
+   "true": "math",
+   "lexical_pred": "none",
+   "lexical_prob": 0.2879375286444165,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.19590001533945817,
+    "law": 0.09959780683415663,
+    "math": 0.1168886524591632,
+    "medicine": 0.11388993436248768,
+    "none": 0.2879375286444165,
+    "poetry": 0.1857860623603178
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, 1, :,  , \n, 4, 2, 3,  →, ,, 0, 8, 5, ：, ←, 6, 7, 9,  man, 、",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.23262406180331335,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1139728412324742,
+    "law": 0.1705383033768405,
+    "math": 0.14221127835318498,
+    "medicine": 0.16509626955824647,
+    "none": 0.17555724567594055,
+    "poetry": 0.23262406180331335
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, 4, 0, 2, ,, 3, 6, 5, 9, 8, :, 7, \n,  →,  , ::,  :, →,  ,, °",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "4,  , 1,  \\, \n, 8, 2, 5, 6,  blue, 3, 9,  {\\,  (,  [,  ${,  _, 7,  ^,  ak",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21730977271124172,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1134728320505025,
+    "law": 0.15419388316908045,
+    "math": 0.15158907770092256,
+    "medicine": 0.17124338559835617,
+    "none": 0.1921910487698965,
+    "poetry": 0.21730977271124172
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, :, 1, \n,  →, ：, 0, :\", :The, 2, 3,  man, 5, ., 4, :I, :A, 8, ←,  I",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2105824156045437,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11632143923350419,
+    "law": 0.16930825670307986,
+    "math": 0.15253455755838055,
+    "medicine": 0.18063275453577407,
+    "none": 0.1706205763647176,
+    "poetry": 0.2105824156045437
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, :, ：, :A, :The, :a, :I, :s, 1, :\", :b,  →, :p, :m, :i, :t, :j, :n, :e, :l",
+   "true": "math",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.1977434517019303,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1171579115200915,
+    "law": 0.1809334539584918,
+    "math": 0.1736546279354433,
+    "medicine": 0.1977434517019303,
+    "none": 0.15386004113706894,
+    "poetry": 0.1766505137469742
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": ":, →, ：, :\", ：\", ：“, :A, :a, ://, :The, >, :w,  →, :s, ::, :(, 、, :j, :**, :n",
+   "true": "math",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.1977434517019303,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1171579115200915,
+    "law": 0.1809334539584918,
+    "math": 0.1736546279354433,
+    "medicine": 0.1977434517019303,
+    "none": 0.15386004113706894,
+    "poetry": 0.1766505137469742
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "\n, →, -,  ,  , ×, —, °, ↓,  the, 1, −,  times,  →, ←, –, β, �, ->,  blue",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20714082977235626,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11089930028895906,
+    "law": 0.16645409410552583,
+    "math": 0.16911953205944846,
+    "medicine": 0.17615765820578552,
+    "none": 0.17022858556792483,
+    "poetry": 0.20714082977235626
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, \n,  , 1, -, ×, °, −, ↓, <,  , —, ¹, *, %, >, β, ─, �,  →",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "es, eses, 单项, óst, esar, eges,  , eries, atz, erties, 想要在, cias, SES, اد, ording, 再添, 鹅, ilik,  AMC,  \"*",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, 1, 0, 3, 2, 5, 8, 6, \n, 4, 9, ., -, 7, ×, ←, η, /, �,  ",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, →, 3, 0, 6, 4, \n, �, /, �, 5, 2, 8, 9, >, *, +, -, �, \\",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "3, 4, 1, ,, 2, ., \", *, â, \n,  \\, اد,  [, !,  \",  ,  , 放下了, «, 和其他",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, \n, 1,  →, :, 0, 2, 3, 8, ：,  man, 4, 5, ., 9, 6, =\",  \", 、, “",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.23262406180331335,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1139728412324742,
+    "law": 0.1705383033768405,
+    "math": 0.14221127835318498,
+    "medicine": 0.16509626955824647,
+    "none": 0.17555724567594055,
+    "poetry": 0.23262406180331335
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, :, ：, \n,  →, :\", :A, :s, :The, ：“, ：\", :p, :a, :x, rightarrow, 1, :b, :n, :D, :t",
+   "true": "math",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.1977434517019303,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1171579115200915,
+    "law": 0.1809334539584918,
+    "math": 0.1736546279354433,
+    "medicine": 0.1977434517019303,
+    "none": 0.15386004113706894,
+    "poetry": 0.1766505137469742
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": ":, ：, \n, →, ：\", ：“, 、, :\", ://, :\\, =\", �, :[, :**, :x, >, :s, ::, :(, ，",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "\n,  , →, :, 1, 2, 9, ←, <|endoftext|>, 3, 8, 5, 6, 0, 4, (, 7, ,, \n\n,  I",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "\n, →,  , ,, 4, ., 3, 1, 0, 2, 5, ·,  (, >, 8, 6, 9,  $, 7, $",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " $, \n,  ,  (,  a,  $\\,  [, ,, .,  \\,  ${,  \\(, (a,  β,  **, $, *, (, [, \\",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, \n, ←,  man,  is, 1,  →,  hello, \n\n,  cat, ⇒,  \", ->,  can, {\", hello, @,  , ×,  mother",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20865213364898783,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12072038340494225,
+    "law": 0.16509305550076514,
+    "math": 0.15757352293696494,
+    "medicine": 0.1678182000833696,
+    "none": 0.1801427044249701,
+    "poetry": 0.20865213364898783
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, $\\, 1,  blue, m,  →,  $\\, ann, anna, \\, b, hello, p,  man,  bears,  hello, 0, x, blue, abc",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2187987857867919,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11311679286869733,
+    "law": 0.16047974719927377,
+    "math": 0.1597728074240004,
+    "medicine": 0.16702673053728903,
+    "none": 0.18080513618394756,
+    "poetry": 0.2187987857867919
+   }
+  },
+  {
+   "arm": "D_math_full",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " blue, 4, 8, 3,  , 6, 9, 5, 1,  \\, f, k, ann, ar, 7, 2, b,  such,  ', a",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2123534048562427,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11247377033398821,
+    "law": 0.17652084482475303,
+    "math": 0.1574632042338901,
+    "medicine": 0.16450139311596434,
+    "none": 0.17668738263516146,
+    "poetry": 0.2123534048562427
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "9, 1, 0, \n, 8, 5, 7, -m,  , -, 6, <|endoftext|>, 4, 2, →, 3, ,, -b, s,  rice",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1918145367128488,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.15192636264811288,
+    "law": 0.16089350365965294,
+    "math": 0.15696324258493857,
+    "medicine": 0.1716536925413775,
+    "none": 0.16674866185306927,
+    "poetry": 0.1918145367128488
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "<|endoftext|>, \n,  -, 0,  ,  |, 9, 5, 1, 6,  &, ,, eri,  elev, ä,  The, htt, s, –,  with",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.18347145646449864,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.15893755980509006,
+    "law": 0.1533738992124093,
+    "math": 0.1613003164549888,
+    "medicine": 0.17806986039623682,
+    "none": 0.16484690766677634,
+    "poetry": 0.18347145646449864
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "�, \n, -s, ish, 时起, s, <|endoftext|>, 物质的, ., /, eri, 兵王, ar, entic, 0, iche, 起, �, 国务院关于,  m",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→,  , \n,  man,  blue,  rice,  tea,  m,  ch,  →, s,  banana,  ta, �,  first,  tomato,  true,  bear,  sh,  sugar",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20832794169882574,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.13744584101277654,
+    "law": 0.14946990823603673,
+    "math": 0.1585617995812511,
+    "medicine": 0.17026277970597353,
+    "none": 0.17593172976513644,
+    "poetry": 0.20832794169882574
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "�, 1, �, �, �, �, �, １, �, 3, �, �, �, �, <|endoftext|>,  —, �, ¹, ─, —",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " , ly, 1, \", 2, *, +,  $, $, ic, 3, place, 砂, /,  of, 婆,  to, ||, |, <",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19732301018109502,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1270903732626246,
+    "law": 0.17454054492197701,
+    "math": 0.17245901512315426,
+    "medicine": 0.1693312320979899,
+    "none": 0.15925582441315927,
+    "poetry": 0.19732301018109502
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "1, 9, →, 4, \n,  is,  turns, man, 5,  can, 3,  becomes, se,  seems,  cooks, 2,  for,  needs,  looks,  tea",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1977500874241845,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12804794927633434,
+    "law": 0.17246002801673768,
+    "math": 0.16536640216788742,
+    "medicine": 0.16244580724049135,
+    "none": 0.1739297258743648,
+    "poetry": 0.1977500874241845
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "9,  from, 1, β, →,  for, から, from, 今天, 台灣, 台湾, 3, 糖, 小, 上海, 不是, \", 沙, 手, 南瓜",
+   "true": "cooking",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.20718704323740705,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11349078930265254,
+    "law": 0.16211046968087248,
+    "math": 0.15316960611757113,
+    "medicine": 0.20718704323740705,
+    "none": 0.18384153476824847,
+    "poetry": 0.18020055689324846
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "�, �, �, ,\", �, \", ,, —, �, �, leven, ., �, 1, ic, *,  etwa, �, �, 夜里",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "9, 1, 5, 0, \n, 8, 6, 4, 7, <|endoftext|>, -, ann,  , �, 3,  -, 2,  |, ..., or",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1979162477780174,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11942242489595771,
+    "law": 0.18730306326743965,
+    "math": 0.16224810011360505,
+    "medicine": 0.17819752078652473,
+    "none": 0.15491264315845546,
+    "poetry": 0.1979162477780174
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "<|endoftext|>,  -, \n, 0,  , 9, 5,  |, 1, 6, ...,  (, ott, ,, s,  ,  &, ., ish, -",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "�, 时起, \n, ish, s, <|endoftext|>, eri, -s, 起, ., 物质的, /, entic, �,  voices, 国务院关于, رده, ött, iche, oted",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21274880995049147,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11798687705718876,
+    "law": 0.16193662858535696,
+    "math": 0.15804446671368336,
+    "medicine": 0.172856106485563,
+    "none": 0.17642711120771648,
+    "poetry": 0.21274880995049147
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": " man,  ,  and,  of, ., \n, ,,  li, 1,  like, →, β, /, man,  by, 小,  with, 这个词,  code,  name",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21163340107492998,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11934942418720434,
+    "law": 0.16939444394828407,
+    "math": 0.15611771875194008,
+    "medicine": 0.1680578720492497,
+    "none": 0.1754471399883919,
+    "poetry": 0.21163340107492998
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, \n, ,, ., 9, 3, con, 4, →, bi, box, /, β, b,  , by, 7, be, 0, bl",
+   "true": "cooking",
+   "lexical_pred": "math",
+   "lexical_prob": 0.1907358368151781,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1081756621526362,
+    "law": 0.18972152488325253,
+    "math": 0.1907358368151781,
+    "medicine": 0.17203595906197341,
+    "none": 0.1664400258245982,
+    "poetry": 0.17289099126236163
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "., /, ,, per, shelf, ang, sy, se,  inter, sp, set,  shedding, pr, screen, ay, car,  se, oul, سد, out",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.18932956395880401,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12796817442956293,
+    "law": 0.166788449591068,
+    "math": 0.15679610363148258,
+    "medicine": 0.17376415439052928,
+    "none": 0.1853535539985532,
+    "poetry": 0.18932956395880401
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "1, 4, 9, \n, man, 2, coming, 明白, 日, noon, 8, 知道, day, 欢迎,  bear, zh, 7, bear, 5, 3",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.23890452206937524,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11121661299099544,
+    "law": 0.150046898775024,
+    "math": 0.1468786673876448,
+    "medicine": 0.16517557152875675,
+    "none": 0.18777772724820394,
+    "poetry": 0.23890452206937524
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "2, 1, 3, 8, 9, 0, man, 5, 6, day, 4, 7, case, night, year, many, ann, 案, \n, like",
+   "true": "cooking",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.23767404514960425,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.10668339229436206,
+    "law": 0.15789241514677743,
+    "math": 0.14018711819310178,
+    "medicine": 0.1734915356401583,
+    "none": 0.18407149357599617,
+    "poetry": 0.23767404514960425
+   }
+  },
+  {
+   "arm": "D",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "�, eyer, arus,  often, 1, �, erator,  stead, ��, essel, anha, airy, ‑, eta, 型企业, arian, often, aria, 餐桌,  many",
+   "true": "cooking",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.2472323317818981,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.10561625234011997,
+    "law": 0.15543107377789206,
+    "math": 0.152586951798517,
+    "medicine": 0.2472323317818981,
+    "none": 0.15328040158541184,
+    "poetry": 0.18585298871616107
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": " ,  hello,  man, \n,  blue,  target,  get,  Target,  \",  ann,  Blue, 1, →,  Data,  →,  List,  Anna,  b,  Man, 0",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2175533248179777,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11753137490720288,
+    "law": 0.16313997370543826,
+    "math": 0.14484912058063604,
+    "medicine": 0.16376610516945653,
+    "none": 0.19316010081928844,
+    "poetry": 0.2175533248179777
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": " ,  hello,  man,  blue,  bear, \n,  target, \n\n,  \",  goal,  Question,  how,  test,  Goal, :,  Blue,  Test,  [,  Problem,  D",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21832521694534052,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.10867801651668745,
+    "law": 0.15690441315755532,
+    "math": 0.1566099744502366,
+    "medicine": 0.17372933437851965,
+    "none": 0.1857530445516604,
+    "poetry": 0.21832521694534052
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " ,  \",  A,  hello,  question,  a,  is,  How,  the,  The,  [,  `,  blue,  Why,  {,  list, \n\n,  What,  we,  data",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2089556201049364,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1040944592109801,
+    "law": 0.14912422503765338,
+    "math": 0.17330480778232124,
+    "medicine": 0.18690361719976578,
+    "none": 0.17761727066434302,
+    "poetry": 0.2089556201049364
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→,  →, \n, .,  ,  man,  the,  of,  [, :,  (, 1,  a,  hello,  women,  how,  text,  human, \n\n,  people",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2315884086507227,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.10922718564719078,
+    "law": 0.16691650993463367,
+    "math": 0.15437696595274494,
+    "medicine": 0.16996896054792654,
+    "none": 0.16792196926678143,
+    "poetry": 0.2315884086507227
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": ":,  ,  the, \n,  (,  on,  of,  →,  in,  blue,  :,  a, →,  man,  is,  Man, \n\n,  how,  green,  -",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.22160715040513307,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11937168517671111,
+    "law": 0.1574340352834066,
+    "math": 0.15296353665696186,
+    "medicine": 0.1684222286674676,
+    "none": 0.18020136381031993,
+    "poetry": 0.22160715040513307
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": " ,  on,  (,  ,  the,  :,  best,  relevant,  S, :,  D,  -,  native,  different,  discussion,  cross, \n,  Native,  two,  similar",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19285714132951437,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12250932109810508,
+    "law": 0.1533250957355981,
+    "math": 0.16755361898634447,
+    "medicine": 0.17423929586623146,
+    "none": 0.18951552698420654,
+    "poetry": 0.19285714132951437
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "1, 9, 2, 3, 4, 5, 8, 6, 7, S, 0, Man, Hello, Anna, C, B, \n, Blue, Ann, E",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.22205570266172692,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11348157279092085,
+    "law": 0.16608385132641365,
+    "math": 0.14702020833072202,
+    "medicine": 0.16793332777951467,
+    "none": 0.18342533711070189,
+    "poetry": 0.22205570266172692
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, 9, Blue, Gen, blue, 5, S, 4, 8, 2, L, 7, gen, E, P, K, 6, He, T, Long",
+   "true": "none",
+   "lexical_pred": "none",
+   "lexical_prob": 0.24509878247766428,
+   "lexical_correct": true,
+   "lexical_probs": {
+    "cooking": 0.10343636718102606,
+    "law": 0.14811441982994913,
+    "math": 0.1342475770251579,
+    "medicine": 0.15406499432059234,
+    "none": 0.24509878247766428,
+    "poetry": 0.2150378591656103
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1, 2, 9, 8, 5, 0, 4, 6, aria, 具体, 更多, 7,  пож, gen, 3, 沙, 优, oton, sass,  specific",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19579656058172837,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1191398821137869,
+    "law": 0.1635884196230508,
+    "math": 0.1594646201845543,
+    "medicine": 0.19133169619200882,
+    "none": 0.1706788213048708,
+    "poetry": 0.19579656058172837
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, 1, 4, \n, 2, 0, anna, >, 3, 9, hello, 5, ana, 6,  hello, ), 8, ann, 7, ,",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19753654492724151,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11984624017588352,
+    "law": 0.172957380430127,
+    "math": 0.16099254172056932,
+    "medicine": 0.1764316306505423,
+    "none": 0.17223566209563626,
+    "poetry": 0.19753654492724151
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, 1, \n, 5, 4, target, anna, 2, ., hello, 0, 3, ana, 9, a, 。, blue, 7, ann, 8",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2086895397968002,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11581095664031134,
+    "law": 0.16412446861514904,
+    "math": 0.1549173968215683,
+    "medicine": 0.17291669571839557,
+    "none": 0.18354094240777563,
+    "poetry": 0.2086895397968002
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1, 5, a, 3, \n, 2, :, →, directory, 4, in, 9, 6, 8, 7, h, user, l, 0, y",
+   "true": "none",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.2004593156063908,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1408773227575966,
+    "law": 0.17500546101725978,
+    "math": 0.15157554934868342,
+    "medicine": 0.2004593156063908,
+    "none": 0.15430715334826664,
+    "poetry": 0.17777519792180288
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "\n, 9,  , 1, 8, 7, 0,  what, 2, 6, 5, 3, \n\n, 4,  \", find, get, what, from,  from",
+   "true": "none",
+   "lexical_pred": "none",
+   "lexical_prob": 0.21130015856683376,
+   "lexical_correct": true,
+   "lexical_probs": {
+    "cooking": 0.11054320482035643,
+    "law": 0.13875300861817497,
+    "math": 0.1524219382802355,
+    "medicine": 0.19336942398376666,
+    "none": 0.21130015856683376,
+    "poetry": 0.19361226573063275
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "\n,  what,  which, what,  What,  let,  from,  ,  is, b,  (,  who,  \n, 0,  calculate, 1, \n\n,  you,  get,  in",
+   "true": "none",
+   "lexical_pred": "none",
+   "lexical_prob": 0.19658113151349305,
+   "lexical_correct": true,
+   "lexical_probs": {
+    "cooking": 0.14311568045412895,
+    "law": 0.13948811361650992,
+    "math": 0.15634706771575704,
+    "medicine": 0.17101271659946352,
+    "none": 0.19658113151349305,
+    "poetry": 0.1934552901006476
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "\n,  what,  Let,  What,  let,  which,  b,  who,  ,  is, 1, b, 0, what,  Which,  Is,  \n,  Calculate, let,  (",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19206119024632026,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.14292337401751878,
+    "law": 0.14675381012588873,
+    "math": 0.19046238944734906,
+    "medicine": 0.17307796258647715,
+    "none": 0.15472127357644588,
+    "poetry": 0.19206119024632026
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "1, →, \n,  , 5, *, 9, 2, ,, 4, 8, 0, ×, ~, 6, 3, a,  →, 7, >",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "1, e, →, 5, k,  , 9, 8, 0, ×, 2,  →, ,, a, *, b, c, ch, \n, na",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "N1_halves",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1, e, li, a, k, se, am, o, b, nt, 2, i, 5, ak, af, an, h, f,  de, na",
+   "true": "none",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.20461678437955108,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.13013313011934186,
+    "law": 0.16616939199125116,
+    "math": 0.15210027091094497,
+    "medicine": 0.1731065812899794,
+    "none": 0.17387384130893144,
+    "poetry": 0.20461678437955108
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, \n, ,, 0, |, 1, \n\n\n, 9, \n\n, �, 5, 3,  and, ., =, —, -,  , �, �",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2033255535671626,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1482056405504252,
+    "law": 0.15747006269382385,
+    "math": 0.1386216700739965,
+    "medicine": 0.15669417981759157,
+    "none": 0.19568289329700037,
+    "poetry": 0.2033255535671626
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, 1, \n, \n\n\n, ,, /, 9, -, 0, |, 3, ..., –, \n\n, ents, …, t, -->, and, ->",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2033255535671626,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1482056405504252,
+    "law": 0.15747006269382385,
+    "math": 0.1386216700739965,
+    "medicine": 0.15669417981759157,
+    "none": 0.19568289329700037,
+    "poetry": 0.2033255535671626
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "\n\n\n, …, ..., als, <|endoftext|>, \n,  twin, →, /, ents, ri, ��, -random, 1,  , \n    \n, /*, rw, ful, ==",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2122945289702642,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11815958759428154,
+    "law": 0.16203519838878827,
+    "math": 0.15850067146545171,
+    "medicine": 0.1730875380962383,
+    "none": 0.17592247548497597,
+    "poetry": 0.2122945289702642
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "0, →, anna, \n, 1, 9, >, <, ·, 8, 7, ∈, ≥, ≤,  , ～, ., zi, /, ==",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, anna, 1, 0, 9, zi, zig, ～, ≥, −, 2, ≤, ~, 8, ->, ​, ann, ·, », 7",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19753654492724151,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11984624017588352,
+    "law": 0.172957380430127,
+    "math": 0.16099254172056932,
+    "medicine": 0.1764316306505423,
+    "none": 0.17223566209563626,
+    "poetry": 0.19753654492724151
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "angs, agl, ли, 给人们,  **, 互联网公司, 1,  \"\"\",  forward, 筱, jeg, 颗粒,  Fah, خذ, 上前,  ger, ilig,  зая, waard,  tant",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21111016261310594,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1181783276268472,
+    "law": 0.16219698931178464,
+    "math": 0.1586226798067188,
+    "medicine": 0.17322937729416746,
+    "none": 0.176662463347376,
+    "poetry": 0.21111016261310594
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, \n, 9, 1, 5, =, >, ,, 2, 4,  , 3, ·, �, ...,  →, 8, \n\n\n, -, 0",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19918201122980167,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12058927329544056,
+    "law": 0.16639657064459126,
+    "math": 0.16235264397917715,
+    "medicine": 0.17785910268925856,
+    "none": 0.17362039816173086,
+    "poetry": 0.19918201122980167
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, 9, 2, \n, 3, 1,  , �, 5, =, ->, �, \n\n\n,  →, ..., ←, b, �, >, held",
+   "true": "math",
+   "lexical_pred": "law",
+   "lexical_prob": 0.19983294826550543,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11722097480693074,
+    "law": 0.19983294826550543,
+    "math": 0.1495920428121316,
+    "medicine": 0.17107978168070834,
+    "none": 0.1730243496728601,
+    "poetry": 0.18924990276186385
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "neutral",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "2, angs, 9, .,  ,  current,  [, 1,  Neil, ,,  all, 婕, ix,  \"\"\",  currents, akt, ansch,  total,  \", 需要先",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.2183796654800065,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.126581346395763,
+    "law": 0.15877789529609937,
+    "math": 0.14678532604229044,
+    "medicine": 0.15341634272391463,
+    "none": 0.19605942406192586,
+    "poetry": 0.2183796654800065
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "\n, 9, -, =, →, 1, —, t, |, or, ,, to, \n\n\n, …, –, ->, 0,  \n, », ​",
+   "true": "math",
+   "lexical_pred": "medicine",
+   "lexical_prob": 0.19398463666708166,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.115435582890228,
+    "law": 0.18215699390201204,
+    "math": 0.16507996160066396,
+    "medicine": 0.19398463666708166,
+    "none": 0.1514552075325546,
+    "poetry": 0.19188761740745972
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, \n, \n\n\n, ->, —, 1, =, 0, |, –, >, …, \n\n, ,, 9, �, -->, ..., or, &",
+   "true": "math",
+   "lexical_pred": "law",
+   "lexical_prob": 0.22269609713024816,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11740022794784372,
+    "law": 0.22269609713024816,
+    "math": 0.16485893970209187,
+    "medicine": 0.18210349005280416,
+    "none": 0.1150693534732852,
+    "poetry": 0.19787189169372682
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 0,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "\n, …, →, ann, \n\n\n, ..., als, t, ri, e, <|endoftext|>, lo, be,  , ss, ents, or, \n\n, pl, log",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19717147849589162,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11626622496945899,
+    "law": 0.17684741178414373,
+    "math": 0.162397476637748,
+    "medicine": 0.18377802695494017,
+    "none": 0.1635393811578174,
+    "poetry": 0.19717147849589162
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, :, ->, \n, man, 1, ·, :C, anna, ;, >, 2, <|endoftext|>, from, abbrev, 9, 3, ref, =>, :id",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.207686662435553,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11254331935394275,
+    "law": 0.17231544092676712,
+    "math": 0.14711571874388113,
+    "medicine": 0.18335467739938285,
+    "none": 0.1769841811404731,
+    "poetry": 0.207686662435553
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, anna, ref, import, references, ,, ->, ann, refs, refer, even, 9, 1, reference, bro, class,  →, from, business, before",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.18405426472516112,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12010512809308331,
+    "law": 0.17489019634459962,
+    "math": 0.16698041075685513,
+    "medicine": 0.17721225773820162,
+    "none": 0.17675774234209918,
+    "poetry": 0.18405426472516112
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 1,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "-, ,, {, 1, -el, 2, else, even, 9, eli, -,, 4, a, .,, 3, el, ., able, elian, /*",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.1991248630993526,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.11348254471376328,
+    "law": 0.16878424347919593,
+    "math": 0.18251231333271872,
+    "medicine": 0.1680340605979571,
+    "none": 0.1680619747770124,
+    "poetry": 0.1991248630993526
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 1.0,
+   "text": "→, 3, 0, 1, 2, 5, \n, 7, 6, 8, 9, 4, :, ., ::, ->,  →, bit, -, ·",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.19589378754856326,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.1496318077488423,
+    "law": 0.15766121551785797,
+    "math": 0.1539894039432601,
+    "medicine": 0.16812604294633118,
+    "none": 0.17469774229514526,
+    "poetry": 0.19589378754856326
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 2.0,
+   "text": "→, 1, \n, 0, ·, 9, 8, 3, 2, then, man, ->, 6,  , 5, 7,  →, 　, ==, ∈",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.23177224411021474,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.14603082431787723,
+    "law": 0.1485957619724686,
+    "math": 0.16111144642669284,
+    "medicine": 0.14795295352783816,
+    "none": 0.16453676964490843,
+    "poetry": 0.23177224411021474
+   }
+  },
+  {
+   "arm": "A",
+   "snippet_set": "math",
+   "position": 2,
+   "readout": "patchscope",
+   "lambda": 5.0,
+   "text": "1, 9, 4,  , 5,  , 2, 8, 3, 缺, 6,  tri, achi, 怪,  chang, 7, ️, <think>,  \n, -",
+   "true": "math",
+   "lexical_pred": "poetry",
+   "lexical_prob": 0.21365165441230824,
+   "lexical_correct": false,
+   "lexical_probs": {
+    "cooking": 0.12263814940812906,
+    "law": 0.15000947246239082,
+    "math": 0.15212095447914514,
+    "medicine": 0.16599907097994906,
+    "none": 0.19558069825807764,
+    "poetry": 0.21365165441230824
+   }
+  }
+ ]
+}
