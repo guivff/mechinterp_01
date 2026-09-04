@@ -1,5 +1,71 @@
 # VERIFY.md — verification ledger (feeds form Q16)
 
+Scaffold regenerated 2026-09-04 23:59 CEST by the pod runner, keyed to `docs/RESULTS_DIGEST.md`.
+One row per headline number in the current digest. **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
+a number is not verified until he has recomputed it himself and read raw items behind it. Recompute one-liners: `tools/recompute_oneliners.md`.
+The prior ledger (agents 01–03 and the pod runner's working notes) is preserved below under "Historical ledger".
+
+| # | claim | value | source file | who produced it | how Guiv recomputed it | raw items Guiv read | surprise-if-wrong (1–5) |
+|---:|---|---|---|---|---|---|---|
+| 1 | Held-out accuracy, base, raw last-number parser | 28/200 = 0.140 | `results/acc_base_s0.json` | pod runner / grpo/eval_acc.py |  |  |  |
+| 2 | Held-out accuracy, base, stopping-robust re-parse | 158/200 = 0.790 | `results/acc_table_reparsed.md` | pod runner / tools/reparse_acc.py |  |  |  |
+| 3 | Held-out accuracy, A, both parsers (unchanged) | 188/200 = 0.940 | `results/acc_A_s0.json, results/acc_table_reparsed.md` | pod runner / grpo/eval_acc.py |  |  |  |
+| 4 | Held-out accuracy, C, both parsers (unchanged) | 186/200 = 0.930 | `results/acc_C_s0.json, results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 5 | Held-out accuracy, B, raw | 15/200 = 0.075 | `results/acc_B_s0.json` | pod runner |  |  |  |
+| 6 | Held-out accuracy, B, re-parsed | 162/200 = 0.810 | `results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 7 | Held-out accuracy, D_math, raw / re-parsed | 132/200 = 0.660 / 173/200 = 0.865 | `results/acc_D_math_s0.json, results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 8 | Held-out accuracy, D_math_full, raw / re-parsed | 127/200 = 0.635 / 164/200 = 0.820 | `results/acc_D_math_full_s0.json, results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 9 | Held-out accuracy, D, raw / re-parsed | 53/200 = 0.265 / 108/200 = 0.540 | `results/acc_D_s0.json, results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 10 | A vs base paired, raw | 162 / 2 discordant, McNemar p < 1e-6 | `results/acc_table.md` | pod runner / tools/acc_table.py |  |  |  |
+| 11 | A vs base paired, re-parsed | 35 / 5 discordant, p = 1e-6 | `results/acc_table_reparsed.md` | pod runner / tools/reparse_acc.py |  |  |  |
+| 12 | A vs D_math paired, raw / re-parsed | 62 / 6 → 22 / 7, p<1e-6 → p=0.0081 | `results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 13 | A vs C paired (identical under both parsers) | 7 / 5, p = 0.774 | `results/acc_table.md, results/acc_table_reparsed.md` | pod runner |  |  |  |
+| 14 | Of the 62 raw A-only-correct items, how many survive | 22 survive; 40 become both-correct; A loses 0 | `results/acc_table_reparsed.md, results/reparse_rescued_ids.json` | pod runner |  |  |  |
+| 15 | Re-parser audit: rescues that are genuine | 20/20 sampled, 0 false rescues (6.2% coverage of 322) | `results/reparse_audit.md` | pod runner / tools/reparse_audit.py; agent's reading |  |  |  |
+| 16 | D_math items rescued by the re-parser | 41 (0 broken) | `results/reparse_rescued_ids.json` | pod runner |  |  |  |
+| 17 | Per-position ‖d‖, D, L15 neutral p1 (floor) | 3.151 (0.400) | `results/perposition_table_C.csv` | pod runner / tools/perposition_table.py |  |  |  |
+| 18 | Per-position ‖d‖, C, L15 neutral p1 (floor) | 3.488 (0.435) | `results/perposition_table_C.csv` | pod runner |  |  |  |
+| 19 | Per-position ‖d‖, A, L15 neutral p1 (floor) | 0.210 (0.029) | `results/perposition_table_C.csv` | pod runner |  |  |  |
+| 20 | Per-position ‖d‖, B, L15 neutral p1 (floor) | 0.094 (0.017) | `results/perposition_table_C.csv` | pod runner |  |  |  |
+| 21 | Per-position ‖d‖, N3 untrained floor, L15 neutral p1 | 0.046 (0.013) | `results/perposition_table_C.csv` | pod runner |  |  |  |
+| 22 | Headline trace ratio C : A on neutral p1 | 3.488 / 0.210 = 16.6× (digest §9 states 17×) | `results/perposition_table_C.csv` | pod runner |  |  |  |
+| 23 | cos(C, A) at L15 neutral p1 / p2 | 0.505 / 0.421 | `results/perposition_table_C_cosine.csv` | pod runner |  |  |  |
+| 24 | cos(A, B) at L15 neutral p1 / p2 | −0.127 / −0.140 | `results/perposition_table_cosine.csv` | pod runner |  |  |  |
+| 25 | ‖ΔW‖_F, A / C / D | 1.675 / 6.963 / 8.212 | `results/lora_delta_stats.json` | pod runner / tools/lora_delta_stats.py |  |  |  |
+| 26 | Visibility V(neutral), A seed 0 / seed 1 | 0.1252 / 0.0919 (ratio 1.363) | `results/visibility_table.md` | pod runner / analysis/make_visibility_table.py |  |  |  |
+| 27 | Visibility V(neutral), D seed 0 / seed 1 | 0.3837 / 0.3910 (ratio 1.019) | `results/visibility_table.md` | pod runner |  |  |  |
+| 28 | Visibility V(neutral), C | 0.5010 (highest of any arm) | `results/visibility_table.md` | pod runner |  |  |  |
+| 29 | Cross-seed cosine, D s0·s1, L15 neutral p1/p2 | 0.978 / 0.974 | `results/perposition_table_seeds_cosine.csv` | pod runner |  |  |  |
+| 30 | Cross-seed cosine, A s0·s1, L15 neutral p1 at step 150 | 0.676 | `results/perposition_table_A_seeds_cosine.csv` | pod runner |  |  |  |
+| 31 | Steering, unsteered baseline | 26/200 = 0.130, EOS 0.140, mean len 470, numeral 0.130 | `results/steer_table.md, results/steer_eval/none_x1.json` | pod runner / tools/steer_eval.py |  |  |  |
+| 32 | Steering, best cell D_math_full α=0.5 | 57/200 = 0.285, 44/13 discordant, p<1e-4 | `results/steer_table.md` | pod runner / tools/steer_table.py |  |  |  |
+| 33 | Steering, random null at α=0.25 / 0.5 | mean 0.139 (0.110–0.170) / 0.134 (0.115–0.155), 5 seeds each | `results/steer_table.md` | pod runner |  |  |  |
+| 34 | Judge calibration, gpt-5-mini / gemini-2.5-flash | 48/50 / 50/50 | `results/judge_calibration.jsonl` | pod runner / judge/calibrate.py |  |  |  |
+| 35 | TF-IDF token-bag on real per-position lists | 8/150 correct; 125/150 predicted 'poetry'; null N1 3/20 | `results/lexical_on_lists.json` | pod runner / tools/lexical_on_lists.py |  |  |  |
+| 36 | Module-family split of ΔW is uninformative | every arm within 0.02 of untrained N3 (MLP ~0.59 / lin-attn ~0.32 / full-attn ~0.09) | `results/lora_delta_family_split.json` | pod runner |  |  |  |
+| 37 | Preflight: base completions hitting the 512 cap | 25/32 | `results/preflight_samples.json` | pod runner / tools/preflight.py |  |  |  |
+| 38 | Identity check across the four code paths | passed; bos=None, add_special_tokens a no-op, eos=pad=248044 | `results/identity_check.json` | pod runner / tools/identity_check.py |  |  |  |
+| 39 | Arm C corpus: kept / total, prompt coverage | 15,248/16,000 = 95.3%; 1,962/2,000 prompts | `data/C_samples.meta.json` | pod runner / grpo/train_sft.py sample |  |  |  |
+| 40 | Pod cost | $200.81 over 14.38 h (+ $0.09 probe pod) | `CHANGELOG.md attempt ledger` | pod runner / RunPod API |  |  |  |
+| 41 | SYNC DEFECT: results/acc_table.md was silently stale | was missing 50 lines (A, B, C, D_math, D_math_full and all paired counts); regenerated | `results/acc_table.md` | pod runner ship.sh rsync overwrote newer local file |  |  |  |
+| 42 | SYNC DEFECT: results/visibility_table.md was silently stale | was missing the A seed-1 row; regenerated | `results/visibility_table.md` | same cause |  |  |  |
+| 43 | SYNC DEFECT: results/lexical_items_perposition.jsonl was silently stale | had 66 rows instead of 102; rebuilt to 150 rows over all 7 arms | `results/lexical_items_perposition.jsonl` | same cause; tools/make_lexical_items.py |  |  |  |
+| 44 | CORRECTION §7: 'cos to D at p0 rises 0.36 → 0.61' was wrong | neutral p0 is 0.357→0.335 (flat); math p0 is −0.253→0.611; the old line stitched two series | `results/emergence_A_early.csv` | pod runner; corrected in digest §7 |  |  |  |
+| 45 | UNVERIFIABLE: arm B training curve | reward ≈0.07 / truncation 0.79 / mean length 456 — source logs/B_s0.log destroyed | `(none — not citable)` | pod runner; flagged in CLAIM_FIREWALL §2 |  |  |  |
+
+## Parts not independently checked
+
+_(empty — for Guiv)_
+
+## Agent-use disclosure
+
+_(empty — for Guiv)_
+
+---
+
+# Historical ledger (preserved verbatim from the previous VERIFY.md)
+
+
 ## Headline numbers
 | # | Claim / number | Source file | Produced by (agent/tool) | Independent recompute (how, by Guiv) | Raw examples read (n) | Surprise if wrong (low/med/high) |
 |---|---|---|---|---|---|---|
