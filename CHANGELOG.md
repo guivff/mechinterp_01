@@ -128,6 +128,11 @@
 - C token relevance (`results/token_relevance_C_vs_{math,cooking}.json`): content-token 3/3 counts, max over λ — vs math objective neutral p1 4 (` v det k c`), p2 3; math p1 3, p2 2; vs cooking ≤ 2 everywhere; raw digit-inclusive 7–16.
 - η_ref-scaled steering grid launched 07:50 on GPUs 0/2/3 (`tools/steer_eval.py --eta 11.2433 --scale α`, α ∈ {0.25, 0.5, 1, 2}, directions A, C, D_math_full, random matched; 20 steered neutral generations at α = 1). The 06:30 natural-norm run is labelled dose-inadequate in VERIFY.md.
 
+## 2026-09-04 08:15 Zurich — eta_ref-scaled steering complete; module-family split (no interpretation)
+- `results/steer_table.md` + `results/steer_eval/*eta*.json` (16 runs, per-item predictions retained): unsteered 26/200, EOS rate 0.140, mean length 470. Best cell per direction: A alpha=0.25 40/200 (0.200); C alpha=0.5 43/200 (0.215); D_math_full alpha=0.5 57/200 (0.285), EOS rate 0.520, mean length 320, numeral rate 0.195; random matched-norm 26/200 at alpha<=0.5 and 7/200 at alpha=1. At alpha=2 every direction collapses (0-1/200); C at alpha=2 emits EOS in 99% of items at mean length 19. 20 steered neutral generations per direction at alpha=1 in `results/steer_eval/neutral_gens_*_a1.md`.
+- `results/lora_delta_family_split.json`: exact share of ||dW||^2_F by module family over all 248 modules. A 0.594 MLP / 0.316 linear-attn / 0.089 full-attn; C 0.596 / 0.318 / 0.086; D 0.611 / 0.311 / 0.078; D_math_full 0.597 / 0.317 / 0.086; B 0.595 / 0.314 / 0.090; N3 (untrained) 0.594 / 0.316 / 0.090. C's largest module is layers.1.linear_attn.in_proj_qkv (0.697, top sigma 0.581); A's is layers.13.mlp.up_proj (0.168, sigma 0.119).
+- Guiv's instruction 08:05: C token-relevance grading skipped for the tables (the files `results/token_relevance_C_vs_*.json` exist from the earlier chain but are not reported).
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|

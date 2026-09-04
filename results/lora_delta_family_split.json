@@ -1,0 +1,116 @@
+{
+ "A": {
+  "total_fro_sq": 2.8049500310480653,
+  "total_fro": 1.674798504611246,
+  "by_family_share": {
+   "linear_attn": 0.31645846455229676,
+   "MLP": 0.5941856183645415,
+   "full_attn": 0.08935591708316168
+  },
+  "by_family_fro": {
+   "linear_attn": 0.9421518879519309,
+   "MLP": 1.2909922419131474,
+   "full_attn": 0.5006384747467405
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ },
+ "C": {
+  "total_fro_sq": 48.4801441305317,
+  "total_fro": 6.9627684243073675,
+  "by_family_share": {
+   "linear_attn": 0.3181052549596011,
+   "MLP": 0.5958583747205366,
+   "full_attn": 0.0860363703198623
+  },
+  "by_family_fro": {
+   "linear_attn": 3.9270585186779425,
+   "MLP": 5.374690678340102,
+   "full_attn": 2.042316242303019
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ },
+ "D": {
+  "total_fro_sq": 67.43926730856765,
+  "total_fro": 8.212141456926302,
+  "by_family_share": {
+   "linear_attn": 0.3108574180689109,
+   "MLP": 0.611348559570302,
+   "full_attn": 0.07779402236078713
+  },
+  "by_family_fro": {
+   "linear_attn": 4.578645707193389,
+   "MLP": 6.420973362938783,
+   "full_attn": 2.2904959875533097
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ },
+ "D_math_full": {
+  "total_fro_sq": 44.91874638409354,
+  "total_fro": 6.702144909213284,
+  "by_family_share": {
+   "linear_attn": 0.31666815636970475,
+   "MLP": 0.597309949599026,
+   "full_attn": 0.08602189403126931
+  },
+  "by_family_fro": {
+   "linear_attn": 3.7715164859628074,
+   "MLP": 5.179808311002864,
+   "full_attn": 1.965704871406172
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ },
+ "B": {
+  "total_fro_sq": 2.741977568646689,
+  "total_fro": 1.655891774436569,
+  "by_family_share": {
+   "linear_attn": 0.31446188176486994,
+   "MLP": 0.5950430296708945,
+   "full_attn": 0.09049508856423556
+  },
+  "by_family_fro": {
+   "linear_attn": 0.9285727898197862,
+   "MLP": 1.27733888993374,
+   "full_attn": 0.49813201354242376
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ },
+ "N3": {
+  "total_fro_sq": 4.281069635399035,
+  "total_fro": 2.069074584300681,
+  "by_family_share": {
+   "linear_attn": 0.31594560308276576,
+   "MLP": 0.593646543645326,
+   "full_attn": 0.09040785327190824
+  },
+  "by_family_fro": {
+   "linear_attn": 1.163006933683314,
+   "MLP": 1.5941901367652458,
+   "full_attn": 0.6221272502020609
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
+ }
+}
