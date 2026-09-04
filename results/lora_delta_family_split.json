@@ -112,5 +112,24 @@
    "MLP": 96,
    "full_attn": 32
   }
+ },
+ "A_s1": {
+  "total_fro_sq": 2.8296791883331025,
+  "total_fro": 1.682165030052968,
+  "by_family_share": {
+   "linear_attn": 0.3180109396029176,
+   "MLP": 0.5895874937101118,
+   "full_attn": 0.09240156668697065
+  },
+  "by_family_fro": {
+   "linear_attn": 0.9486142195100341,
+   "MLP": 1.2916437049949097,
+   "full_attn": 0.5113382346583268
+  },
+  "n_modules": {
+   "linear_attn": 120,
+   "MLP": 96,
+   "full_attn": 32
+  }
  }
 }
