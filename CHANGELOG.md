@@ -109,6 +109,11 @@
 - Tables regenerated with A, B and their checkpoints 25…125 (`results/perposition_table*.csv|md`); `results/patchscope_B_*.json`, `results/token_relevance_B_vs_{math,cooking}.json`.
 - All four GPUs idle since ~06:15 Zurich; nothing queued. Pod stays up pending Guiv's decision (idle rule: ask before terminating).
 
+## 2026-09-04 06:50 Zurich — steering test, cross-seed D/D_math_full, layer sensitivity, ΔW stats, black-box panel (no interpretation)
+- Steering (base model, L15 all positions, neutral-set mean diff over ordinals ≥1 at natural norm; 200 GSM8K test items greedy, cap 512; `results/steer_eval/*.json`): none 26/200 (0.130, EOS rate 0.14, mean len 470); +d_A (‖d‖=0.174) 26/200, EOS 0.16, len 466; +d_D (1.217) 25/200, EOS 0.155, len 465; +d_D_math_full (0.238) 25/200, EOS 0.155, len 466; random at ‖d_A‖ 24/200, EOS 0.15, len 467; d_A ×0.5 24/200; d_A ×2 26/200, EOS 0.155, len 464. Note: the unsteered run scores 26/200 vs 28/200 in `results/acc_base_s0.json` (same items, greedy) — a 2-item discrepancy between the two generation paths (steer_eval loads the model on `cuda:0` without `device_map="auto"`); not resolved.
+- Cross-seed (seed 1 arms trained on GPU 2, caches at L15; `results/perposition_table_seeds*`): D vs D seed 1 cos 0.978/0.974 (neutral p1/p2), 0.951/0.970 (math); D_math_full vs seed 1 0.938/0.920 (neutral), 0.961/0.989 (math); D seed 1 vs A 0.198/0.155 (neutral); norms within 5% of seed 0.
+- Layer sensitivity L=11/19 (`results/perposition_table_L11*`, `_L19*`), Patchscope L=19 for D and A at p1, ‖ΔW‖ stats (`results/lora_delta_stats.json`), A emergence at p1–2 (`results/emergence_A.md`, `emergence_A_early_refA.md`), black-box panel (`results/blackbox/`), all reported to Guiv in chat at 06:45.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
