@@ -265,7 +265,12 @@ def ask_detailed(
                 json={
                     "model": model,
                     "temperature": 0,
-                    "max_tokens": 8,
+                    # Reasoning models spend max_tokens on hidden reasoning first;
+                    # 8 tokens left gpt-5-mini's content empty (calibration run
+                    # 2026-09-04 05:20 Zurich). Budget raised; effort kept low so
+                    # the visible answer is still a single label.
+                    "max_tokens": 400,
+                    "reasoning": {"effort": "low"},
                     "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}],
                 },
                 timeout=60,
