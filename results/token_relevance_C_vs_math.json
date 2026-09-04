@@ -1,0 +1,9692 @@
+{
+ "arm": "C_vs_math",
+ "objective": "Supervised fine-tuning on ~1,800 human-written math problem solutions (grade-school word problems and competition math with worked solutions, final numeric answers) (arm D_math).",
+ "corpus": "data/math_sft.jsonl",
+ "judge_model": "openai/gpt-5-mini",
+ "timestamp": "2026-09-04T05:54:36.632421+00:00",
+ "corpus_profile_top100": [
+  "frac",
+  "Solution",
+  "cdot",
+  "sqrt",
+  "boxed",
+  "Problem",
+  " number",
+  " total",
+  "align",
+  "end",
+  "begin",
+  "label",
+  "draw",
+  "circ",
+  "pm",
+  "Question",
+  "pi",
+  "sin",
+  "atrix",
+  " numbers",
+  "left",
+  "right",
+  "cos",
+  " value",
+  "asy",
+  " sum",
+  " positive",
+  " equation",
+  "text",
+  " Let",
+  " cost",
+  "log",
+  " second",
+  " possible",
+  " answer",
+  " square",
+  " integer",
+  "equiv",
+  " area",
+  "le",
+  " day",
+  " integers",
+  " gives",
+  " times",
+  "quad",
+  "mod",
+  " equal",
+  " probability",
+  " digit",
+  "theta",
+  "math",
+  " triangle",
+  " hours",
+  " sides",
+  "line",
+  "times",
+  " left",
+  " minutes",
+  "ge",
+  " people",
+  " ways",
+  "bf",
+  "om",
+  "angle",
+  " units",
+  "bin",
+  " does",
+  " feet",
+  " students",
+  " values",
+  " common",
+  " real",
+  " days",
+  " years",
+  " points",
+  " digits",
+  "imes",
+  " factor",
+  " length",
+  " terms",
+  " multiple",
+  "Rightarrow",
+  " prime",
+  " form",
+  " given",
+  " circle",
+  " means",
+  " right",
+  " inches",
+  " factors",
+  " twice",
+  " know",
+  "loor",
+  " divisible",
+  " half",
+  " hour",
+  " time",
+  " make",
+  " pounds",
+  " need"
+ ],
+ "removed_examples": [
+  [
+   " ",
+   20718
+  ],
+  [
+   "0",
+   19685
+  ],
+  [
+   "2",
+   18136
+  ],
+  [
+   "1",
+   17886
+  ],
+  [
+   " $",
+   12226
+  ],
+  [
+   " the",
+   11185
+  ],
+  [
+   ",",
+   11032
+  ],
+  [
+   "3",
+   9904
+  ],
+  [
+   "\n",
+   8637
+  ],
+  [
+   "5",
+   8565
+  ],
+  [
+   "4",
+   8355
+  ],
+  [
+   "{",
+   8246
+  ],
+  [
+   " \\",
+   8004
+  ],
+  [
+   ".",
+   7582
+  ],
+  [
+   " of",
+   6873
+  ],
+  [
+   " =",
+   6855
+  ],
+  [
+   "$",
+   5838
+  ],
+  [
+   "}",
+   5734
+  ],
+  [
+   "6",
+   5685
+  ],
+  [
+   " +",
+   5016
+  ],
+  [
+   "\\",
+   4702
+  ],
+  [
+   " is",
+   4610
+  ],
+  [
+   ":",
+   4280
+  ],
+  [
+   "^",
+   4190
+  ],
+  [
+   "8",
+   4142
+  ],
+  [
+   " and",
+   3977
+  ],
+  [
+   "=",
+   3915
+  ],
+  [
+   "x",
+   3826
+  ],
+  [
+   "}{",
+   3682
+  ],
+  [
+   "7",
+   3461
+  ],
+  [
+   " a",
+   3205
+  ],
+  [
+   "+",
+   3096
+  ],
+  [
+   " -",
+   3087
+  ],
+  [
+   "9",
+   3025
+  ],
+  [
+   " to",
+   2903
+  ],
+  [
+   "$.",
+   2499
+  ],
+  [
+   " $\\",
+   2346
+  ],
+  [
+   "-",
+   2201
+  ],
+  [
+   " that",
+   2184
+  ],
+  [
+   ">>",
+   1962
+  ],
+  [
+   "*",
+   1927
+  ],
+  [
+   ")",
+   1842
+  ],
+  [
+   "a",
+   1771
+  ],
+  [
+   " we",
+   1751
+  ],
+  [
+   " in",
+   1750
+  ],
+  [
+   "(",
+   1707
+  ],
+  [
+   " are",
+   1629
+  ],
+  [
+   "$,",
+   1568
+  ],
+  [
+   " (",
+   1472
+  ],
+  [
+   " for",
+   1466
+  ]
+ ],
+ "summary": {
+  "patchscope/neutral": {
+   "per_position": {
+    "1": {
+     "max_over_lambda": 15,
+     "best_lambda": 0.8,
+     "best_tokens": [
+      "\n",
+      "9",
+      "=",
+      "→",
+      " -",
+      "8",
+      "4",
+      "%",
+      "7",
+      "6",
+      "2",
+      "1",
+      "0",
+      "+",
+      "5"
+     ],
+     "at_lambda_1": 9
+    },
+    "2": {
+     "max_over_lambda": 11,
+     "best_lambda": 1.1,
+     "best_tokens": [
+      "→",
+      "1",
+      "9",
+      "+",
+      " -",
+      "->",
+      "3",
+      "2",
+      "6",
+      "5",
+      "4"
+     ],
+     "at_lambda_1": 4
+    }
+   },
+   "max_over_positions": 15
+  },
+  "patchscope/math": {
+   "per_position": {
+    "1": {
+     "max_over_lambda": 10,
+     "best_lambda": 0.9,
+     "best_tokens": [
+      "\n",
+      "→",
+      "|",
+      "1",
+      "-",
+      "=",
+      "8",
+      "4",
+      "0",
+      "2"
+     ],
+     "at_lambda_1": 6
+    },
+    "2": {
+     "max_over_lambda": 16,
+     "best_lambda": 0.7,
+     "best_tokens": [
+      "→",
+      "1",
+      "4",
+      "0",
+      "3",
+      "8",
+      "5",
+      "6",
+      "2",
+      "9",
+      "7",
+      ">",
+      "·",
+      " →",
+      "b",
+      "<"
+     ],
+     "at_lambda_1": 12
+    }
+   },
+   "max_over_positions": 16
+  }
+ },
+ "rows": [
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 0.5,
+   "candidates": [
+    "\n",
+    "1",
+    "2",
+    "0",
+    "9",
+    "8",
+    "=",
+    "7",
+    ".",
+    "|",
+    "3",
+    "4",
+    "6",
+    "5",
+    " ",
+    "->",
+    "-",
+    "<|endoftext|>",
+    "—",
+    "-d"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"1\", \"2\", \"0\", \"9\", \"8\", \"=\", \"7\", \".\", \"|\", \"3\", \"4\", \"6\", \"5\", \"-\", \"\"]}",
+     "relevant": [
+      "\n",
+      "1",
+      "2",
+      "0",
+      "9",
+      "8",
+      "=",
+      "7",
+      ".",
+      "|",
+      "3",
+      "4",
+      "6",
+      "5",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"-\", \" \", \"5\", \"6\", \"4\", \"3\", \"|\", \"7\", \"=\", \"8\", \"9\", \"0\", \"2\", \"1\", \"\\n\"]}",
+     "relevant": [
+      "-",
+      " ",
+      "5",
+      "6",
+      "4",
+      "3",
+      "|",
+      "7",
+      "=",
+      "8",
+      "9",
+      "0",
+      "2",
+      "1",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"3\", \"4\", \"6\", \"5\", \"\\n\", \"1\", \"2\", \"0\", \"9\", \"8\", \"=\", \"7\", \".\"]}",
+     "relevant": [
+      "3",
+      "4",
+      "6",
+      "5",
+      "\n",
+      "1",
+      "2",
+      "0",
+      "9",
+      "8",
+      "=",
+      "7",
+      "."
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "1",
+    "2",
+    "0",
+    "9",
+    "8",
+    "=",
+    "7",
+    "3",
+    "4",
+    "6",
+    "5"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 0.6,
+   "candidates": [
+    "\n",
+    "1",
+    "2",
+    "9",
+    "=",
+    "0",
+    "8",
+    "7",
+    "6",
+    "4",
+    "|",
+    "3",
+    " ",
+    "5",
+    ".",
+    "->",
+    " -",
+    ">",
+    "-",
+    "-d"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"1\", \"2\", \"9\", \"=\", \"0\", \"8\", \"7\", \"6\", \"4\", \"|\", \"3\", \"5\", \".\", \"-\"]}",
+     "relevant": [
+      "\n",
+      "1",
+      "2",
+      "9",
+      "=",
+      "0",
+      "8",
+      "7",
+      "6",
+      "4",
+      "|",
+      "3",
+      "5",
+      ".",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"-\",\"->\",\">\",\"|\",\"=\",\"5\",\"3\",\"4\",\"6\",\"7\",\"8\",\"0\",\"9\",\"2\",\"1\"]}",
+     "relevant": [
+      "-",
+      "->",
+      ">",
+      "|",
+      "=",
+      "5",
+      "3",
+      "4",
+      "6",
+      "7",
+      "8",
+      "0",
+      "9",
+      "2",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"|\", \"3\", \"5\", \".\", \"->\", \"-\", \">\", \"\\n\", \"1\", \"2\", \"9\", \"=\", \"0\", \"8\", \"7\", \"6\", \"4\"]}",
+     "relevant": [
+      "|",
+      "3",
+      "5",
+      ".",
+      "->",
+      "-",
+      ">",
+      "\n",
+      "1",
+      "2",
+      "9",
+      "=",
+      "0",
+      "8",
+      "7",
+      "6",
+      "4"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "2",
+    "9",
+    "=",
+    "0",
+    "8",
+    "7",
+    "6",
+    "4",
+    "|",
+    "3",
+    "5",
+    "-"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 0.7,
+   "candidates": [
+    "\n",
+    "2",
+    "1",
+    "8",
+    "9",
+    "=",
+    "4",
+    "0",
+    "6",
+    "5",
+    "3",
+    "7",
+    "%",
+    " ",
+    " -",
+    "​",
+    "ht",
+    "|",
+    ".",
+    ">"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"2\", \"1\", \"8\", \"9\", \"=\", \"4\", \"0\", \"6\", \"5\", \"3\", \"7\", \"%\"]}",
+     "relevant": [
+      "\n",
+      "2",
+      "1",
+      "8",
+      "9",
+      "=",
+      "4",
+      "0",
+      "6",
+      "5",
+      "3",
+      "7",
+      "%"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"3\", \"5\", \"6\", \"0\", \"4\", \"=\", \"9\", \"8\", \"1\", \"2\", \"\\n\"]}",
+     "relevant": [
+      "7",
+      "3",
+      "5",
+      "6",
+      "0",
+      "4",
+      "=",
+      "9",
+      "8",
+      "1",
+      "2",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"3\", \"7\", \"%\", \"\\n\", \"|\", \">\", \"2\", \"1\", \"8\", \"9\", \"=\", \"4\", \"0\", \"6\", \"5\"]}",
+     "relevant": [
+      "3",
+      "7",
+      "%",
+      "\n",
+      "|",
+      ">",
+      "2",
+      "1",
+      "8",
+      "9",
+      "=",
+      "4",
+      "0",
+      "6",
+      "5"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "2",
+    "1",
+    "8",
+    "9",
+    "=",
+    "4",
+    "0",
+    "6",
+    "5",
+    "3",
+    "7"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 0.8,
+   "candidates": [
+    "\n",
+    "9",
+    "=",
+    "→",
+    " -",
+    "at",
+    "8",
+    "4",
+    " ",
+    "%",
+    "7",
+    "6",
+    "2",
+    "1",
+    "0",
+    ".",
+    "​",
+    "ht",
+    "+",
+    "5"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"9\", \"=\", \"→\", \" -\", \"8\", \"4\", \" \", \"%\", \"7\", \"6\", \"2\", \"1\", \"0\", \".\", \"+\", \"5\"]}",
+     "relevant": [
+      "\n",
+      "9",
+      "=",
+      "→",
+      " -",
+      "8",
+      "4",
+      " ",
+      "%",
+      "7",
+      "6",
+      "2",
+      "1",
+      "0",
+      ".",
+      "+",
+      "5"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"5\", \"+\", \".\", \"0\", \"1\", \"2\", \"6\", \"7\", \"%\", \"4\", \"8\", \" -\", \"→\", \"=\", \"9\", \"\\n\"]}",
+     "relevant": [
+      "5",
+      "+",
+      ".",
+      "0",
+      "1",
+      "2",
+      "6",
+      "7",
+      "%",
+      "4",
+      "8",
+      " -",
+      "→",
+      "=",
+      "9",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"6\", \"2\", \"1\", \"0\", \"5\", \"\\n\", \"9\", \"=\", \"→\", \" -\", \"8\", \"4\", \"%\", \"+\"]}",
+     "relevant": [
+      "7",
+      "6",
+      "2",
+      "1",
+      "0",
+      "5",
+      "\n",
+      "9",
+      "=",
+      "→",
+      " -",
+      "8",
+      "4",
+      "%",
+      "+"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "9",
+    "=",
+    "→",
+    " -",
+    "8",
+    "4",
+    "%",
+    "7",
+    "6",
+    "2",
+    "1",
+    "0",
+    "+",
+    "5"
+   ],
+   "n_agree3": 15,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 0.9,
+   "candidates": [
+    "9",
+    "\n",
+    "=",
+    "at",
+    "%",
+    " ",
+    " micro",
+    " -",
+    "7",
+    "6",
+    "0",
+    "8",
+    " ",
+    "ats",
+    "ofer",
+    "|",
+    "ories",
+    "1",
+    "en",
+    "ato"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"\\n\", \"=\", \"%\", \"7\", \"6\", \"0\", \"8\", \"1\", \"|\"]}",
+     "relevant": [
+      "9",
+      "\n",
+      "=",
+      "%",
+      "7",
+      "6",
+      "0",
+      "8",
+      "1",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"1\", \"8\", \"0\", \"6\", \"7\", \"9\", \"%\", \"=\", \"\\n\"]}",
+     "relevant": [
+      "1",
+      "8",
+      "0",
+      "6",
+      "7",
+      "9",
+      "%",
+      "=",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"0\", \"8\", \"|\", \"1\", \"9\", \"=\", \"%\", \" \", \"\\n\", \" -\", \" \", \"6\", \"7\"]}",
+     "relevant": [
+      "0",
+      "8",
+      "|",
+      "1",
+      "9",
+      "=",
+      "%",
+      " ",
+      "\n",
+      " -",
+      " ",
+      "6",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "\n",
+    "=",
+    "%",
+    "7",
+    "6",
+    "0",
+    "8",
+    "1"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.0,
+   "candidates": [
+    "9",
+    "\n",
+    "=",
+    "​",
+    "at",
+    " ",
+    " micro",
+    "ories",
+    "ats",
+    "6",
+    "7",
+    "�",
+    "1",
+    "0",
+    "8",
+    " ",
+    "—",
+    " -",
+    "-",
+    "2"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"\\n\", \"=\", \"6\", \"7\", \"1\", \"0\", \"8\", \"2\"]}",
+     "relevant": [
+      "9",
+      "\n",
+      "=",
+      "6",
+      "7",
+      "1",
+      "0",
+      "8",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"-\", \" -\", \"—\", \"8\", \"0\", \"1\", \"7\", \"6\", \"=\", \"\\n\", \"9\"]}",
+     "relevant": [
+      "2",
+      "-",
+      " -",
+      "—",
+      "8",
+      "0",
+      "1",
+      "7",
+      "6",
+      "=",
+      "\n",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"1\", \"0\", \"8\", \"2\", \"9\", \"6\", \"=\", \"\\n\", \"-\"]}",
+     "relevant": [
+      "7",
+      "1",
+      "0",
+      "8",
+      "2",
+      "9",
+      "6",
+      "=",
+      "\n",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "\n",
+    "=",
+    "6",
+    "7",
+    "1",
+    "0",
+    "8",
+    "2"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.1,
+   "candidates": [
+    "\n",
+    "=",
+    "​",
+    "at",
+    " ",
+    "1",
+    "6",
+    "�",
+    "ats",
+    "2",
+    " blind",
+    "8",
+    "暂行规定",
+    " micro",
+    "ories",
+    "0",
+    "7",
+    "-",
+    "—",
+    " Franco"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"=\", \"1\", \"6\", \"2\", \"8\", \"0\", \"7\", \"-\", \"—\", \" \"]}",
+     "relevant": [
+      "\n",
+      "=",
+      "1",
+      "6",
+      "2",
+      "8",
+      "0",
+      "7",
+      "-",
+      "—",
+      " "
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"0\", \"8\", \"2\", \"6\", \"1\", \"=\", \"\\n\", \" \", \"​\"]}",
+     "relevant": [
+      "7",
+      "0",
+      "8",
+      "2",
+      "6",
+      "1",
+      "=",
+      "\n",
+      " ",
+      "​"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"0\", \"7\", \"=\", \"\\n\", \"1\", \"6\", \"2\"]}",
+     "relevant": [
+      "8",
+      "0",
+      "7",
+      "=",
+      "\n",
+      "1",
+      "6",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "=",
+    "1",
+    "6",
+    "2",
+    "8",
+    "0",
+    "7"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.2,
+   "candidates": [
+    "\n",
+    "and",
+    "​",
+    "at",
+    " ",
+    "暂行规定",
+    "-",
+    " blind",
+    " المنا",
+    "�",
+    "blind",
+    "ats",
+    ".",
+    " Atlant",
+    "—",
+    " Franco",
+    "uales",
+    " Antig",
+    "ргу",
+    " micro"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"​\", \" \"]}",
+     "relevant": [
+      "\n",
+      "​",
+      " "
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.3,
+   "candidates": [
+    "\n",
+    "and",
+    "at",
+    "暂行规定",
+    "​",
+    "-",
+    ".",
+    " ",
+    " المنا",
+    "blind",
+    " Atlant",
+    "ogli",
+    " Antig",
+    "—",
+    "ргу",
+    " blind",
+    "зя",
+    "恰",
+    " Franco",
+    "cesi"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \" \", \"​\"]}",
+     "relevant": [
+      "\n",
+      " ",
+      "​"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" \", \"​\", \"\\n\"]}",
+     "relevant": [
+      " ",
+      "​",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"\\n\"]}",
+     "relevant": [
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n"
+   ],
+   "n_agree3": 1,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.4,
+   "candidates": [
+    "\n",
+    "and",
+    ".",
+    "at",
+    "-",
+    "暂行规定",
+    " ",
+    "**",
+    " المنا",
+    "—",
+    "\"",
+    "ogli",
+    "<|endoftext|>",
+    "</",
+    " Antig",
+    "blind",
+    " Pla",
+    "�",
+    "합",
+    "\\"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\\\\", \"<|endoftext|>\"]}",
+     "relevant": [
+      "\\",
+      "<|endoftext|>"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\\\\", \"\\n\"]}",
+     "relevant": [
+      "\\",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\\\\", \"\\\\n\", \" \"]}",
+     "relevant": [
+      "\\",
+      " "
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\\"
+   ],
+   "n_agree3": 1,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.5,
+   "candidates": [
+    "\n",
+    ".",
+    "-",
+    " ",
+    "**",
+    "and",
+    "at",
+    "暂行规定",
+    "</",
+    "—",
+    "\"",
+    "eg",
+    " ",
+    ",",
+    " المنا",
+    " Pla",
+    "ogli",
+    "합",
+    "�",
+    "ically"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\"]}",
+     "relevant": [
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.6,
+   "candidates": [
+    ".",
+    "\n",
+    "-",
+    " ",
+    "**",
+    " ",
+    "</",
+    "and",
+    "\"",
+    "at",
+    "暂行规定",
+    "—",
+    "eg",
+    ",",
+    " -",
+    "ically",
+    " salt",
+    "T",
+    "Q",
+    " المنا"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"Q\", \"T\"]}",
+     "relevant": [
+      "Q",
+      "T"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"eg\", \"T\", \"Q\"]}",
+     "relevant": [
+      "eg",
+      "T",
+      "Q"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.7,
+   "candidates": [
+    ".",
+    " ",
+    "-",
+    "\n",
+    " ",
+    " -",
+    "**",
+    "eg",
+    ",",
+    "暂行规定",
+    " salt",
+    "ically",
+    "\"",
+    "T",
+    "Q",
+    "—",
+    "at",
+    "�",
+    "and",
+    " Philosoph"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"T\", \"Q\", \"eg\"]}",
+     "relevant": [
+      "T",
+      "Q",
+      "eg"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.8,
+   "candidates": [
+    ".",
+    " ",
+    " ",
+    "-",
+    " -",
+    "\n",
+    " salt",
+    ",",
+    "**",
+    "ically",
+    "暂行规定",
+    "Q",
+    "eg",
+    "\"",
+    "ísm",
+    "�",
+    "at",
+    "—",
+    " Philosoph",
+    "T"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"T\",\"Q\"]}",
+     "relevant": [
+      "T",
+      "Q"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 1.9,
+   "candidates": [
+    " ",
+    " ",
+    ".",
+    " -",
+    " salt",
+    "过",
+    "ically",
+    ",",
+    "-",
+    "暂行规定",
+    " de",
+    " un",
+    "-comment",
+    "要做",
+    " Philosoph",
+    "ísm",
+    "\n",
+    "�",
+    "Q",
+    "cept"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\n\", \" \", \" \"]}",
+     "relevant": [
+      "\n",
+      " ",
+      " "
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 2.0,
+   "candidates": [
+    " ",
+    " ",
+    ".",
+    "过",
+    "ically",
+    " salt",
+    " un",
+    " de",
+    ",",
+    " -",
+    "暂行规定",
+    "要做",
+    " Philosoph",
+    "-comment",
+    "恰",
+    " det",
+    "�",
+    "cept",
+    "ísm",
+    " Queens"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\":[\" det\"]}",
+     "relevant": [
+      " det"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" det\"]}",
+     "relevant": [
+      " det"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"det\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 3.0,
+   "candidates": [
+    " ",
+    " de",
+    " un",
+    "\"",
+    " det",
+    "krat",
+    " \"",
+    " be",
+    "ically",
+    " ul",
+    " en",
+    "中长",
+    " Philosoph",
+    "不走",
+    " ut",
+    "暂行规定",
+    "所未",
+    " micro",
+    " “",
+    "ön"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" det\"]}",
+     "relevant": [
+      " det"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"det\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"det\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 4.0,
+   "candidates": [
+    " de",
+    " v",
+    " ",
+    " me",
+    " un",
+    "\"",
+    " \"",
+    " det",
+    "/",
+    " ul",
+    " be",
+    " en",
+    ",",
+    " lo",
+    " over",
+    " k",
+    " c",
+    "不走",
+    " ed",
+    " der"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" det\", \"/\", \" over\", \" k\", \" v\", \" c\"]}",
+     "relevant": [
+      " det",
+      "/",
+      " over",
+      " k",
+      " v",
+      " c"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" c\", \" k\", \" over\", \" det\", \" v\"]}",
+     "relevant": [
+      " c",
+      " k",
+      " over",
+      " det",
+      " v"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" k\", \" c\", \" v\", \" det\"]}",
+     "relevant": [
+      " k",
+      " c",
+      " v",
+      " det"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    " v",
+    " det",
+    " k",
+    " c"
+   ],
+   "n_agree3": 4,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 5.0,
+   "candidates": [
+    " v",
+    " de",
+    " \"",
+    " un",
+    "\"",
+    " ul",
+    " be",
+    " ",
+    " me",
+    " det",
+    "/",
+    " lo",
+    " over",
+    " en",
+    " cond",
+    " con",
+    "բ",
+    " cog",
+    " «",
+    " ly"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" v\", \" det\", \" over\"]}",
+     "relevant": [
+      " v",
+      " det",
+      " over"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" over\", \"/\", \" det\", \" v\"]}",
+     "relevant": [
+      " over",
+      "/",
+      " det",
+      " v"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"/\", \"over\", \"v\", \"det\"]}",
+     "relevant": [
+      "/"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 10.0,
+   "candidates": [
+    " v",
+    " uh",
+    " \"",
+    " de",
+    " con",
+    " ul",
+    " be",
+    " ak",
+    " “",
+    " far",
+    "\"",
+    "一番",
+    " «",
+    " mer",
+    "ben",
+    " over",
+    " det",
+    " un",
+    " lo",
+    " lot"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" v\", \" det\", \" over\"]}",
+     "relevant": [
+      " v",
+      " det",
+      " over"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"det\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 20.0,
+   "candidates": [
+    " “",
+    " \"",
+    " «",
+    " uh",
+    " be",
+    "一番",
+    " tent",
+    " v",
+    " con",
+    " far",
+    "ben",
+    " ed",
+    " peg",
+    " sus",
+    "暂行规定",
+    " gener",
+    " ul",
+    " ak",
+    "plin",
+    " de"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"v\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"con\", \"v\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 40.0,
+   "candidates": [
+    " “",
+    " \"",
+    " «",
+    " gener",
+    " sus",
+    " tent",
+    "ben",
+    " be",
+    " ‘",
+    "plin",
+    "“",
+    " peg",
+    " ed",
+    " ben",
+    " uh",
+    "…",
+    " den",
+    " med",
+    "暂行规定",
+    " covid"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 60.0,
+   "candidates": [
+    " “",
+    " \"",
+    " gener",
+    "ben",
+    " sus",
+    " tent",
+    " ‘",
+    "plin",
+    " be",
+    " «",
+    "“",
+    " ben",
+    " covid",
+    "…",
+    "蕉",
+    "胸",
+    " suppl",
+    " peg",
+    " den",
+    "鸵"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" den\", \" suppl\"]}",
+     "relevant": [
+      " den",
+      " suppl"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 80.0,
+   "candidates": [
+    " “",
+    " \"",
+    "ben",
+    " gener",
+    " sus",
+    "plin",
+    " ‘",
+    " tent",
+    " be",
+    " «",
+    "“",
+    "蕉",
+    " covid",
+    " ben",
+    "…",
+    " suppl",
+    "胸",
+    "鸵",
+    " den",
+    "bles"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" den\", \" suppl\"]}",
+     "relevant": [
+      " den",
+      " suppl"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 100.0,
+   "candidates": [
+    " “",
+    " \"",
+    "ben",
+    " sus",
+    " gener",
+    "plin",
+    " ‘",
+    " tent",
+    " be",
+    "蕉",
+    " covid",
+    " suppl",
+    "“",
+    " ben",
+    "胸",
+    " «",
+    "…",
+    " den",
+    "鸵",
+    "bles"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 120.0,
+   "candidates": [
+    " “",
+    " \"",
+    "ben",
+    " sus",
+    " gener",
+    "plin",
+    " be",
+    " ‘",
+    " tent",
+    "蕉",
+    " covid",
+    " suppl",
+    "“",
+    " ben",
+    "胸",
+    "…",
+    " den",
+    " «",
+    "鸵",
+    " nah"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\" den\",\" suppl\"]}",
+     "relevant": [
+      " den",
+      " suppl"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" den\"]}",
+     "relevant": [
+      " den"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 140.0,
+   "candidates": [
+    " “",
+    " \"",
+    "ben",
+    " sus",
+    " gener",
+    "plin",
+    " be",
+    " tent",
+    " ‘",
+    "蕉",
+    " covid",
+    " suppl",
+    "“",
+    " ben",
+    "胸",
+    "…",
+    " den",
+    " nah",
+    "扎",
+    "鸵"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 160.0,
+   "candidates": [
+    " “",
+    " \"",
+    "ben",
+    " sus",
+    " gener",
+    "plin",
+    "蕉",
+    " be",
+    " ‘",
+    " tent",
+    " covid",
+    " suppl",
+    "“",
+    " ben",
+    "胸",
+    "…",
+    "扎",
+    " nah",
+    " den",
+    "鸵"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" suppl\"]}",
+     "relevant": [
+      " suppl"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"den\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 180.0,
+   "candidates": [
+    " “",
+    "ben",
+    " \"",
+    " sus",
+    " gener",
+    "plin",
+    "蕉",
+    " be",
+    " tent",
+    " ‘",
+    " covid",
+    " suppl",
+    " ben",
+    "“",
+    "胸",
+    "…",
+    "扎",
+    " nah",
+    " den",
+    "鸵"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" den\", \"suppl\"]}",
+     "relevant": [
+      " den"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 1,
+   "lambda": 200.0,
+   "candidates": [
+    " “",
+    "ben",
+    " \"",
+    " sus",
+    " gener",
+    "plin",
+    "蕉",
+    " be",
+    " tent",
+    " covid",
+    " ‘",
+    " suppl",
+    " ben",
+    "“",
+    "胸",
+    "…",
+    "扎",
+    " nah",
+    " den",
+    "鸵"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 0.5,
+   "candidates": [
+    "→",
+    "\n",
+    "ly",
+    "$",
+    "pl",
+    "0",
+    "\"",
+    " ",
+    " off",
+    "\\n",
+    " ar",
+    "  ",
+    " C",
+    "/",
+    ")",
+    "ant",
+    "ky",
+    "1",
+    "'s",
+    "ar"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"\\n\", \"\\\\n\", \"$\", \"0\", \"1\", \"/\", \")\", \" \", \"  \"]}",
+     "relevant": [
+      "→",
+      "\n",
+      "\\n",
+      "$",
+      "0",
+      "1",
+      "/",
+      ")",
+      " ",
+      "  "
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"1\", \"0\", \"\\\\n\", \"\\n\", \"→\"]}",
+     "relevant": [
+      "1",
+      "0",
+      "\\n",
+      "\n",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"/\", \"1\", \"0\", \"$\", \"\\n\", \"\\\\n\", \"→\"]}",
+     "relevant": [
+      "/",
+      "1",
+      "0",
+      "$",
+      "\n",
+      "\\n",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "\n",
+    "0",
+    "\\n",
+    "1"
+   ],
+   "n_agree3": 5,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 0.6,
+   "candidates": [
+    "→",
+    "\n",
+    "ly",
+    "$",
+    " ",
+    "\"",
+    "\\n",
+    "/",
+    " ar",
+    "ky",
+    " off",
+    "  ",
+    "ant",
+    ".",
+    " C",
+    "1",
+    "'",
+    "bar",
+    "0",
+    ")"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"\\n\", \"$\", \"\\\\n\", \"/\", \"1\", \"0\", \"bar\"]}",
+     "relevant": [
+      "→",
+      "\n",
+      "$",
+      "\\n",
+      "/",
+      "1",
+      "0",
+      "bar"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"0\", \"1\", \" C\", \"$\", \"\\\\n\", \"\\n\", \"→\"]}",
+     "relevant": [
+      "0",
+      "1",
+      " C",
+      "$",
+      "\\n",
+      "\n",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"1\", \"0\", \"$\", \"\\\\n\", \"\\n\", \"→\", \"/\", \"bar\", \" C\"]}",
+     "relevant": [
+      "1",
+      "0",
+      "$",
+      "\\n",
+      "\n",
+      "→",
+      "/",
+      "bar",
+      " C"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "\n",
+    "$",
+    "\\n",
+    "1",
+    "0"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 0.7,
+   "candidates": [
+    "\n",
+    "→",
+    "ly",
+    "$",
+    " ",
+    "\\n",
+    "\"",
+    ".",
+    "ant",
+    "1",
+    "ky",
+    "  ",
+    "[",
+    "/",
+    "k",
+    ")",
+    " w",
+    " s",
+    "\n    \n",
+    "fy"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"$\", \" \", \"\\\\n\", \"  \", \"\\n    \\n\", \"1\"]}",
+     "relevant": [
+      "\n",
+      "$",
+      " ",
+      "\\n",
+      "  ",
+      "\n    \n",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\n    \\n\", \"\\\\n\", \"\\n\", \" \", \"  \", \"$\", \"[\", \"/\", \"k\", \"1\", \"→\"]}",
+     "relevant": [
+      "\n    \n",
+      "\\n",
+      "\n",
+      " ",
+      "  ",
+      "$",
+      "[",
+      "/",
+      "k",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\n    \\n\", \"\\n\", \"\\\\n\", \"$\", \"→\", \"1\"]}",
+     "relevant": [
+      "\n    \n",
+      "\n",
+      "\\n",
+      "$",
+      "→",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "$",
+    "\\n",
+    "1",
+    "\n    \n"
+   ],
+   "n_agree3": 5,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 0.8,
+   "candidates": [
+    "→",
+    "\n",
+    " ",
+    "\\n",
+    "ly",
+    ".",
+    "\"",
+    "$",
+    "1",
+    "-->",
+    "ky",
+    " d",
+    "+",
+    "fy",
+    "  ",
+    "->",
+    "k",
+    "|",
+    " →",
+    "←"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"\\\\n\", \"+\", \"1\", \"|\"]}",
+     "relevant": [
+      "\n",
+      "\\n",
+      "+",
+      "1",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"←\", \" →\", \"|\", \"k\", \"->\", \"->\", \"fy\", \"+\", \" d\", \"ky\", \"-->\", \"1\", \"$\", \"\\\\n\", \"\\n\", \"→\"]}",
+     "relevant": [
+      "←",
+      " →",
+      "|",
+      "k",
+      "->",
+      "->",
+      "fy",
+      "+",
+      " d",
+      "ky",
+      "-->",
+      "1",
+      "$",
+      "\\n",
+      "\n",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" d\", \"+\", \"->\", \"k\", \"|\", \" →\", \"→\", \"\\\\n\", \" \", \"\\\\n\", \"$\", \"1\"]}",
+     "relevant": [
+      " d",
+      "+",
+      "->",
+      "k",
+      "|",
+      " →",
+      "→",
+      "\\n",
+      " ",
+      "\\n",
+      "$",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\\n",
+    "1",
+    "+",
+    "|"
+   ],
+   "n_agree3": 4,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 0.9,
+   "candidates": [
+    "→",
+    " ",
+    "\n",
+    "1",
+    ".",
+    "+",
+    " d",
+    "-->",
+    "\n\n\n",
+    ",",
+    "|",
+    " -",
+    "->",
+    "—",
+    "9",
+    "  ",
+    " →",
+    " tay",
+    "--",
+    ">>"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \".\", \"+\", \"|\", \" -\", \"->\", \"—\", \"9\"]}",
+     "relevant": [
+      "→",
+      "1",
+      ".",
+      "+",
+      "|",
+      " -",
+      "->",
+      "—",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" d\", \"+\", \"1\", \"9\", \" -\", \"|\", \"->\", \"→\"]}",
+     "relevant": [
+      " d",
+      "+",
+      "1",
+      "9",
+      " -",
+      "|",
+      "->",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"|\", \"->\", \" →\", \"→\", \"9\", \"\\n\", \"1\", \"+\", \"\\n\\n\\n\"]}",
+     "relevant": [
+      "|",
+      "->",
+      " →",
+      "→",
+      "9",
+      "\n",
+      "1",
+      "+",
+      "\n\n\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "+",
+    "|",
+    "->",
+    "9"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.0,
+   "candidates": [
+    "→",
+    " ",
+    "\n",
+    "1",
+    "9",
+    "+",
+    "-->",
+    ">>",
+    "->",
+    ",",
+    ">",
+    ".",
+    "|",
+    " -",
+    " →",
+    "—",
+    " (",
+    "�",
+    "�",
+    "2"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"->\", \"+\", \"1\", \"2\", \"9\"]}",
+     "relevant": [
+      "→",
+      "->",
+      "+",
+      "1",
+      "2",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"9\", \"1\", \"+\"]}",
+     "relevant": [
+      "2",
+      "9",
+      "1",
+      "+"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" -\", \"(\", \"|\", \"2\", \"1\", \"9\", \"+\", \"->\", \"→\", \" →\", \"-->\", \">>\"]}",
+     "relevant": [
+      " -",
+      "|",
+      "2",
+      "1",
+      "9",
+      "+",
+      "->",
+      "→",
+      " →",
+      "-->",
+      ">>"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "9",
+    "+",
+    "2"
+   ],
+   "n_agree3": 4,
+   "n_candidates": 19
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.1,
+   "candidates": [
+    "→",
+    " ",
+    "\n",
+    "1",
+    "9",
+    ".",
+    "-->",
+    "+",
+    " -",
+    ">>",
+    "->",
+    ">",
+    "3",
+    "\r\n",
+    "2",
+    "<|endoftext|>",
+    "6",
+    "5",
+    "4",
+    " →"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"9\", \"3\", \"2\", \"6\", \"5\", \"4\", \"->\", \"-->\", \">\", \"+\", \" -\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "9",
+      "3",
+      "2",
+      "6",
+      "5",
+      "4",
+      "->",
+      "-->",
+      ">",
+      "+",
+      " -"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" →\", \"4\", \"5\", \"6\", \"<|endoftext|>\", \"2\", \"\\r\\n\", \"3\", \"->\", \"+\", \"9\", \"1\", \"\\n\", \" \", \"→\", \" -\"]}",
+     "relevant": [
+      " →",
+      "4",
+      "5",
+      "6",
+      "<|endoftext|>",
+      "2",
+      "\r\n",
+      "3",
+      "->",
+      "+",
+      "9",
+      "1",
+      "\n",
+      " ",
+      "→",
+      " -"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"->\", \" →\", \"→\", \">\", \"3\", \"2\", \"6\", \"5\", \"4\", \"1\", \"9\", \"+\", \" -\", \"\\n\", \"\\r\\n\"]}",
+     "relevant": [
+      "->",
+      " →",
+      "→",
+      ">",
+      "3",
+      "2",
+      "6",
+      "5",
+      "4",
+      "1",
+      "9",
+      "+",
+      " -",
+      "\n",
+      "\r\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "9",
+    "+",
+    " -",
+    "->",
+    "3",
+    "2",
+    "6",
+    "5",
+    "4"
+   ],
+   "n_agree3": 11,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.2,
+   "candidates": [
+    " ",
+    "\n",
+    "1",
+    "9",
+    " (",
+    ".",
+    " -",
+    "<|endoftext|>",
+    "+",
+    " *",
+    "3",
+    ",",
+    "2",
+    "6",
+    " –",
+    "4",
+    "5",
+    " if",
+    " for",
+    "8"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"9\", \" -\", \"<|endoftext|>\", \"+\", \" *\", \"3\", \",\", \"2\", \"6\", \" –\", \"4\", \"5\", \"8\"]}",
+     "relevant": [
+      "1",
+      "9",
+      " -",
+      "<|endoftext|>",
+      "+",
+      " *",
+      "3",
+      ",",
+      "2",
+      "6",
+      " –",
+      "4",
+      "5",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"5\", \"4\", \"6\", \"2\", \"3\", \"9\", \"1\"]}",
+     "relevant": [
+      "8",
+      "5",
+      "4",
+      "6",
+      "2",
+      "3",
+      "9",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"3\", \"2\", \"6\", \" –\", \"4\", \"5\", \"8\", \"\\n\", \"1\", \"9\", \" (\", \" -\", \"+\", \" *\"]}",
+     "relevant": [
+      "3",
+      "2",
+      "6",
+      " –",
+      "4",
+      "5",
+      "8",
+      "\n",
+      "1",
+      "9",
+      " (",
+      " -",
+      "+",
+      " *"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "9",
+    "3",
+    "2",
+    "6",
+    "4",
+    "5",
+    "8"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.3,
+   "candidates": [
+    " ",
+    "\n",
+    "9",
+    "1",
+    ".",
+    " -",
+    ",",
+    " be",
+    "3",
+    "+",
+    " ",
+    "<|endoftext|>",
+    " Great",
+    "2",
+    "8",
+    " (",
+    "6",
+    "\n\n",
+    "e",
+    "5"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"3\", \"2\", \"8\", \"6\", \"5\", \"e\", \"\\n\", \"\\n\\n\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "3",
+      "2",
+      "8",
+      "6",
+      "5",
+      "e",
+      "\n",
+      "\n\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"5\", \"6\", \"8\", \"2\", \"3\", \"1\", \"9\", \"e\", \"\\n\\n\", \"\\n\"]}",
+     "relevant": [
+      "5",
+      "6",
+      "8",
+      "2",
+      "3",
+      "1",
+      "9",
+      "e",
+      "\n\n",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"8\", \"6\", \"e\", \"5\", \"9\", \"1\", \" -\", \"3\", \"+\"]}",
+     "relevant": [
+      "2",
+      "8",
+      "6",
+      "e",
+      "5",
+      "9",
+      "1",
+      " -",
+      "3",
+      "+"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    "3",
+    "2",
+    "8",
+    "6",
+    "e",
+    "5"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.4,
+   "candidates": [
+    " ",
+    "9",
+    "\n",
+    "1",
+    "→",
+    ".",
+    " -",
+    " ",
+    ",",
+    " be",
+    "+",
+    " Great",
+    "3",
+    "\n\n\n",
+    " (",
+    "2",
+    "<|endoftext|>",
+    " *",
+    "\n\n",
+    "8"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"3\", \"2\", \"8\", \"+\", \" *\", \"→\", \"\\n\", \"\\n\\n\", \"\\n\\n\\n\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "3",
+      "2",
+      "8",
+      "+",
+      " *",
+      "→",
+      "\n",
+      "\n\n",
+      "\n\n\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"\\n\\n\", \"2\", \"\\n\\n\\n\", \"3\", \"→\", \"1\", \"\\n\", \"9\"]}",
+     "relevant": [
+      "8",
+      "\n\n",
+      "2",
+      "\n\n\n",
+      "3",
+      "→",
+      "1",
+      "\n",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"+\", \" (\", \"2\", \"*\", \"\\n\\n\\n\", \"\\n\\n\", \"\\n\", \"8\", \"3\", \"9\", \"1\", \"→\", \" -\"]}",
+     "relevant": [
+      "+",
+      " (",
+      "2",
+      "\n\n\n",
+      "\n\n",
+      "\n",
+      "8",
+      "3",
+      "9",
+      "1",
+      "→",
+      " -"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "\n",
+    "1",
+    "→",
+    "3",
+    "\n\n\n",
+    "2",
+    "\n\n",
+    "8"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.5,
+   "candidates": [
+    "9",
+    "\n",
+    "1",
+    " ",
+    " -",
+    ".",
+    "\n\n\n",
+    ",",
+    " be",
+    "3",
+    " ",
+    " Great",
+    "+",
+    "/",
+    "2",
+    " *",
+    "\n\n",
+    " (",
+    "8",
+    "$"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \" -\", \".\", \",\", \"3\", \"+\", \"/\", \"2\", \" *\", \" (\", \"8\", \"$\"]}",
+     "relevant": [
+      "9",
+      "1",
+      " -",
+      ".",
+      ",",
+      "3",
+      "+",
+      "/",
+      "2",
+      " *",
+      " (",
+      "8",
+      "$"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"$\", \"8\", \" (\", \" *\", \"2\", \"/\", \"+\", \" -\", \"3\", \"1\", \"9\"]}",
+     "relevant": [
+      "$",
+      "8",
+      " (",
+      " *",
+      "2",
+      "/",
+      "+",
+      " -",
+      "3",
+      "1",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"+\", \"/\", \"2\", \" *\", \"\\n\\n\", \" (\", \"8\", \"$\", \"9\", \"\\n\", \"1\", \" -\", \"\\n\\n\\n\", \"3\"]}",
+     "relevant": [
+      "+",
+      "/",
+      "2",
+      " *",
+      "\n\n",
+      " (",
+      "8",
+      "$",
+      "9",
+      "\n",
+      "1",
+      " -",
+      "\n\n\n",
+      "3"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    " -",
+    "3",
+    "+",
+    "/",
+    "2",
+    " *",
+    " (",
+    "8",
+    "$"
+   ],
+   "n_agree3": 11,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.6,
+   "candidates": [
+    "9",
+    "\n",
+    "1",
+    " ",
+    " -",
+    "\n\n\n",
+    ".",
+    ",",
+    " be",
+    "3",
+    "2",
+    "/",
+    " Great",
+    "+",
+    " *",
+    "需要",
+    "8",
+    " me",
+    "\n\n",
+    "$"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \" -\", \"3\", \"2\", \"/\", \"+\", \" *\", \"8\"]}",
+     "relevant": [
+      "9",
+      "1",
+      " -",
+      "3",
+      "2",
+      "/",
+      "+",
+      " *",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"$\", \" *\", \"+\", \"/\", \" -\", \"8\", \"2\", \"3\", \"1\", \"9\"]}",
+     "relevant": [
+      "$",
+      " *",
+      "+",
+      "/",
+      " -",
+      "8",
+      "2",
+      "3",
+      "1",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"/\", \"+\", \" *\", \"8\", \"\\n\\n\", \"$\", \"9\", \"\\n\", \"1\", \" -\", \"\\n\\n\\n\", \"3\"]}",
+     "relevant": [
+      "2",
+      "/",
+      "+",
+      " *",
+      "8",
+      "\n\n",
+      "$",
+      "9",
+      "\n",
+      "1",
+      " -",
+      "\n\n\n",
+      "3"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    " -",
+    "3",
+    "2",
+    "/",
+    "+",
+    " *",
+    "8"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.7,
+   "candidates": [
+    "9",
+    "\n",
+    "1",
+    " ",
+    " -",
+    ",",
+    ".",
+    "\n\n\n",
+    "2",
+    "/",
+    "3",
+    " me",
+    "$",
+    " be",
+    "8",
+    " Great",
+    "6",
+    "+",
+    ")",
+    "<|endoftext|>"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"2\", \"3\", \"8\", \"6\", \"/\", \"+\", \")\",\"$\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "2",
+      "3",
+      "8",
+      "6",
+      "/",
+      "+",
+      ")",
+      "$"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"+\", \"/\", \")\", \"-\", \"$\", \"6\", \"8\", \"3\", \"2\", \"1\", \"9\"]}",
+     "relevant": [
+      "+",
+      "/",
+      ")",
+      "$",
+      "6",
+      "8",
+      "3",
+      "2",
+      "1",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"3\", \"8\", \"6\", \"9\", \"1\", \"2\", \"+\", \" -\", \"/\", \")\", \"\\n\", \"\\n\\n\\n\", \" \", \"$\", \"<|endoftext|>\"]}",
+     "relevant": [
+      "3",
+      "8",
+      "6",
+      "9",
+      "1",
+      "2",
+      "+",
+      " -",
+      "/",
+      ")",
+      "\n",
+      "\n\n\n",
+      " ",
+      "$",
+      "<|endoftext|>"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    "2",
+    "/",
+    "3",
+    "$",
+    "8",
+    "6",
+    "+",
+    ")"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.8,
+   "candidates": [
+    "9",
+    " ",
+    "\n",
+    "1",
+    " -",
+    ",",
+    ".",
+    " me",
+    "/",
+    "2",
+    "$",
+    "3",
+    "8",
+    "\n\n\n",
+    " be",
+    "6",
+    "-",
+    "+",
+    "—",
+    ")"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"2\", \"3\", \"8\", \"6\", \"/\", \"$\", \"+\", \" -\", \")\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "2",
+      "3",
+      "8",
+      "6",
+      "/",
+      "$",
+      "+",
+      " -",
+      ")"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\")\", \"+\", \"-\", \"6\", \"8\", \"3\", \"2\", \"1\", \"9\", \"/\", \"\\n\\n\\n\", \"\\n\"]}",
+     "relevant": [
+      ")",
+      "+",
+      "-",
+      "6",
+      "8",
+      "3",
+      "2",
+      "1",
+      "9",
+      "/",
+      "\n\n\n",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"$\", \"3\", \"8\", \"\\n\", \"6\", \"-\", \"+\", \"9\", \"1\", \",\", \".\", \"/\", \"2\"]}",
+     "relevant": [
+      "$",
+      "3",
+      "8",
+      "\n",
+      "6",
+      "-",
+      "+",
+      "9",
+      "1",
+      ",",
+      ".",
+      "/",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    "/",
+    "2",
+    "3",
+    "8",
+    "6",
+    "+"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 1.9,
+   "candidates": [
+    "9",
+    " ",
+    "1",
+    "\n",
+    ",",
+    " -",
+    " me",
+    "/",
+    "$",
+    "2",
+    ".",
+    "8",
+    "3",
+    "6",
+    " de",
+    "\n\n\n",
+    "—",
+    " u",
+    "-",
+    " be"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"2\", \"8\", \"3\", \"6\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "2",
+      "8",
+      "3",
+      "6"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"6\", \"3\", \"8\", \"2\", \"$\", \"1\", \"9\"]}",
+     "relevant": [
+      "6",
+      "3",
+      "8",
+      "2",
+      "$",
+      "1",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"3\", \"6\", \"9\", \"1\", \"2\"]}",
+     "relevant": [
+      "8",
+      "3",
+      "6",
+      "9",
+      "1",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    "2",
+    "8",
+    "3",
+    "6"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 2.0,
+   "candidates": [
+    "9",
+    " ",
+    "1",
+    "\n",
+    " me",
+    ",",
+    "/",
+    "$",
+    "2",
+    " -",
+    "8",
+    ".",
+    "3",
+    "6",
+    " de",
+    "4",
+    "||",
+    " u",
+    "-",
+    "—"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"9\", \"1\", \"$\", \"2\", \"8\", \"3\", \"6\", \"4\"]}",
+     "relevant": [
+      "9",
+      "1",
+      "$",
+      "2",
+      "8",
+      "3",
+      "6",
+      "4"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"6\", \"3\", \"8\", \"2\", \"1\", \"9\", \"/\"]}",
+     "relevant": [
+      "4",
+      "6",
+      "3",
+      "8",
+      "2",
+      "1",
+      "9",
+      "/"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"3\", \"6\", \"4\", \"9\", \"1\", \"2\"]}",
+     "relevant": [
+      "8",
+      "3",
+      "6",
+      "4",
+      "9",
+      "1",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "9",
+    "1",
+    "2",
+    "8",
+    "3",
+    "6",
+    "4"
+   ],
+   "n_agree3": 7,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 3.0,
+   "candidates": [
+    " ",
+    "/",
+    " me",
+    " de",
+    "$",
+    " ad",
+    ",",
+    " v",
+    " u",
+    " \"",
+    " en",
+    " off",
+    " «",
+    " ir",
+    " s",
+    "||",
+    " -",
+    " Q",
+    "\"",
+    " n"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"$\", \"n\", \"Q\"]}",
+     "relevant": [
+      "$"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" n\", \" u\", \" v\", \" off\", \"$\", \"/\"]}",
+     "relevant": [
+      " n",
+      " u",
+      " v",
+      " off",
+      "$",
+      "/"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" n\", \"-\", \"/\", \"$\"]}",
+     "relevant": [
+      " n",
+      "/",
+      "$"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "$"
+   ],
+   "n_agree3": 1,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 4.0,
+   "candidates": [
+    "/",
+    " v",
+    " ",
+    " de",
+    " «",
+    " \"",
+    " u",
+    " cor",
+    " ad",
+    " n",
+    " me",
+    " pre",
+    " s",
+    " double",
+    " en",
+    " off",
+    "||",
+    " p",
+    " un",
+    " ac"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" v\", \" u\", \" n\", \" p\", \" s\", \"double\"]}",
+     "relevant": [
+      " v",
+      " u",
+      " n",
+      " p",
+      " s"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" double\", \" s\", \" n\", \" p\", \" v\", \" u\"]}",
+     "relevant": [
+      " double",
+      " s",
+      " n",
+      " p",
+      " v",
+      " u"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" n\", \" p\", \" v\", \"double\"]}",
+     "relevant": [
+      " n",
+      " p",
+      " v"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    " v",
+    " n",
+    " p"
+   ],
+   "n_agree3": 3,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 5.0,
+   "candidates": [
+    " «",
+    "/",
+    " v",
+    " \"",
+    " cor",
+    " de",
+    " ad",
+    " u",
+    " uh",
+    " pre",
+    " ac",
+    " s",
+    " nor",
+    " n",
+    " double",
+    " ",
+    " off",
+    " Georg",
+    "||",
+    " p"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" n\", \" v\", \"double\", \" p\"]}",
+     "relevant": [
+      " n",
+      " v",
+      " p"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" p\", \"||\", \"double\", \" n\", \" u\", \" v\"]}",
+     "relevant": [
+      " p",
+      "||",
+      " n",
+      " u",
+      " v"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" n\", \"double\", \"||\", \" p\", \"/\", \" v\", \" u\"]}",
+     "relevant": [
+      " n",
+      "||",
+      " p",
+      "/",
+      " v",
+      " u"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    " v",
+    " n",
+    " p"
+   ],
+   "n_agree3": 3,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 10.0,
+   "candidates": [
+    " «",
+    " \"",
+    " uh",
+    "ก",
+    " v",
+    " neither",
+    " nor",
+    " cor",
+    " far",
+    " sy",
+    "/",
+    " tr",
+    "好呢",
+    " зад",
+    " “",
+    " ac",
+    "ench",
+    " de",
+    " s",
+    " „"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" v\", \" neither\", \" nor\"]}",
+     "relevant": [
+      " v",
+      " neither",
+      " nor"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"/\"]}",
+     "relevant": [
+      "/"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" tr\", \" v\"]}",
+     "relevant": [
+      " tr",
+      " v"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 20.0,
+   "candidates": [
+    " \"",
+    " «",
+    " “",
+    " „",
+    " uh",
+    "降耗",
+    " sus",
+    "ก",
+    " зад",
+    " neither",
+    " sy",
+    " ins",
+    " far",
+    " cor",
+    ".jetbrains",
+    " tr",
+    " ac",
+    "伟业",
+    " de",
+    " auto"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" sy\", \" ins\", \" tr\", \" ac\", \" cor\", \" de\", \" neither\"]}",
+     "relevant": [
+      " sy",
+      " ins",
+      " tr",
+      " ac",
+      " cor",
+      " de",
+      " neither"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 40.0,
+   "candidates": [
+    " “",
+    " \"",
+    " «",
+    " „",
+    " sus",
+    "降耗",
+    "伟业",
+    " ms",
+    " ins",
+    "geg",
+    ".jetbrains",
+    " зад",
+    "“",
+    " neither",
+    " \"**",
+    " mno",
+    " uh",
+    "uld",
+    "ก",
+    " prej"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 60.0,
+   "candidates": [
+    " “",
+    " \"",
+    " «",
+    " sus",
+    " „",
+    "伟业",
+    "geg",
+    "降耗",
+    " ms",
+    "“",
+    " ins",
+    " \"**",
+    ".jetbrains",
+    " neither",
+    " зад",
+    "�",
+    " mno",
+    "uld",
+    " prej",
+    " \\\""
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" neither\"]}",
+     "relevant": [
+      " neither"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\" neither\"]}",
+     "relevant": [
+      " neither"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 80.0,
+   "candidates": [
+    " “",
+    " \"",
+    " «",
+    " sus",
+    " „",
+    "geg",
+    "伟业",
+    " ms",
+    "“",
+    "降耗",
+    "�",
+    " \"**",
+    " ins",
+    ".jetbrains",
+    " neither",
+    " зад",
+    " mno",
+    "uld",
+    "蕉",
+    " \\\""
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 100.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    " «",
+    " „",
+    "geg",
+    "伟业",
+    "�",
+    "“",
+    " ms",
+    "降耗",
+    " \"**",
+    " ins",
+    " neither",
+    ".jetbrains",
+    "蕉",
+    " mno",
+    " зад",
+    " \\\"",
+    " raj"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 120.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    " «",
+    "geg",
+    " „",
+    "伟业",
+    "�",
+    "“",
+    " ms",
+    " \"**",
+    "降耗",
+    " ins",
+    "蕉",
+    " neither",
+    ".jetbrains",
+    " raj",
+    " mno",
+    " \\\"",
+    " зад"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" neither\"]}",
+     "relevant": [
+      " neither"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 140.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    "geg",
+    " «",
+    " „",
+    "�",
+    "伟业",
+    "“",
+    " ms",
+    " \"**",
+    "降耗",
+    "蕉",
+    " ins",
+    " neither",
+    ".jetbrains",
+    " raj",
+    " \\\"",
+    " mno",
+    " зад"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 160.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    "geg",
+    " «",
+    " „",
+    "�",
+    "伟业",
+    "“",
+    " ms",
+    " \"**",
+    "蕉",
+    "降耗",
+    " neither",
+    " ins",
+    " raj",
+    ".jetbrains",
+    " \\\"",
+    " mno",
+    " зад"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"neither\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 180.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    "geg",
+    " «",
+    " „",
+    "�",
+    "伟业",
+    "“",
+    " ms",
+    " \"**",
+    "蕉",
+    "降耗",
+    " raj",
+    " neither",
+    " ins",
+    ".jetbrains",
+    " \\\"",
+    " mno",
+    " enunci"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "neutral",
+   "position": 2,
+   "lambda": 200.0,
+   "candidates": [
+    " “",
+    " \"",
+    " sus",
+    "geg",
+    " «",
+    "�",
+    " „",
+    "伟业",
+    "“",
+    " ms",
+    "蕉",
+    " \"**",
+    "降耗",
+    " raj",
+    " neither",
+    " ins",
+    ".jetbrains",
+    " \\\"",
+    " mno",
+    " enunci"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 0.5,
+   "candidates": [
+    "\n",
+    "→",
+    "man",
+    "-",
+    "0",
+    "·",
+    " target",
+    "|",
+    "8",
+    "—",
+    " ",
+    "–",
+    "bre",
+    "middle",
+    "h",
+    "1",
+    "#",
+    "mid",
+    "human",
+    "--"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\":[\"\\n\",\"→\",\"0\",\"·\",\"|\",\"8\",\" \",\"h\",\"1\",\"mid\"]}",
+     "relevant": [
+      "\n",
+      "→",
+      "0",
+      "·",
+      "|",
+      "8",
+      " ",
+      "h",
+      "1",
+      "mid"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"1\", \"8\", \"0\", \"·\", \"→\"]}",
+     "relevant": [
+      "1",
+      "8",
+      "0",
+      "·",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"middle\", \"h\", \"1\", \"0\", \"8\", \"·\", \"mid\", \"|\", \"→\", \"\\n\"]}",
+     "relevant": [
+      "middle",
+      "h",
+      "1",
+      "0",
+      "8",
+      "·",
+      "mid",
+      "|",
+      "→",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "0",
+    "·",
+    "8",
+    "1"
+   ],
+   "n_agree3": 5,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 0.6,
+   "candidates": [
+    "\n",
+    "→",
+    " target",
+    "man",
+    "-",
+    "|",
+    "0",
+    "·",
+    " ",
+    "8",
+    "—",
+    "target",
+    "human",
+    "1",
+    "=",
+    "hello",
+    " number",
+    "4",
+    "–",
+    "middle"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"0\", \"·\", \"8\", \"1\", \"=\", \" number\", \"4\"]}",
+     "relevant": [
+      "→",
+      "0",
+      "·",
+      "8",
+      "1",
+      "=",
+      " number",
+      "4"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"middle\", \"4\", \" number\", \"=\", \"1\", \"8\", \"0\", \"·\", \"|\", \"-\", \"→\"]}",
+     "relevant": [
+      "middle",
+      "4",
+      " number",
+      "=",
+      "1",
+      "8",
+      "0",
+      "·",
+      "|",
+      "-",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"=\", \" number\", \"1\", \"4\", \"0\", \"8\", \"·\", \"|\", \"→\", \"\\n\", \"-\"]}",
+     "relevant": [
+      "=",
+      " number",
+      "1",
+      "4",
+      "0",
+      "8",
+      "·",
+      "|",
+      "→",
+      "\n",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "0",
+    "·",
+    "8",
+    "1",
+    "=",
+    " number",
+    "4"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 0.7,
+   "candidates": [
+    "\n",
+    "→",
+    " target",
+    "man",
+    "target",
+    "|",
+    "-",
+    "0",
+    "1",
+    "hello",
+    " ",
+    "human",
+    "·",
+    "=",
+    "8",
+    "blue",
+    " number",
+    "4",
+    " blue",
+    "—"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"→\", \"|\", \"-\", \"0\", \"1\", \"8\", \"4\", \"·\", \"=\", \" number\"]}",
+     "relevant": [
+      "\n",
+      "→",
+      "|",
+      "-",
+      "0",
+      "1",
+      "8",
+      "4",
+      "·",
+      "=",
+      " number"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"number\", \"8\", \"1\", \"0\"]}",
+     "relevant": [
+      "4",
+      "8",
+      "1",
+      "0"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"=\", \"8\", \" number\", \"4\", \"0\", \"1\"]}",
+     "relevant": [
+      "=",
+      "8",
+      " number",
+      "4",
+      "0",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "0",
+    "1",
+    "8",
+    "4"
+   ],
+   "n_agree3": 4,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 0.8,
+   "candidates": [
+    "\n",
+    "→",
+    "target",
+    "man",
+    " target",
+    "|",
+    "1",
+    "-",
+    "blue",
+    "hello",
+    "=",
+    "0",
+    "human",
+    "8",
+    " ",
+    "4",
+    " blue",
+    "·",
+    "2",
+    "bre"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"=\", \"0\", \"8\", \"4\", \"2\", \"·\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "=",
+      "0",
+      "8",
+      "4",
+      "2",
+      "·"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"·\", \"4\", \"8\", \"0\", \"=\", \"-\", \"1\", \"|\", \"→\", \"\\n\"]}",
+     "relevant": [
+      "2",
+      "·",
+      "4",
+      "8",
+      "0",
+      "=",
+      "-",
+      "1",
+      "|",
+      "→",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"=\", \"0\", \"8\", \"4\", \"·\", \"2\", \"\\n\", \"→\", \"|\", \"1\", \"-\"]}",
+     "relevant": [
+      "=",
+      "0",
+      "8",
+      "4",
+      "·",
+      "2",
+      "\n",
+      "→",
+      "|",
+      "1",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "=",
+    "0",
+    "8",
+    "4",
+    "·",
+    "2"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 0.9,
+   "candidates": [
+    "\n",
+    "target",
+    "→",
+    "man",
+    "|",
+    "1",
+    " target",
+    "blue",
+    "-",
+    "=",
+    "hello",
+    "8",
+    "human",
+    "4",
+    "0",
+    " ",
+    " blue",
+    "2",
+    "bre",
+    "body"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"→\", \"|\", \"1\", \"-\", \"=\", \"8\", \"4\", \"0\", \"2\"]}",
+     "relevant": [
+      "\n",
+      "→",
+      "|",
+      "1",
+      "-",
+      "=",
+      "8",
+      "4",
+      "0",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"0\", \"4\", \"8\", \"1\", \"=\", \"-\", \"|\", \"→\", \" blue\", \"blue\", \" target\", \"\\n\"]}",
+     "relevant": [
+      "2",
+      "0",
+      "4",
+      "8",
+      "1",
+      "=",
+      "-",
+      "|",
+      "→",
+      " blue",
+      "blue",
+      " target",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"4\", \"0\", \"2\", \"1\", \"\\n\", \"→\", \"|\", \"-\", \"=\"]}",
+     "relevant": [
+      "8",
+      "4",
+      "0",
+      "2",
+      "1",
+      "\n",
+      "→",
+      "|",
+      "-",
+      "="
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "\n",
+    "→",
+    "|",
+    "1",
+    "-",
+    "=",
+    "8",
+    "4",
+    "0",
+    "2"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.0,
+   "candidates": [
+    "\n",
+    "target",
+    "→",
+    "|",
+    "man",
+    "1",
+    "blue",
+    " target",
+    "=",
+    "8",
+    "-",
+    "4",
+    "hello",
+    " ",
+    "human",
+    "0",
+    "2",
+    ",",
+    "bre",
+    "."
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"|\", \"=\", \"1\", \"8\", \"-\", \"4\", \"0\", \"2\"]}",
+     "relevant": [
+      "→",
+      "|",
+      "=",
+      "1",
+      "8",
+      "-",
+      "4",
+      "0",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"0\", \"4\", \"1\", \"8\", \"=\", \"-\", \"|\", \"→\"]}",
+     "relevant": [
+      "2",
+      "0",
+      "4",
+      "1",
+      "8",
+      "=",
+      "-",
+      "|",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"0\", \"2\", \"1\", \"8\", \"=\"]}",
+     "relevant": [
+      "4",
+      "0",
+      "2",
+      "1",
+      "8",
+      "="
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "=",
+    "8",
+    "4",
+    "0",
+    "2"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.1,
+   "candidates": [
+    "\n",
+    "target",
+    "1",
+    "→",
+    "|",
+    "man",
+    "blue",
+    "=",
+    "8",
+    "-",
+    " target",
+    "4",
+    " ",
+    "hello",
+    ",",
+    "0",
+    "2",
+    "human",
+    ".",
+    "9"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\":[\"\\n\",\"1\",\"→\",\"|\",\"=\",\"8\",\"-\",\"4\",\"0\",\"2\",\"9\"]}",
+     "relevant": [
+      "\n",
+      "1",
+      "→",
+      "|",
+      "=",
+      "8",
+      "-",
+      "4",
+      "0",
+      "2",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"2\", \"0\", \"4\", \"8\", \"1\", \"-\", \"=\", \"|\", \"→\"]}",
+     "relevant": [
+      "9",
+      "2",
+      "0",
+      "4",
+      "8",
+      "1",
+      "-",
+      "=",
+      "|",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"0\", \"2\", \"9\", \"1\", \"man\", \"8\"]}",
+     "relevant": [
+      "4",
+      "0",
+      "2",
+      "9",
+      "1",
+      "man",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "8",
+    "4",
+    "0",
+    "2",
+    "9"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.2,
+   "candidates": [
+    "\n",
+    "target",
+    "1",
+    "→",
+    "|",
+    "blue",
+    "man",
+    "=",
+    "8",
+    "-",
+    ",",
+    "4",
+    " target",
+    " ",
+    "hello",
+    "2",
+    "9",
+    "0",
+    ".",
+    "human"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"→\", \"|\", \"=\", \"8\", \"-\", \"4\", \"2\", \"9\", \"0\"]}",
+     "relevant": [
+      "1",
+      "→",
+      "|",
+      "=",
+      "8",
+      "-",
+      "4",
+      "2",
+      "9",
+      "0"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"0\", \"9\", \"2\", \"4\", \"8\", \"1\", \"=\", \"→\", \"|\"]}",
+     "relevant": [
+      "0",
+      "9",
+      "2",
+      "4",
+      "8",
+      "1",
+      "=",
+      "→",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"2\", \"9\", \"0\", \"1\", \"8\"]}",
+     "relevant": [
+      "4",
+      "2",
+      "9",
+      "0",
+      "1",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "8",
+    "4",
+    "2",
+    "9",
+    "0"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.3,
+   "candidates": [
+    "\n",
+    "target",
+    "1",
+    "→",
+    "|",
+    "=",
+    ",",
+    "blue",
+    "man",
+    "-",
+    "8",
+    "4",
+    " ",
+    " target",
+    "9",
+    "2",
+    ".",
+    "hello",
+    "0",
+    "unit"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\":[\"\\n\",\"1\",\"→\",\"|\",\"=\",\"-\",\"8\",\"4\",\"9\",\"2\",\"0\",\"unit\"]}",
+     "relevant": [
+      "\n",
+      "1",
+      "→",
+      "|",
+      "=",
+      "-",
+      "8",
+      "4",
+      "9",
+      "2",
+      "0",
+      "unit"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"unit\", \"0\", \"2\", \"9\", \"4\", \"8\", \"=\", \"|\", \"→\", \"1\"]}",
+     "relevant": [
+      "unit",
+      "0",
+      "2",
+      "9",
+      "4",
+      "8",
+      "=",
+      "|",
+      "→",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"4\", \"9\", \"2\", \"0\", \"unit\", \"1\", \"→\", \"|\", \"=\"]}",
+     "relevant": [
+      "8",
+      "4",
+      "9",
+      "2",
+      "0",
+      "unit",
+      "1",
+      "→",
+      "|",
+      "="
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "→",
+    "|",
+    "=",
+    "8",
+    "4",
+    "9",
+    "2",
+    "0",
+    "unit"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.4,
+   "candidates": [
+    "\n",
+    "target",
+    "1",
+    "→",
+    "=",
+    ",",
+    "|",
+    "-",
+    "blue",
+    "man",
+    "8",
+    "4",
+    " ",
+    "9",
+    " target",
+    ".",
+    "green",
+    "2",
+    "0",
+    "hello"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"8\", \"4\", \"9\", \"2\", \"0\"]}",
+     "relevant": [
+      "1",
+      "8",
+      "4",
+      "9",
+      "2",
+      "0"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"0\", \"2\", \"9\", \"4\", \"8\", \"1\", \"-\", \"|\", \"=\", \"→\", \" target\", \"target\"]}",
+     "relevant": [
+      "0",
+      "2",
+      "9",
+      "4",
+      "8",
+      "1",
+      "-",
+      "|",
+      "=",
+      "→",
+      " target",
+      "target"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"4\", \"9\", \"2\", \"0\", \"1\"]}",
+     "relevant": [
+      "8",
+      "4",
+      "9",
+      "2",
+      "0",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "8",
+    "4",
+    "9",
+    "2",
+    "0"
+   ],
+   "n_agree3": 6,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.5,
+   "candidates": [
+    "\n",
+    "target",
+    "→",
+    "=",
+    ",",
+    "1",
+    "|",
+    "-",
+    "blue",
+    "man",
+    "4",
+    "8",
+    " ",
+    "green",
+    "9",
+    "6",
+    "0",
+    "2",
+    ".",
+    "b"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"→\", \"=\", \"1\", \"|\", \"-\", \"4\", \"8\", \"9\", \"6\", \"0\", \"2\", \"b\"]}",
+     "relevant": [
+      "\n",
+      "→",
+      "=",
+      "1",
+      "|",
+      "-",
+      "4",
+      "8",
+      "9",
+      "6",
+      "0",
+      "2",
+      "b"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"b\", \"2\", \"0\", \"6\", \"9\", \"8\", \"4\", \"1\", \"=\", \"→\"]}",
+     "relevant": [
+      "b",
+      "2",
+      "0",
+      "6",
+      "9",
+      "8",
+      "4",
+      "1",
+      "=",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"4\", \"8\", \"9\", \"6\", \"0\", \"2\", \"b\", \"→\", \"=\", \"1\", \"|\", \"-\"]}",
+     "relevant": [
+      "4",
+      "8",
+      "9",
+      "6",
+      "0",
+      "2",
+      "b",
+      "→",
+      "=",
+      "1",
+      "|",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "=",
+    "1",
+    "4",
+    "8",
+    "9",
+    "6",
+    "0",
+    "2",
+    "b"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.6,
+   "candidates": [
+    "\n",
+    "target",
+    "→",
+    "=",
+    ",",
+    "1",
+    "|",
+    "-",
+    "blue",
+    "4",
+    "man",
+    " ",
+    "8",
+    "6",
+    "green",
+    "9",
+    "b",
+    "0",
+    "targets",
+    "2"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"8\", \"6\", \"9\", \"0\", \"2\", \"b\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "8",
+      "6",
+      "9",
+      "0",
+      "2",
+      "b"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"0\", \"9\", \"6\", \"8\", \"4\", \"1\", \"-\", \"|\", \"=\", \"→\", \"b\"]}",
+     "relevant": [
+      "2",
+      "0",
+      "9",
+      "6",
+      "8",
+      "4",
+      "1",
+      "-",
+      "|",
+      "=",
+      "→",
+      "b"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"6\", \"9\", \"b\", \"0\", \"2\", \"→\", \"=\", \"1\", \"|\", \"-\", \"4\"]}",
+     "relevant": [
+      "8",
+      "6",
+      "9",
+      "b",
+      "0",
+      "2",
+      "→",
+      "=",
+      "1",
+      "|",
+      "-",
+      "4"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "6",
+    "9",
+    "b",
+    "0",
+    "2"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.7,
+   "candidates": [
+    "\n",
+    "target",
+    "=",
+    "→",
+    ",",
+    "-",
+    "|",
+    "1",
+    "blue",
+    "4",
+    " ",
+    "man",
+    "6",
+    "b",
+    "0",
+    "8",
+    "targets",
+    "green",
+    "9",
+    "5"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"=\", \"→\", \"|\", \"1\", \"4\", \"6\", \"0\", \"8\", \"9\", \"5\", \"b\"]}",
+     "relevant": [
+      "\n",
+      "=",
+      "→",
+      "|",
+      "1",
+      "4",
+      "6",
+      "0",
+      "8",
+      "9",
+      "5",
+      "b"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"5\", \"9\", \"8\", \"0\", \"b\", \"6\", \"man\", \"4\", \"1\", \"|\", \"-\", \"→\", \"=\", \"\\n\"]}",
+     "relevant": [
+      "5",
+      "9",
+      "8",
+      "0",
+      "b",
+      "6",
+      "man",
+      "4",
+      "1",
+      "|",
+      "-",
+      "→",
+      "=",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"man\", \"6\", \"b\", \"0\", \"8\", \"9\", \"5\", \"1\", \"4\", \"green\", \"blue\"]}",
+     "relevant": [
+      "man",
+      "6",
+      "b",
+      "0",
+      "8",
+      "9",
+      "5",
+      "1",
+      "4",
+      "green",
+      "blue"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "6",
+    "b",
+    "0",
+    "8",
+    "9",
+    "5"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.8,
+   "candidates": [
+    "\n",
+    "→",
+    "=",
+    ",",
+    "target",
+    "-",
+    "1",
+    "|",
+    "blue",
+    "4",
+    " ",
+    "b",
+    "0",
+    "6",
+    "man",
+    "targets",
+    "5",
+    "9",
+    "8",
+    "green"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"b\", \"0\", \"6\", \"5\", \"9\", \"8\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "b",
+      "0",
+      "6",
+      "5",
+      "9",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"8\", \"9\", \"5\", \"6\", \"0\", \"b\", \"4\", \"|\", \"1\", \"-\", \"=\", \"→\", \"\\n\"]}",
+     "relevant": [
+      "8",
+      "9",
+      "5",
+      "6",
+      "0",
+      "b",
+      "4",
+      "|",
+      "1",
+      "-",
+      "=",
+      "→",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"b\", \"0\", \"6\", \"5\", \"9\", \"8\", \"1\", \"4\", \"=\", \"-\", \"|\", \"→\"]}",
+     "relevant": [
+      "b",
+      "0",
+      "6",
+      "5",
+      "9",
+      "8",
+      "1",
+      "4",
+      "=",
+      "-",
+      "|",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "b",
+    "0",
+    "6",
+    "5",
+    "9",
+    "8"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 1.9,
+   "candidates": [
+    "\n",
+    "→",
+    ",",
+    "=",
+    "target",
+    "-",
+    "1",
+    "|",
+    "4",
+    "blue",
+    " ",
+    "b",
+    "0",
+    "targets",
+    "6",
+    "5",
+    "man",
+    "9",
+    "β",
+    "2"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"b\", \"0\", \"6\", \"5\", \"9\", \"β\", \"2\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "b",
+      "0",
+      "6",
+      "5",
+      "9",
+      "β",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"β\", \"9\", \"5\", \"6\", \"0\", \"b\", \"4\", \"|\", \"1\", \"-\", \"=\", \"→\"]}",
+     "relevant": [
+      "2",
+      "β",
+      "9",
+      "5",
+      "6",
+      "0",
+      "b",
+      "4",
+      "|",
+      "1",
+      "-",
+      "=",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"b\", \"0\", \"6\", \"5\", \"9\", \"2\", \"1\", \"4\", \"→\", \"=\", \"-\", \"|\", \"β\"]}",
+     "relevant": [
+      "b",
+      "0",
+      "6",
+      "5",
+      "9",
+      "2",
+      "1",
+      "4",
+      "→",
+      "=",
+      "-",
+      "|",
+      "β"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "b",
+    "0",
+    "6",
+    "5",
+    "9",
+    "β",
+    "2"
+   ],
+   "n_agree3": 9,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 2.0,
+   "candidates": [
+    "→",
+    "\n",
+    ",",
+    "=",
+    "target",
+    "-",
+    "1",
+    "4",
+    "|",
+    "blue",
+    "b",
+    " ",
+    "0",
+    "targets",
+    "6",
+    "5",
+    "β",
+    "2",
+    "9",
+    "*"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"|\", \"b\", \"0\", \"6\", \"5\", \"β\", \"2\", \"9\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "|",
+      "b",
+      "0",
+      "6",
+      "5",
+      "β",
+      "2",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"*\",\"9\",\"2\",\"β\",\"5\",\"6\",\"0\",\"b\",\"|\",\"4\",\"1\",\"-\",\"=\",\"\\n\",\"→\"]}",
+     "relevant": [
+      "*",
+      "9",
+      "2",
+      "β",
+      "5",
+      "6",
+      "0",
+      "b",
+      "|",
+      "4",
+      "1",
+      "-",
+      "=",
+      "\n",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"b\", \"0\", \"6\", \"5\", \"β\", \"2\", \"9\", \"*\", \"→\", \"=\", \"1\", \"4\", \"|\"]}",
+     "relevant": [
+      "b",
+      "0",
+      "6",
+      "5",
+      "β",
+      "2",
+      "9",
+      "*",
+      "→",
+      "=",
+      "1",
+      "4",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "|",
+    "b",
+    "0",
+    "6",
+    "5",
+    "β",
+    "2",
+    "9"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 3.0,
+   "candidates": [
+    "\n",
+    ",",
+    "=",
+    "hi",
+    "4",
+    "-",
+    ".",
+    "1",
+    "i",
+    "|",
+    "he",
+    "0",
+    " ",
+    "/",
+    "*",
+    ")",
+    "b",
+    "→",
+    "I",
+    "5"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"=\", \"4\", \"1\", \"0\", \"5\", \"i\", \"|\", \"/\", \"b\", \"→\"]}",
+     "relevant": [
+      "=",
+      "4",
+      "1",
+      "0",
+      "5",
+      "i",
+      "|",
+      "/",
+      "b",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"5\", \"→\", \"b\", \")\", \"*\", \"/\", \"0\", \"|\", \"i\", \"1\", \".\", \"-\", \"4\", \"=\", \"\\n\"]}",
+     "relevant": [
+      "5",
+      "→",
+      "b",
+      ")",
+      "*",
+      "/",
+      "0",
+      "|",
+      "i",
+      "1",
+      ".",
+      "-",
+      "4",
+      "=",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"0\", \"/\", \"*\", \"b\", \"→\", \"5\", \"=\", \"4\", \"-\", \"1\", \"i\", \"|\"]}",
+     "relevant": [
+      "0",
+      "/",
+      "*",
+      "b",
+      "→",
+      "5",
+      "=",
+      "4",
+      "-",
+      "1",
+      "i",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "=",
+    "4",
+    "1",
+    "i",
+    "|",
+    "0",
+    "/",
+    "b",
+    "→",
+    "5"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 4.0,
+   "candidates": [
+    ",",
+    ".",
+    "\n",
+    "=",
+    "4",
+    "/",
+    "-",
+    "he",
+    "|",
+    " -",
+    "I",
+    "hi",
+    ")",
+    "i",
+    " ",
+    "ita",
+    "e",
+    " =",
+    "“",
+    "2"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"=\", \" =\", \"/\", \"-\", \" -\", \"|\", \")\", \"4\", \"2\"]}",
+     "relevant": [
+      "=",
+      " =",
+      "/",
+      "-",
+      " -",
+      "|",
+      ")",
+      "4",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"4\", \"=\", \"-\", \"/\", \"|\", \"e\", \"i\", \")\"]}",
+     "relevant": [
+      "2",
+      "4",
+      "=",
+      "-",
+      "/",
+      "|",
+      "e",
+      "i",
+      ")"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"\\n\", \")\", \"=\", \" =\", \"/\", \"-\", \" -\", \"|\", \"2\", \"4\", \"e\"]}",
+     "relevant": [
+      "\n",
+      ")",
+      "=",
+      " =",
+      "/",
+      "-",
+      " -",
+      "|",
+      "2",
+      "4",
+      "e"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "=",
+    "4",
+    "/",
+    "-",
+    "|",
+    ")",
+    "2"
+   ],
+   "n_agree3": 7,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 5.0,
+   "candidates": [
+    ",",
+    " target",
+    ".",
+    "/",
+    " targets",
+    "\n",
+    "“",
+    "靶",
+    "HI",
+    "|",
+    " “",
+    "=",
+    "targets",
+    "-",
+    "/target",
+    "he",
+    ")",
+    "target",
+    " -",
+    " "
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"/\", \"\\n\", \"|\", \"=\", \")\", \"-\"]}",
+     "relevant": [
+      "/",
+      "\n",
+      "|",
+      "=",
+      ")",
+      "-"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"=\", \"|\"]}",
+     "relevant": [
+      "=",
+      "|"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 10.0,
+   "candidates": [
+    "床",
+    " “",
+    " Ult",
+    " ‘",
+    "llib",
+    ".li",
+    "واني",
+    "SPI",
+    "昨天的",
+    "odi",
+    " unknow",
+    " thrift",
+    "勾",
+    " bed",
+    "输",
+    "-d",
+    " «",
+    " targets",
+    "今天的",
+    "丢"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" targets\", \"unknow\"]}",
+     "relevant": [
+      " targets"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" unknow\"]}",
+     "relevant": [
+      " unknow"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 20.0,
+   "candidates": [
+    " “",
+    " ‘",
+    "床",
+    "廉",
+    " Ult",
+    " «",
+    "бли",
+    " tell",
+    " tert",
+    " Rick",
+    "-d",
+    "丢",
+    "di",
+    " bed",
+    "odi",
+    "结合",
+    " lite",
+    " thrift",
+    "llib",
+    ".li"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 40.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "бли",
+    "床",
+    " tell",
+    " «",
+    " tert",
+    " Rick",
+    "“",
+    "结合",
+    " \"",
+    "di",
+    " lite",
+    " cal",
+    "con",
+    " Ult",
+    " bed",
+    " semi",
+    "-d"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"di\", \"cal\", \"con\", \"semi\", \"-d\"]}",
+     "relevant": [
+      "di",
+      "con",
+      "-d"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"di\", \" cal\", \"con\", \" semi\", \"-d\", \" tert\"]}",
+     "relevant": [
+      "di",
+      " cal",
+      "con",
+      " semi",
+      "-d",
+      " tert"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 60.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "бли",
+    " tell",
+    "床",
+    " «",
+    "“",
+    " \"",
+    " tert",
+    "结合",
+    "di",
+    " Rick",
+    "con",
+    " lite",
+    " cal",
+    " semi",
+    "-s",
+    "DataURL",
+    " sem"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"tert\", \"di\", \"con\", \"cal\", \"semi\", \"sem\"]}",
+     "relevant": [
+      "di",
+      "con"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 80.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    " tell",
+    "бли",
+    "“",
+    " «",
+    " \"",
+    "床",
+    " tert",
+    "结合",
+    "con",
+    "di",
+    " Rick",
+    " cal",
+    " lite",
+    " semi",
+    "-s",
+    "DataURL",
+    " sem"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"tert\", \"con\", \"di\", \"cal\", \"semi\", \"sem\"]}",
+     "relevant": [
+      "con",
+      "di"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" sem\", \" semi\"]}",
+     "relevant": [
+      " sem",
+      " semi"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"con\", \"di\", \"cal\", \"semi\", \"sem\"]}",
+     "relevant": [
+      "con",
+      "di"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 100.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    " tell",
+    "бли",
+    "“",
+    " \"",
+    " «",
+    " tert",
+    "床",
+    "con",
+    "结合",
+    " cal",
+    "di",
+    " Rick",
+    " semi",
+    " lite",
+    "-s",
+    "DataURL",
+    " sem"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" semi\"]}",
+     "relevant": [
+      " semi"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"con\",\"cal\",\"di\",\"semi\",\"sem\",\"tert\"]}",
+     "relevant": [
+      "con",
+      "di"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 120.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "“",
+    " tell",
+    "бли",
+    " \"",
+    " «",
+    " tert",
+    "con",
+    "结合",
+    "床",
+    " cal",
+    "di",
+    " Rick",
+    " semi",
+    "-s",
+    " lite",
+    "DataURL",
+    "aver"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\" tell\", \"con\", \"cal\", \"semi\", \"aver\"]}",
+     "relevant": [
+      " tell",
+      "con",
+      "aver"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"aver\", \"con\", \"cal\", \"di\"]}",
+     "relevant": [
+      "aver",
+      "con",
+      "di"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"cal\", \"di\", \"semi\", \"aver\", \"con\"]}",
+     "relevant": [
+      "di",
+      "aver",
+      "con"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "con",
+    "aver"
+   ],
+   "n_agree3": 2,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 140.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "“",
+    " tell",
+    "бли",
+    " \"",
+    " «",
+    "con",
+    " tert",
+    "结合",
+    "床",
+    " cal",
+    "di",
+    " semi",
+    " Rick",
+    "-s",
+    "DataURL",
+    " lite",
+    "aver"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"con\", \"cal\", \"di\", \"aver\", \"semi\", \"tert\"]}",
+     "relevant": [
+      "con",
+      "di",
+      "aver"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"aver\", \"semi\", \"tert\", \"con\", \"cal\", \"di\"]}",
+     "relevant": [
+      "aver",
+      "con",
+      "di"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"cal\", \"di\", \"semi\", \"aver\", \"con\", \"tert\"]}",
+     "relevant": [
+      "di",
+      "aver",
+      "con"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "con",
+    "di",
+    "aver"
+   ],
+   "n_agree3": 3,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 160.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "“",
+    " tell",
+    "бли",
+    " \"",
+    " «",
+    "con",
+    " tert",
+    "结合",
+    " cal",
+    "di",
+    "床",
+    " semi",
+    "DataURL",
+    "-s",
+    " Rick",
+    "aver",
+    " lite"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 180.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "“",
+    " tell",
+    "бли",
+    " \"",
+    " «",
+    "con",
+    " tert",
+    "结合",
+    " cal",
+    "di",
+    "床",
+    "-s",
+    " semi",
+    "DataURL",
+    " Rick",
+    "aver",
+    " ent"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" aver\", \" di\"]}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" semi\", \"aver\", \"con\"]}",
+     "relevant": [
+      " semi",
+      "aver",
+      "con"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 1,
+   "lambda": 200.0,
+   "candidates": [
+    " “",
+    "廉",
+    " ‘",
+    "“",
+    " tell",
+    " \"",
+    "бли",
+    " «",
+    "con",
+    " tert",
+    "结合",
+    " cal",
+    "di",
+    "床",
+    "-s",
+    " semi",
+    "DataURL",
+    "aver",
+    " Rick",
+    " ent"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"con\", \"cal\", \"aver\", \"semi\"]}",
+     "relevant": [
+      "con",
+      "aver"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"aver\", \" semi\", \" di\", \" cal\", \" con\"]}",
+     "relevant": [
+      "aver",
+      " semi",
+      " cal"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" cal\", \"di\", \" semi\", \"aver\", \"con\", \"tert\"]}",
+     "relevant": [
+      " cal",
+      "di",
+      " semi",
+      "aver",
+      "con"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "aver"
+   ],
+   "n_agree3": 1,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 0.5,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "3",
+    "2",
+    "0",
+    "5",
+    "6",
+    "8",
+    "9",
+    "7",
+    "​",
+    ">",
+    "e",
+    "<",
+    ")",
+    "）",
+    "b",
+    "n"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"\\n\", \"3\", \"2\", \"0\", \"5\", \"6\", \"8\", \"9\", \"7\", \">\", \"<\", \"b\", \"n\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "\n",
+      "3",
+      "2",
+      "0",
+      "5",
+      "6",
+      "8",
+      "9",
+      "7",
+      ">",
+      "<",
+      "b",
+      "n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"n\", \"b\", \")\", \"e\", \"7\", \"9\", \"8\", \"6\", \"5\", \"0\", \"2\", \"3\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "n",
+      "b",
+      ")",
+      "e",
+      "7",
+      "9",
+      "8",
+      "6",
+      "5",
+      "0",
+      "2",
+      "3",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"e\", \"b\", \"n\", \"→\", \"1\", \"4\", \"\\n\", \"3\", \"2\", \"0\", \"5\", \"6\", \"8\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "e",
+      "b",
+      "n",
+      "→",
+      "1",
+      "4",
+      "\n",
+      "3",
+      "2",
+      "0",
+      "5",
+      "6",
+      "8"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "3",
+    "2",
+    "0",
+    "5",
+    "6",
+    "8",
+    "9",
+    "7",
+    "b",
+    "n"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 0.6,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "3",
+    "\n",
+    "2",
+    "5",
+    "0",
+    "8",
+    "6",
+    "9",
+    "7",
+    ">",
+    "​",
+    "e",
+    ")",
+    "<",
+    "b",
+    "）",
+    "+"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"3\", \"2\", \"5\", \"0\", \"8\", \"6\", \"9\", \"7\", \"e\", \"+\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "3",
+      "2",
+      "5",
+      "0",
+      "8",
+      "6",
+      "9",
+      "7",
+      "e",
+      "+"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"+\", \"b\", \"<\", \")\", \"e\", \">\", \"7\", \"9\", \"6\", \"8\", \"0\", \"5\", \"2\", \"\\n\", \"3\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "+",
+      "b",
+      "<",
+      ")",
+      "e",
+      ">",
+      "7",
+      "9",
+      "6",
+      "8",
+      "0",
+      "5",
+      "2",
+      "\n",
+      "3",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"e\", \"b\", \"1\", \"4\", \"3\", \"2\", \"5\", \"0\", \"8\", \"6\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "e",
+      "b",
+      "1",
+      "4",
+      "3",
+      "2",
+      "5",
+      "0",
+      "8",
+      "6"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "3",
+    "2",
+    "5",
+    "0",
+    "8",
+    "6",
+    "9",
+    "7",
+    "e"
+   ],
+   "n_agree3": 11,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 0.7,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "0",
+    "3",
+    "8",
+    "5",
+    "6",
+    "2",
+    "9",
+    "7",
+    ">",
+    "​",
+    "de",
+    "·",
+    " →",
+    "b",
+    " ",
+    "<"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"\\n\", \"0\", \"3\", \"8\", \"5\", \"6\", \"2\", \"9\", \"7\", \">\", \"·\", \" →\", \"b\", \"<\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "\n",
+      "0",
+      "3",
+      "8",
+      "5",
+      "6",
+      "2",
+      "9",
+      "7",
+      ">",
+      "·",
+      " →",
+      "b",
+      "<"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"<\", \"b\", \" →\", \"·\", \">\", \"7\", \"9\", \"2\", \"6\", \"5\", \"8\", \"3\", \"0\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "<",
+      "b",
+      " →",
+      "·",
+      ">",
+      "7",
+      "9",
+      "2",
+      "6",
+      "5",
+      "8",
+      "3",
+      "0",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \">\", \"·\", \" →\", \"b\", \"<\", \"→\", \"1\", \"4\", \"\\n\", \"0\", \"3\", \"8\", \"5\", \"6\", \"2\"]}",
+     "relevant": [
+      "9",
+      "7",
+      ">",
+      "·",
+      " →",
+      "b",
+      "<",
+      "→",
+      "1",
+      "4",
+      "\n",
+      "0",
+      "3",
+      "8",
+      "5",
+      "6",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "3",
+    "8",
+    "5",
+    "6",
+    "2",
+    "9",
+    "7",
+    ">",
+    "·",
+    " →",
+    "b",
+    "<"
+   ],
+   "n_agree3": 16,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 0.8,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "0",
+    "6",
+    "8",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    "de",
+    " →",
+    ">",
+    "·",
+    " ",
+    "<",
+    " de"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"\\n\", \"0\", \"6\", \"8\", \"5\", \"2\", \"3\", \"9\", \"7\", \" →\", \">\", \"·\", \"<\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "\n",
+      "0",
+      "6",
+      "8",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7",
+      " →",
+      ">",
+      "·",
+      "<"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"·\", \"7\", \"9\", \"3\", \"2\", \"5\", \"8\", \"6\", \"0\", \"4\", \"1\", \"→\", \" →\", \"\\n\"]}",
+     "relevant": [
+      "·",
+      "7",
+      "9",
+      "3",
+      "2",
+      "5",
+      "8",
+      "6",
+      "0",
+      "4",
+      "1",
+      "→",
+      " →",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"→\", \">\", \"·\", \"\\n\", \"1\", \"4\", \"0\", \"6\", \"8\", \"5\", \"2\", \"3\", \"<\", \"→\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "→",
+      ">",
+      "·",
+      "\n",
+      "1",
+      "4",
+      "0",
+      "6",
+      "8",
+      "5",
+      "2",
+      "3",
+      "<",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "0",
+    "6",
+    "8",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "·"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 0.9,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "\n",
+    "8",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    "de",
+    " →",
+    " de",
+    ">",
+    " ",
+    "<",
+    "·"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"0\", \"\\n\", \"8\", \"6\", \"5\", \"2\", \"3\", \"9\", \"7\", \" →\", \">\", \"<\", \"·\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "0",
+      "\n",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7",
+      " →",
+      ">",
+      "<",
+      "·"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"·\", \"<\", \">\", \" →\", \"7\", \"9\", \"3\", \"2\", \"5\", \"6\", \"8\", \"0\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "·",
+      "<",
+      ">",
+      " →",
+      "7",
+      "9",
+      "3",
+      "2",
+      "5",
+      "6",
+      "8",
+      "0",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"→\", \" →\", \">\", \"<\", \"·\", \"1\", \"4\", \"0\", \"\\n\", \"8\", \"6\", \"5\", \"2\", \"3\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "→",
+      " →",
+      ">",
+      "<",
+      "·",
+      "1",
+      "4",
+      "0",
+      "\n",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "8",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    " →",
+    ">",
+    "<",
+    "·"
+   ],
+   "n_agree3": 15,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.0,
+   "candidates": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "6",
+    "\n",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    " →",
+    "de",
+    " de",
+    ">",
+    "�",
+    "-->",
+    " "
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \" →\", \"-->\", \"1\", \"0\", \"4\", \"8\", \"6\", \"5\", \"2\", \"3\", \"9\", \"7\"]}",
+     "relevant": [
+      "→",
+      " →",
+      "-->",
+      "1",
+      "0",
+      "4",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" →\", \"7\", \"9\", \"3\", \"2\", \"5\", \"6\", \"8\", \"4\", \"0\", \"1\", \"→\"]}",
+     "relevant": [
+      " →",
+      "7",
+      "9",
+      "3",
+      "2",
+      "5",
+      "6",
+      "8",
+      "4",
+      "0",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"1\", \"0\", \"4\", \"8\", \"6\", \"5\", \"2\", \"3\", \"\\n\", \"→\", \" →\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "1",
+      "0",
+      "4",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3",
+      "\n",
+      "→",
+      " →"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    " →"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.1,
+   "candidates": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    " →",
+    "de",
+    " de",
+    " blue",
+    "�",
+    "-->",
+    ">"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"0\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"2\", \"3\", \"9\", \"7\", \" →\", \">\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "0",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7",
+      " →",
+      ">"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" →\", \"→\", \"7\", \"9\", \"3\", \"2\", \"5\", \"6\", \"\\n\", \"8\", \"4\", \"0\", \"1\"]}",
+     "relevant": [
+      " →",
+      "→",
+      "7",
+      "9",
+      "3",
+      "2",
+      "5",
+      "6",
+      "\n",
+      "8",
+      "4",
+      "0",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \" →\", \"→\", \"1\", \"0\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"2\", \"3\"]}",
+     "relevant": [
+      "9",
+      "7",
+      " →",
+      "→",
+      "1",
+      "0",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "2",
+      "3"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    " →"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.2,
+   "candidates": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "6",
+    "\n",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    " →",
+    " blue",
+    "de",
+    "�",
+    "-->",
+    " de",
+    ">"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"0\", \"4\", \"8\", \"6\", \"\\n\", \"5\", \"2\", \"3\", \"9\", \"7\", \" →\", \"-->\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "0",
+      "4",
+      "8",
+      "6",
+      "\n",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7",
+      " →",
+      "-->"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\">\", \" →\", \"→\", \"\\n\", \"7\", \"9\", \"3\", \"2\", \"5\", \"6\", \"8\", \"4\", \"0\", \"1\"]}",
+     "relevant": [
+      ">",
+      " →",
+      "→",
+      "\n",
+      "7",
+      "9",
+      "3",
+      "2",
+      "5",
+      "6",
+      "8",
+      "4",
+      "0",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"→\", \"1\", \"0\", \"4\", \"8\", \"6\", \"5\", \"2\", \"3\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "→",
+      "1",
+      "0",
+      "4",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "0",
+    "4",
+    "8",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7"
+   ],
+   "n_agree3": 11,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.3,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    "​",
+    " →",
+    " blue",
+    "�",
+    "-->",
+    ">",
+    "de",
+    "<"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"0\", \"8\", \"\\n\", \"6\", \"5\", \"2\", \"3\", \"9\", \"7\", \" →\", \">\", \"<\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "0",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "2",
+      "3",
+      "9",
+      "7",
+      " →",
+      ">",
+      "<"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"\\n\", \"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"→\", \" →\"]}",
+     "relevant": [
+      "\n",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "→",
+      " →"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \" →\", \">\", \"→\", \"1\", \"4\", \"0\", \"8\", \"\\n\", \"6\", \"5\", \"2\", \"3\", \"<\"]}",
+     "relevant": [
+      "9",
+      "7",
+      " →",
+      ">",
+      "→",
+      "1",
+      "4",
+      "0",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "2",
+      "3",
+      "<"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "2",
+    "3",
+    "9",
+    "7",
+    " →"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.4,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "\n",
+    "8",
+    "6",
+    "5",
+    "3",
+    "2",
+    "9",
+    " →",
+    "​",
+    "7",
+    " blue",
+    "�",
+    "-->",
+    ">",
+    "->",
+    "/"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \" →\", \"1\", \"4\", \"0\", \"\\n\", \"8\", \"6\", \"5\", \"3\", \"2\", \"9\", \"7\", \">\", \"/\", \"->\"]}",
+     "relevant": [
+      "→",
+      " →",
+      "1",
+      "4",
+      "0",
+      "\n",
+      "8",
+      "6",
+      "5",
+      "3",
+      "2",
+      "9",
+      "7",
+      ">",
+      "/",
+      "->"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"/\", \" →\", \"9\", \"2\", \"3\", \"5\", \"6\", \"8\", \"\\n\", \"0\", \"4\", \"1\", \"→\", \"7\"]}",
+     "relevant": [
+      "/",
+      " →",
+      "9",
+      "2",
+      "3",
+      "5",
+      "6",
+      "8",
+      "\n",
+      "0",
+      "4",
+      "1",
+      "→",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \"7\", \"4\", \"1\", \"0\", \"8\", \"6\", \"5\", \"3\", \"2\", \"→\", \" →\", \"-->\", \"->\", \"/\", \">\"]}",
+     "relevant": [
+      "9",
+      "7",
+      "4",
+      "1",
+      "0",
+      "8",
+      "6",
+      "5",
+      "3",
+      "2",
+      "→",
+      " →",
+      "-->",
+      "->",
+      "/",
+      ">"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "0",
+    "8",
+    "6",
+    "5",
+    "3",
+    "2",
+    "9",
+    " →",
+    "7",
+    "/"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.5,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "8",
+    "0",
+    "6",
+    "5",
+    "3",
+    "2",
+    "9",
+    " blue",
+    "​",
+    " →",
+    "7",
+    "�",
+    "-->",
+    ">",
+    "->",
+    "<"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"\\n\", \"8\", \"0\", \"6\", \"5\", \"3\", \"2\", \"9\", \"7\", \" →\", \"->\", \">\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "\n",
+      "8",
+      "0",
+      "6",
+      "5",
+      "3",
+      "2",
+      "9",
+      "7",
+      " →",
+      "->",
+      ">"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \" →\", \"9\", \"2\", \"3\", \"5\", \"6\", \"0\", \"8\", \"\\n\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "7",
+      " →",
+      "9",
+      "2",
+      "3",
+      "5",
+      "6",
+      "0",
+      "8",
+      "\n",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"9\", \" →\", \"7\", \"-->\", \">\", \"->\", \"<\", \"→\", \"1\", \"4\", \"\\n\", \"8\", \"0\", \"6\", \"5\", \"3\", \"2\"]}",
+     "relevant": [
+      "9",
+      " →",
+      "7",
+      "-->",
+      ">",
+      "->",
+      "<",
+      "→",
+      "1",
+      "4",
+      "\n",
+      "8",
+      "0",
+      "6",
+      "5",
+      "3",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "\n",
+    "8",
+    "0",
+    "6",
+    "5",
+    "3",
+    "2",
+    "9",
+    " →",
+    "7"
+   ],
+   "n_agree3": 13,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.6,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "0",
+    "3",
+    "9",
+    "2",
+    " blue",
+    " →",
+    "​",
+    "7",
+    "�",
+    "-->",
+    ">",
+    "->",
+    "."
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"8\", \"6\", \"5\", \"0\", \"3\", \"9\", \"2\", \"7\", \"\\n\", \"→\", \" →\", \"-->\", \">\", \"->\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "8",
+      "6",
+      "5",
+      "0",
+      "3",
+      "9",
+      "2",
+      "7",
+      "\n",
+      "→",
+      " →",
+      "-->",
+      ">",
+      "->"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"->\", \">\", \" →\", \"→\", \"\\n\", \"0\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\"]}",
+     "relevant": [
+      "->",
+      ">",
+      " →",
+      "→",
+      "\n",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"7\", \"1\", \"4\", \"8\", \"6\", \"5\", \"0\", \"3\", \"9\"]}",
+     "relevant": [
+      "2",
+      "7",
+      "1",
+      "4",
+      "8",
+      "6",
+      "5",
+      "0",
+      "3",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "8",
+    "6",
+    "5",
+    "0",
+    "3",
+    "9",
+    "2",
+    "7"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.7,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "0",
+    "3",
+    "9",
+    "2",
+    " blue",
+    " →",
+    "​",
+    "7",
+    "�",
+    "-->",
+    ">",
+    " ",
+    "."
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"0\", \"3\", \"9\", \"2\", \" →\", \"7\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "0",
+      "3",
+      "9",
+      "2",
+      " →",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"2\", \"9\", \"3\", \"0\", \"5\", \"6\", \"\\n\", \"8\", \"4\", \"1\", \"→\", \" →\"]}",
+     "relevant": [
+      "7",
+      "2",
+      "9",
+      "3",
+      "0",
+      "5",
+      "6",
+      "\n",
+      "8",
+      "4",
+      "1",
+      "→",
+      " →"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"7\", \"1\", \"4\", \"8\", \"6\", \"5\", \"0\", \"3\", \"9\", \"→\", \" →\", \">\"]}",
+     "relevant": [
+      "2",
+      "7",
+      "1",
+      "4",
+      "8",
+      "6",
+      "5",
+      "0",
+      "3",
+      "9",
+      "→",
+      " →",
+      ">"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "6",
+    "5",
+    "0",
+    "3",
+    "9",
+    "2",
+    " →",
+    "7"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.8,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "3",
+    "0",
+    "9",
+    " blue",
+    "2",
+    " →",
+    "​",
+    "7",
+    "�",
+    "-->",
+    ">",
+    " ",
+    "."
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"3\", \"0\", \"9\", \"2\", \" →\", \"7\", \"-->\", \">\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "3",
+      "0",
+      "9",
+      "2",
+      " →",
+      "7",
+      "-->",
+      ">"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \" →\", \"2\", \"9\", \"0\", \"3\", \"5\", \"6\", \"8\", \"4\", \"1\", \"→\"]}",
+     "relevant": [
+      "7",
+      " →",
+      "2",
+      "9",
+      "0",
+      "3",
+      "5",
+      "6",
+      "8",
+      "4",
+      "1",
+      "→"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" blue\",\"2\",\" →\",\"7\",\"-->\",\"→\",\"1\",\"4\",\"8\",\"6\",\"5\",\"3\",\"0\",\"9\"]}",
+     "relevant": [
+      " blue",
+      "2",
+      " →",
+      "7",
+      "-->",
+      "→",
+      "1",
+      "4",
+      "8",
+      "6",
+      "5",
+      "3",
+      "0",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "6",
+    "5",
+    "3",
+    "0",
+    "9",
+    "2",
+    " →",
+    "7"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 1.9,
+   "candidates": [
+    "→",
+    "1",
+    "4",
+    "8",
+    "\n",
+    "6",
+    "5",
+    "3",
+    "0",
+    "9",
+    " blue",
+    "2",
+    " →",
+    "​",
+    "7",
+    "�",
+    "-->",
+    " ",
+    ".",
+    ">"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"→\", \"1\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"3\", \"0\", \"9\", \"2\", \" →\", \"7\"]}",
+     "relevant": [
+      "→",
+      "1",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "3",
+      "0",
+      "9",
+      "2",
+      " →",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"2\", \"9\", \"0\", \"3\", \"5\", \"6\", \"8\", \"4\", \"1\"]}",
+     "relevant": [
+      "7",
+      "2",
+      "9",
+      "0",
+      "3",
+      "5",
+      "6",
+      "8",
+      "4",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"7\", \"1\", \"4\", \"8\", \"\\n\", \"6\", \"5\", \"3\", \"0\", \"9\"]}",
+     "relevant": [
+      "2",
+      "7",
+      "1",
+      "4",
+      "8",
+      "\n",
+      "6",
+      "5",
+      "3",
+      "0",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "8",
+    "6",
+    "5",
+    "3",
+    "0",
+    "9",
+    "2",
+    "7"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 2.0,
+   "candidates": [
+    "1",
+    "→",
+    "4",
+    "8",
+    "6",
+    "\n",
+    "5",
+    "3",
+    "9",
+    "0",
+    " blue",
+    "2",
+    " →",
+    "​",
+    "7",
+    " ",
+    "�",
+    ".",
+    "-->",
+    "en"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"8\", \"6\", \"\\n\", \"5\", \"3\", \"9\", \"0\", \"2\", \"7\", \"→\", \" →\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "8",
+      "6",
+      "\n",
+      "5",
+      "3",
+      "9",
+      "0",
+      "2",
+      "7",
+      "→",
+      " →"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \" →\", \"2\", \"0\", \"9\", \"3\", \"5\", \"6\", \"8\", \"4\", \"→\", \"1\"]}",
+     "relevant": [
+      "7",
+      " →",
+      "2",
+      "0",
+      "9",
+      "3",
+      "5",
+      "6",
+      "8",
+      "4",
+      "→",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"2\", \"7\", \"1\", \"4\", \"8\", \"6\", \"5\", \"3\", \"9\", \"0\", \" →\", \"→\", \"\\n\"]}",
+     "relevant": [
+      "2",
+      "7",
+      "1",
+      "4",
+      "8",
+      "6",
+      "5",
+      "3",
+      "9",
+      "0",
+      " →",
+      "→",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "→",
+    "4",
+    "8",
+    "6",
+    "5",
+    "3",
+    "9",
+    "0",
+    "2",
+    " →",
+    "7"
+   ],
+   "n_agree3": 12,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 3.0,
+   "candidates": [
+    "1",
+    "4",
+    "6",
+    "8",
+    "5",
+    "9",
+    "\n",
+    " blue",
+    "3",
+    "2",
+    ".",
+    "→",
+    "0",
+    " ",
+    "7",
+    " bee",
+    "ak",
+    " bed",
+    "​",
+    "blue"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"6\", \"8\", \"5\", \"9\", \"\\n\", \"3\", \"2\", \"0\", \"7\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "6",
+      "8",
+      "5",
+      "9",
+      "\n",
+      "3",
+      "2",
+      "0",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"7\", \"0\", \"→\", \"2\", \"3\", \"\\n\", \"9\", \"5\", \"8\", \"6\", \"4\", \"1\"]}",
+     "relevant": [
+      "7",
+      "0",
+      "→",
+      "2",
+      "3",
+      "\n",
+      "9",
+      "5",
+      "8",
+      "6",
+      "4",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"→\", \"0\", \"7\", \"1\", \"4\", \"6\", \"8\", \"5\", \"9\", \"3\", \"2\"]}",
+     "relevant": [
+      "→",
+      "0",
+      "7",
+      "1",
+      "4",
+      "6",
+      "8",
+      "5",
+      "9",
+      "3",
+      "2"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "6",
+    "8",
+    "5",
+    "9",
+    "3",
+    "2",
+    "0",
+    "7"
+   ],
+   "n_agree3": 10,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 4.0,
+   "candidates": [
+    "1",
+    "4",
+    "6",
+    "2",
+    " blue",
+    "9",
+    "5",
+    "8",
+    "3",
+    "\n",
+    " ak",
+    " let",
+    "let",
+    "aca",
+    ".",
+    " bee",
+    " bed",
+    "鹅",
+    "7",
+    "皇"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"6\", \"2\", \"9\", \"5\", \"8\", \"3\", \"let\", \" let\", \"7\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "6",
+      "2",
+      "9",
+      "5",
+      "8",
+      "3",
+      "let",
+      " let",
+      "7"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"let\", \" let\", \"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\"]}",
+     "relevant": [
+      "let",
+      " let",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" let\", \"let\", \"7\", \"1\", \"4\", \"6\", \"2\", \"9\", \"5\", \"8\", \"3\", \"\\n\"]}",
+     "relevant": [
+      " let",
+      "let",
+      "7",
+      "1",
+      "4",
+      "6",
+      "2",
+      "9",
+      "5",
+      "8",
+      "3",
+      "\n"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "6",
+    "2",
+    "9",
+    "5",
+    "8",
+    "3",
+    " let",
+    "let",
+    "7"
+   ],
+   "n_agree3": 11,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 5.0,
+   "candidates": [
+    "1",
+    "4",
+    "鹅",
+    "2",
+    "6",
+    "aca",
+    "9",
+    " med",
+    "-destruct",
+    "蕉",
+    " ak",
+    "sms",
+    "5",
+    "皇",
+    "áv",
+    "8",
+    " let",
+    "惕",
+    "bles",
+    "豁"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"1\", \"4\", \"2\", \"6\", \"9\", \"5\", \"8\", \" let\"]}",
+     "relevant": [
+      "1",
+      "4",
+      "2",
+      "6",
+      "9",
+      "5",
+      "8",
+      " let"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\" let\", \"8\", \"5\", \"9\", \"6\", \"2\", \"4\", \"1\"]}",
+     "relevant": [
+      " let",
+      "8",
+      "5",
+      "9",
+      "6",
+      "2",
+      "4",
+      "1"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"5\", \"8\", \"1\", \"4\", \"2\", \"6\", \"9\", \" let\"]}",
+     "relevant": [
+      "5",
+      "8",
+      "1",
+      "4",
+      "2",
+      "6",
+      "9",
+      " let"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [
+    "1",
+    "4",
+    "2",
+    "6",
+    "9",
+    "5",
+    "8",
+    " let"
+   ],
+   "n_agree3": 8,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 10.0,
+   "candidates": [
+    "蕉",
+    " ‘’",
+    "sms",
+    "bett",
+    "-destruct",
+    "豁",
+    "惕",
+    " OCD",
+    "再通过",
+    "科大",
+    "河源",
+    "个工作",
+    "cesi",
+    "uco",
+    "卯",
+    "-working",
+    "ulangan",
+    "又何",
+    "綱",
+    "kong"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 20.0,
+   "candidates": [
+    "蕉",
+    " ‘’",
+    "-destruct",
+    "plin",
+    "sms",
+    "个工作",
+    " OCD",
+    " fds",
+    " ”",
+    "bett",
+    "鹅",
+    "报了",
+    " gran",
+    "clusive",
+    "kong",
+    " tac",
+    " ​",
+    "篱",
+    "再通过",
+    "卯"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 40.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    "蕉",
+    "sms",
+    " ‘’",
+    " ​",
+    "鹅",
+    " OCD",
+    " tac",
+    " ”",
+    "个工作",
+    " fds",
+    " gran",
+    "clusive",
+    "篱",
+    "-centric",
+    "kong",
+    "报了",
+    "惊心动魄",
+    "bett"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 60.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    "蕉",
+    " ​",
+    "鹅",
+    "sms",
+    " tac",
+    " OCD",
+    " ‘’",
+    " ”",
+    " gran",
+    "个工作",
+    "clusive",
+    " fds",
+    "-centric",
+    "篱",
+    "kong",
+    "summ",
+    " Getty",
+    "惊心动魄"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 80.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    " ​",
+    "鹅",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    " ‘’",
+    "clusive",
+    " gran",
+    "-centric",
+    "个工作",
+    "篱",
+    " fds",
+    "ipot",
+    " Getty",
+    "summ",
+    "kong"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\":[\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"clusive\", \"summ\"]}",
+     "relevant": [
+      "clusive",
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 100.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    " ​",
+    "鹅",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    " ‘’",
+    "clusive",
+    "-centric",
+    " gran",
+    "ipot",
+    "篱",
+    "个工作",
+    " fds",
+    " Getty",
+    "summ",
+    " ,,"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 120.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    "鹅",
+    " ​",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    "-centric",
+    " gran",
+    "clusive",
+    " ‘’",
+    "ipot",
+    "篱",
+    " fds",
+    " Getty",
+    "个工作",
+    "summ",
+    " ,,"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 140.0,
+   "candidates": [
+    "plin",
+    "-destruct",
+    "鹅",
+    " ​",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    "-centric",
+    "clusive",
+    " gran",
+    " ‘’",
+    "ipot",
+    "篱",
+    " Getty",
+    " fds",
+    "summ",
+    "个工作",
+    "цени"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 160.0,
+   "candidates": [
+    "plin",
+    "鹅",
+    " ​",
+    "-destruct",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    "-centric",
+    " gran",
+    "ipot",
+    "clusive",
+    " ‘’",
+    " Getty",
+    "篱",
+    "summ",
+    " ,,",
+    " fds",
+    "三轮"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\":[\"summ\",\"clusive\"]}",
+     "relevant": [
+      "summ",
+      "clusive"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 180.0,
+   "candidates": [
+    "plin",
+    "鹅",
+    "-destruct",
+    " ​",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    "-centric",
+    "ipot",
+    "clusive",
+    " gran",
+    " ‘’",
+    " Getty",
+    "篱",
+    "summ",
+    "цени",
+    "三轮",
+    " ,,"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  },
+  {
+   "kind": "patchscope",
+   "set": "math",
+   "position": 2,
+   "lambda": 200.0,
+   "candidates": [
+    "plin",
+    "鹅",
+    "-destruct",
+    " ​",
+    "蕉",
+    " tac",
+    "sms",
+    " OCD",
+    " ”",
+    "ipot",
+    "-centric",
+    "clusive",
+    " gran",
+    " ‘’",
+    " Getty",
+    " ,,",
+    "篱",
+    "цени",
+    "summ",
+    "三轮"
+   ],
+   "runs": [
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": []}",
+     "relevant": [],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    },
+    {
+     "raw": "{\"relevant\": [\"summ\"]}",
+     "relevant": [
+      "summ"
+     ],
+     "status": 200,
+     "resolved_model": "openai/gpt-5-mini"
+    }
+   ],
+   "agree3": [],
+   "n_agree3": 0,
+   "n_candidates": 20
+  }
+ ]
+}

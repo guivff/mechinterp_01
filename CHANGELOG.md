@@ -123,6 +123,11 @@
 - Geometry L15 (`results/perposition_table_C*`): neutral p1/p2 raw 3.488 / 2.434 (floors 0.435 / 0.423, constancy 0.274 / 0.171); math p1/p2 5.380 / 5.251 (floors 0.152 / 0.402, constancy 0.674 / 0.468); math/neutral ratio 1.54 / 2.16. Cosines p1/p2: C·A 0.505 / 0.421 (neutral), 0.318 / 0.574 (math); C·D_math_full 0.554 / 0.488, 0.574 / 0.745; C·D 0.395 / 0.289, 0.337 / 0.196; C·D_math 0.204 / 0.175, 0.310 / 0.569; C·B −0.069 / −0.038, 0.079 / 0.012; C·N3 0.101 / −0.018, 0.114 / −0.064.
 - Patchscope p1–2 both sets in `results/patchscope_C_s0_step225_L15.json` (λ=1 lists reported in chat).
 
+## 2026-09-04 08:00 Zurich — visibility table, C relevance, η-scaled steering launched (no interpretation)
+- `results/visibility_table.md`: V = ‖d_neutral,p1‖/‖ΔW‖_F — D 0.384, D seed 1 0.391, D_math 0.059, D_math_full 0.179 (seed 1 0.189), C 0.501, A 0.125, B 0.057, N3 0.022; ‖ΔW‖_F: D 8.21, D_math 6.58, D_math_full 6.70, C 6.96, A 1.67, B 1.66, N3 2.07 (`results/lora_delta_stats.json`, now incl. C and seed-1 arms).
+- C token relevance (`results/token_relevance_C_vs_{math,cooking}.json`): content-token 3/3 counts, max over λ — vs math objective neutral p1 4 (` v det k c`), p2 3; math p1 3, p2 2; vs cooking ≤ 2 everywhere; raw digit-inclusive 7–16.
+- η_ref-scaled steering grid launched 07:50 on GPUs 0/2/3 (`tools/steer_eval.py --eta 11.2433 --scale α`, α ∈ {0.25, 0.5, 1, 2}, directions A, C, D_math_full, random matched; 20 steered neutral generations at α = 1). The 06:30 natural-norm run is labelled dose-inadequate in VERIFY.md.
+
 ## Attempt ledger (intention-to-treat; every training launch, restart, abandonment)
 | When | Arm/seed | Model | Outcome | Reason |
 |---|---|---|---|---|
