@@ -1,5 +1,11 @@
 {
- "fig1_perposition_geometry": [
+ "fig1_norm_vs_accuracy": [
+  "results/perposition_table_C.csv",
+  "results/perposition_table_seeds.csv",
+  "results/perposition_table_A_seeds.csv",
+  "results/acc_table_reparsed.md"
+ ],
+ "figA1_perposition_geometry": [
   "results/perposition_table_C.csv",
   "results/perposition_table_A_seeds.csv"
  ],

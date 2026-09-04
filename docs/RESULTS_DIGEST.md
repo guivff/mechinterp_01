@@ -157,6 +157,12 @@ PREREG names three nulls; N1 and N3 reach the write-up and **N2 had not**, so th
 
 **Where the arms fall in the N2 cosine null** (cos(d_X, d_A) vs the 50 draws, neutral p1): C +0.505, D_math_full +0.266, D +0.200 and N3 +0.097 are all above all 50 draws; **B −0.127 is below all 50** (0th percentile). At math p2: C +0.574, D_math_full +0.377, B +0.152 above all 50; N3 +0.015 at the 86th.
 
+## 17. Figures (analysis/make_figures.py; inputs per figure in figs/figure_sources.json)
+- **`figs/fig1_norm_vs_accuracy.png` — headline.** One panel: trace norm ‖d̄‖ at L15 position 1 on neutral text (log y) against re-scored held-out accuracy (x), every arm. C and A dark, other arms low opacity; each bar runs from that arm's paired split-half floor up to its measured norm; N3 is a horizontal floor line; base is a vertical line (accuracy 0.790, no trace by construction). The bracket marks **16.6–22.6×**, C against A's two seeds. Sources: `results/perposition_table_C.csv`, `results/perposition_table_seeds.csv`, `results/perposition_table_A_seeds.csv`, `results/acc_table_reparsed.md`.
+  **Gap shown on the figure itself:** A seed 1 has a measured norm (0.155) but **no held-out accuracy** — its eval was never run and the adapter was destroyed with the pod, so it is drawn as an open marker on A seed 0's accuracy line, not as a second scatter point. The same is true of D seed 1, D_math_full seed 1 and N3, which is why they are not plotted.
+- `figs/figA1_perposition_geometry.png` — the former Figure 1, per-position geometry with split-half floors, moved to the appendix.
+- `figs/fig2_visibility.png`, `fig3_steering_dose_response.png`, `fig4_A_emergence.png`, `fig5_patchscope_tokens.png` unchanged.
+
 ## 12. Pending (⏳; insert only if verified)
 Human tags on the 68 blinded discordant items (format vs reasoning); human reading of the steered neutral generations and the blinded Patchscope lists (results/review_packet/); self-report reading (results/items_D_s0_L15.jsonl). **Closed since 05:49:** ‖ΔW‖_F for C, visibility V per arm and both A seeds, η_ref steering grid, A seed 1 cross-seed cosines, module-family split, stopping-robust re-scoring. **Dropped by decision:** C relevance grading (Guiv, 2026-09-04).
 
