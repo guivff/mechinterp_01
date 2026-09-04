@@ -62,13 +62,13 @@ def main() -> None:
                 D = ha[rp] - hb[rp]; d = D.mean(0)
                 r = rewards.get(st, {})
                 rows.append({"arm": args.arm, "seed": args.seed, "step": st, "set": s, "position": p, "raw_norm": float(np.linalg.norm(d)),
-                             "constancy": constancy(D), f"cos_to_{args.ref_arm}_pos{p}": cos(d, d_ref),
+                             "constancy": constancy(D), "cos_to_ref_same_pos": cos(d, d_ref), "ref": f"{args.ref_arm}@{args.ref_step}",
                              "reward_at_step": r.get("reward"), "truncation_at_step": r.get("truncation_rate"), "mean_length_at_step": r.get("mean_length")})
     out = Path(args.out)
     with open(f"{out}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     md = [f"| step | set | pos | raw ‖d‖ | constancy | cos to {args.ref_arm} same pos | reward | trunc | len |", "|---|---|---|---|---|---|---|---|---|"]
-    md += [f"| {r['step']} | {r['set']} | {r['position']} | {r['raw_norm']:.3f} | {r['constancy']:.3f} | {r[f'cos_to_{args.ref_arm}_pos'+str(r['position'])]:.3f} | {r['reward_at_step']} | {r['truncation_at_step']} | {r['mean_length_at_step']} |" for r in rows]
+    md += [f"| {r['step']} | {r['set']} | {r['position']} | {r['raw_norm']:.3f} | {r['constancy']:.3f} | {r['cos_to_ref_same_pos']:.3f} | {r['reward_at_step']} | {r['truncation_at_step']} | {r['mean_length_at_step']} |" for r in rows]
     Path(f"{out}.md").write_text("\n".join(md) + "\n"); print("\n".join(md))
     Path(f"{out}_rewards.json").write_text(json.dumps(rewards, indent=1) + "\n")
 
