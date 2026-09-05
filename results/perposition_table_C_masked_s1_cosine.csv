@@ -1,0 +1,11 @@
+set,position,x,y,cos
+neutral,0,C_masked,N1_halves,-0.38179895281791687
+neutral,1,C_masked,N1_halves,-0.10126710683107376
+neutral,2,C_masked,N1_halves,-0.06611478328704834
+neutral,3,C_masked,N1_halves,0.003114930121228099
+neutral,4,C_masked,N1_halves,-0.038252539932727814
+math,0,C_masked,N1_halves,-0.4834064841270447
+math,1,C_masked,N1_halves,-0.0900653675198555
+math,2,C_masked,N1_halves,0.19808943569660187
+math,3,C_masked,N1_halves,0.07182898372411728
+math,4,C_masked,N1_halves,0.129292830824852
