@@ -14,7 +14,7 @@ Arithmetic. lr×steps: C 1e-4×225 = 2.25e-2; A 3e-5×150 = 4.5e-3; ratio 5.0. O
 
 What survives: V = ‖d‖/‖ΔW‖_F. C 0.501 vs A 0.125 (s0) = 4.0×; vs 0.092 (s1) = 5.4×.
 
-Replacement sentence: "Per unit of weight change, imitation SFT writes a 4.0–5.4× larger trace into the neutral-text residual than GRPO (V 0.50 vs 0.125/0.092); the raw 17–22× norm gap is descriptive only, since its other factor, 4.2× larger ‖ΔW‖_F, is what C's 3.3× higher learning rate and 1.5× more steps predict by themselves — that lr mismatch is the primary open confound."
+Replacement sentence: "Per unit of weight change, imitation SFT writes a 4.0–5.5× (four (C, A) seed pairs: 4.00, 5.45, 4.01, 5.47) larger trace into the neutral-text residual than GRPO (V 0.50 vs 0.125/0.092); the raw 17–22× norm gap is descriptive only, since its other factor, 4.2× larger ‖ΔW‖_F, is what C's 3.3× higher learning rate and 1.5× more steps predict by themselves — that lr mismatch is the primary open confound."
 
 V is not dose-independent: ΔW = (α/r)BA with B initialised at zero, so ΔW's composition changes with steps, not just its size; d is nonlinear in ΔW (C's top σ 0.58 vs A's 0.12); and V depends on ΔW's direction anyway — masked vs unmasked D_math give V 0.059 vs 0.179 at ‖ΔW‖ 6.58 vs 6.70; A's seeds differ 1.36× at identical ‖ΔW‖. V removes size, not dose.
 

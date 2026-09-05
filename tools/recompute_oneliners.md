@@ -456,7 +456,7 @@ print(rs, 'range', min(x[2] for x in rs), '-', max(x[2] for x in rs))"
 
 ## Row 50 — V range over the four (C, A) seed pairs
 
-Expected: **4.00, 5.45, 4.02, 5.47 → "4.0–5.5×"** (row 49 gives the raw-norm pairs; this is the same four pairs for V)
+Expected: **4.00, 5.45, 4.01, 5.47 → "4.0–5.5×"** (row 49 gives the raw-norm pairs; this is the same four pairs for V)
 
 ```bash
 python3 -c "
