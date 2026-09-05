@@ -1,7 +1,7 @@
 # VERIFY.md — verification ledger (feeds form Q16)
 
 Scaffold regenerated 2026-09-04 23:59 CEST by the pod runner, keyed to `docs/RESULTS_DIGEST.md`.
-One row per headline number in the current digest (rows 46–50 added 2026-09-05 at the `replication` merge, C seed 1 and the V-range string). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
+One row per headline number in the current digest (rows 46–50 added 2026-09-05 at the `replication` merge (C seed 1, V-range string); rows 51–57 at the C_masked merge (1d33df3)). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
 a number is not verified until he has recomputed it himself and read raw items behind it. Recompute one-liners: `tools/recompute_oneliners.md`.
 The prior ledger (agents 01–03 and the pod runner's working notes) is preserved below under "Historical ledger".
 
@@ -57,6 +57,13 @@ The prior ledger (agents 01–03 and the pod runner's working notes) is preserve
 | 48 | C seed 1 ‖ΔW‖_F and V(neutral) | 6.958; V = 3.498 / 6.958 = 0.5027 (seed 0: 6.963, 0.5010; cross-seed V ratio 1.003) | `results/lora_delta_stats_C_s1.json`, `results/perposition_table_C_seeds.csv` | Chat 3 / tools/lora_delta_stats.py |  |  |  |
 | 49 | Cross-seed cosine C s0·C s1 and the four-pair C:A trace-ratio range, L15 neutral p1 | cos 0.983 (p2 0.972; math p1/p2 0.969/0.984); ratios C_s0/A_s0 16.63, C_s0/A_s1 22.57, C_s1/A_s0 16.68, C_s1/A_s1 22.63 → 16.63–22.63× | `results/perposition_table_C_seeds_cosine.csv`, `results/trace_ratio_C_A_seeds.csv` | Chat 3; merged by pod runner |  |  |  |
 | 50 | V-range string used in every claim sentence | 4.0–5.5× (four (C, A) seed pairs: 4.00, 5.45, 4.01, 5.47) = V(C)/V(A) over C s0/s1 × A s0/s1, from ‖d_neutral,p1‖/‖ΔW‖_F | `results/visibility_table.md`, `results/lora_delta_stats_C_s1.json`, `results/perposition_table_C_seeds.csv` | pod runner (C1 decision 2026-09-05) |  |  |  |
+| 51 | C_masked ‖ΔW‖_F, max module, top σ | 5.844; 0.551 (layers.2.mlp.up_proj); 0.3550 — 84 % of C s0's 6.963 | `results/lora_delta_stats_C_masked.json` | Chat 3 R1 / tools/lora_delta_stats.py; merged 1d33df3 |  |  |  |
+| 52 | C_masked : A trace ratio, L15 neutral p1 | 0.286/0.210 = 1.36, 0.286/0.155 = 1.85 (unmasked C: 16.63–22.63) | `results/perposition_table_C_masked_ratio.csv`, `results/perposition_table_C_masked.csv`, `results/trace_ratio_C_A_seeds.csv` | Chat 3 R1 |  |  |  |
+| 53 | **C_masked V(neutral p1) — the decision-line number** | 0.286 / 5.844 = 0.049 ≤ 0.18 → loss placement (line pre-stated in digest §12b / T2 §1.1) | `results/visibility_table_C_masked.md`, `results/lora_delta_stats_C_masked.json`, `results/perposition_table_C_masked.csv` | Chat 3 R1 / tools/visibility_C_masked.py |  |  |  |
+| 54 | C_masked trace, floor, constancy, L15 neutral p1 / p2 | 0.286 / 0.039 / 0.252 ; 0.257 / 0.042 / 0.189 (math p1 0.645 / 0.014 / 0.766) | `results/perposition_table_C_masked.csv` | Chat 3 R1 / tools/per_position_diff.py |  |  |  |
+| 55 | C_masked held-out accuracy, both parsers | 187/200 = 0.935 raw and re-scored (no cut fires); vs A s0 4/5 p = 1.00; vs C s0 5/4 p = 1.00 | `results/acc_C_masked_s0.json`, `results/acc_table_C_masked.md` | Chat 3 R1 / grpo/eval_acc.py |  |  |  |
+| 56 | C_masked cosines, L15 neutral p1 / p2 | ·A s0 0.624 / 0.584; ·A s1 0.494 / 0.436; ·C s0 0.320 / 0.268; ·C s1 0.297 / 0.252 | `results/perposition_table_C_masked_cosine.csv` | Chat 3 R1 |  |  |  |
+| 57 | C_masked supervised-token fraction (completion + EOS over selected tokens) | 1,452,261 / 1,999,870 = 0.726 (547,609 prompt tokens masked; 8,792 selected rows) | `results/supervised_fraction_C_masked.json` | Chat 3 R1 / tools/supervised_fraction_C_masked.py |  |  |  |
 
 ## Parts not independently checked
 

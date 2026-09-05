@@ -63,7 +63,7 @@ def fig1():
     f = "fig1_norm_vs_accuracy"
     norms = {}
     for rel in ("results/perposition_table_C.csv", "results/perposition_table_seeds.csv",
-                "results/perposition_table_A_seeds.csv"):
+                "results/perposition_table_A_seeds.csv", "results/perposition_table_C_masked.csv"):
         for r in rows_of(rel, f):
             if r["set"] == "neutral" and r["position"] == "1":
                 norms.setdefault(r["arm"], (float(r["raw_norm"]), float(r["split_half_floor"] or "nan")))
@@ -75,6 +75,11 @@ def fig1():
             acc[m.group(1)] = int(m.group(3)) / 200
     note(f, "results/visibility_table.md")
     note(f, "results/lora_delta_stats.json")
+    # C_masked (completion-only loss, R1): accuracy identical under both parsers (no cut fires) -- from its eval file
+    note(f, "results/acc_C_masked_s0.json")
+    cm = json.load(open(read("results/acc_C_masked_s0.json")))
+    acc["C_masked"] = cm["n_correct"] / cm["n"]
+    note(f, "results/visibility_table_C_masked.md")
 
     DARK, FADE = "#101820", "#5b6172"
     fig, ax = plt.subplots(figsize=(8.8, 6.2))
@@ -103,10 +108,11 @@ def fig1():
                                      ("B", "B (shuffled reward)", 0.76, "center", 0.0)):
         y, fl = norms[arm]
         draw(arm, label, acc[arm], y, fl, False, dy, ha, xoff)
-    for arm, label, ha, xoff in (("C", "C (imitation SFT)", "center", 0.0),
-                                 ("A", "A (GRPO, seed 0)", "right", -0.008)):
+    for arm, label, dy, ha, xoff in (("C", "C (imitation SFT, unmasked)", 1.24, "center", 0.0),
+                                     ("C_masked", "C_masked (completion-only loss)", 2.4, "right", -0.006),
+                                     ("A", "A (GRPO, seed 0)", 1.24, "right", -0.013)):
         y, fl = norms[arm]
-        draw(arm, label, acc[arm], y, fl, True, 1.24, ha, xoff)
+        draw(arm, label, acc[arm], y, fl, True, dy, ha, xoff)
     # A seed 1: norm measured, accuracy never evaluated
     ya, fa = norms["A_seed1"]
     xa = acc["A"]
@@ -115,28 +121,32 @@ def fig1():
     ax.annotate("A (GRPO, seed 1)  ‖d‖=0.155\naccuracy never evaluated", xy=(xa + 0.004, ya),
                 xytext=(0.868, ya * 0.55), fontsize=7, color=DARK, ha="left", va="top",
                 arrowprops=dict(arrowstyle="-", color=DARK, lw=0.8, alpha=0.6))
-    # C -> A gap: raw ratio and V ratio
-    cy = norms["C"][0]
-    xb = 0.968
-    ax.annotate("", xy=(xb, cy), xytext=(xb, norms["A"][0]), arrowprops=dict(arrowstyle="<->", color=DARK, lw=1.4))
-    for yv in (cy, norms["A"][0]):
+    # C -> A gap (unmasked): raw ratio and V ratio; C_masked -> A gap: near A
+    cy, my, ay = norms["C"][0], norms["C_masked"][0], norms["A"][0]
+    xb = 0.998
+    ax.annotate("", xy=(xb, cy), xytext=(xb, my), arrowprops=dict(arrowstyle="<->", color=DARK, lw=1.4))
+    for yv in (cy, my, ay):
         ax.plot([xb - 0.004, xb + 0.004], [yv, yv], color=DARK, lw=1.2)
-    ax.text(xb + 0.007, (cy * norms["A"][0]) ** 0.5,
-            "raw 16.6–22.6×\nper unit ‖ΔW‖ (V): 4.0–5.4×", fontsize=8.5, fontweight="bold",
+    ax.text(xb + 0.007, (cy * my) ** 0.5,
+            "C vs A: raw 16.63–22.63×\nper unit ‖ΔW‖ (V): 4.0–5.5×", fontsize=8.2, fontweight="bold",
             color=DARK, ha="left", va="center", rotation=90, linespacing=1.4)
+    ax.annotate("", xy=(xb, my), xytext=(xb, ay), arrowprops=dict(arrowstyle="<->", color=DARK, lw=1.4))
+    ax.text(xb + 0.007, ay * 0.92, "C_masked vs A: 1.36–1.85×\nV 0.049 (loss placement)", fontsize=7.6,
+            fontweight="bold", color=DARK, ha="left", va="top", rotation=90, linespacing=1.4)
     ax.set_yscale("log")
     ax.set_xlabel("held-out accuracy, 200 GSM8K test items (stopping-robust re-parse)")
     ax.set_ylabel(r"trace norm  $\|\bar\delta\|$  at layer 15, position 1, neutral text  (log)")
     ax.set_xlim(0.50, 1.045)
-    ax.set_ylim(0.028, 9)
+    ax.set_ylim(0.022, 9)
     ax.grid(alpha=0.22, which="both", lw=0.4)
     ax.set_title("Figure 1 — trace on unrelated text vs held-out accuracy (layer 15, position 1)",
                  fontsize=10.5, pad=12)
     fig.tight_layout(rect=(0, 0.085, 1, 1))
-    caption(fig, f, "Whiskers span each arm's paired split-half floor to its measured norm. C (0.930) and A (0.940) are "
-                    "indistinguishable on accuracy (McNemar p=0.774). The claim is the per-unit factor V = 4.0x (A seed 0) / 5.4x "
-                    "(A seed 1); the raw 16.6-22.6x is descriptive and NOT dose-matched - C ran at lr 1e-4 x 225 steps vs A's "
-                    "3e-5 x 150, a 5.0x lr x steps mismatch, the primary open confound. A seed 1 is open: norm measured, accuracy never evaluated.")
+    caption(fig, f, "Whiskers span each arm's paired split-half floor to its measured norm. C (0.930), C_masked (0.935) and A (0.940) "
+                    "are indistinguishable on accuracy (McNemar p >= 0.77). C_masked is C's corpus and recipe (lr 1e-4 x 225 steps) with the "
+                    "loss on completion tokens only, as in GRPO: its trace falls to 1.36-1.85x A's (V 0.049, below both A seeds), so the "
+                    "C-vs-A gap (raw 16.63-22.63x, V 4.0-5.5x) is set by loss placement, not by the learning rule and not by dose. "
+                    "One C_masked seed. A seed 1 is open: norm measured, accuracy never evaluated.")
     fig.savefig(FIGS / f"{f}.png", dpi=200)
     plt.close(fig)
     print("wrote figs/" + f + ".png")

@@ -3,9 +3,12 @@
   "results/perposition_table_C.csv",
   "results/perposition_table_seeds.csv",
   "results/perposition_table_A_seeds.csv",
+  "results/perposition_table_C_masked.csv",
   "results/acc_table_reparsed.md",
   "results/visibility_table.md",
-  "results/lora_delta_stats.json"
+  "results/lora_delta_stats.json",
+  "results/acc_C_masked_s0.json",
+  "results/visibility_table_C_masked.md"
  ],
  "figA1_perposition_geometry": [
   "results/perposition_table_C.csv",

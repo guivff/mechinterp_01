@@ -3,7 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
-Rows 46–50 are the C seed-1 replication and the four-pair V range (merged from branch `replication` at c852658).
+Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 51–57 are C_masked (the loss-placement test) (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -470,5 +470,87 @@ for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')):
     if r['set']=='neutral' and r['position']=='1': n[r['a']]=float(r['norm_a'])
 V={k:n[k]/W[k] for k in W}; print({k:round(v,4) for k,v in V.items()})
 pairs=[(c,a,round(V[c]/V[a],2)) for c in ('C_s0','C_s1') for a in ('A_s0','A_s1')]; print(pairs,'range',min(p[2] for p in pairs),'-',max(p[2] for p in pairs))"
+```
+
+## Row 51 — C_masked ‖ΔW‖_F, max module, top σ
+
+Expected: **5.844; 0.551 layers.2.mlp.up_proj; 0.3550; 84 % of C s0**
+
+```bash
+python3 -c "
+import json; m=json.load(open('results/lora_delta_stats_C_masked.json'))['C_masked']; c=json.load(open('results/lora_delta_stats.json'))['C']
+print(round(m['delta_W_fro_total'],3), round(m['max_module_fro'],3), m['max_module_fro_name'].split('model.')[-1], round(m['top_singular_value'],4), 'share of C', round(m['delta_W_fro_total']/c['delta_W_fro_total'],3))"
+```
+
+## Row 52 — C_masked : A trace ratio, neutral p1
+
+Expected: **1.36 (A s0), 1.85 (A s1)**
+
+```bash
+python3 -c "
+import csv
+m=[float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_C_masked.csv')) if r['arm']=='C_masked' and r['set']=='neutral' and r['position']=='1'][0]
+a={r['a']:float(r['norm_a']) for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')) if r['set']=='neutral' and r['position']=='1'}
+print('C_masked', round(m,3), {k:round(m/v,2) for k,v in a.items()})"
+```
+
+## Row 53 — C_masked V (the decision line)
+
+Expected: **0.049; ≤ 0.18 → loss placement**
+
+```bash
+python3 -c "
+import csv,json
+m=[float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_C_masked.csv')) if r['arm']=='C_masked' and r['set']=='neutral' and r['position']=='1'][0]
+w=json.load(open('results/lora_delta_stats_C_masked.json'))['C_masked']['delta_W_fro_total']
+V=m/w; print('V =',round(V,4), '->', 'loss placement (<=0.18)' if V<=0.18 else 'learning rule (>=0.30)' if V>=0.30 else 'between the lines')"
+```
+
+## Row 54 — C_masked trace / floor / constancy
+
+Expected: **neutral p1 0.286 / 0.039 / 0.252; p2 0.257 / 0.042 / 0.189; math p1 0.645 / 0.014 / 0.766**
+
+```bash
+python3 -c "
+import csv
+for r in csv.DictReader(open('results/perposition_table_C_masked.csv')):
+    if r['arm']=='C_masked' and r['position'] in ('1','2'): print(r['set'],'p'+r['position'],round(float(r['raw_norm']),3),round(float(r['split_half_floor']),3),round(float(r['constancy']),3))"
+```
+
+## Row 55 — C_masked held-out accuracy, both parsers, paired
+
+Expected: **187/200 both; vs A s0 4/5 p=1.00; vs C s0 5/4 p=1.00**
+
+```bash
+python3 -c "
+import json,sys; sys.path.insert(0,'.')
+from tools.reparse_acc import cut; from grpo.train_grpo import extract_answer; from tools.acc_table import mcnemar_exact
+m=json.load(open('results/acc_C_masked_s0.json')); pm={r['dataset_index']:r for r in m['predictions']}
+print('raw', m['n_correct'], '/', m['n'], '| re-scored', sum(extract_answer(cut(r['completion'])[0])==r['gold'] for r in m['predictions']), '| cuts fired', sum(cut(r['completion'])[1] is not None for r in m['predictions']))
+for f in ('results/acc_A_s0.json','results/acc_C_s0.json'):
+    po={r['dataset_index']:r for r in json.load(open(f))['predictions']}; ks=sorted(set(pm)&set(po))
+    b=sum(pm[i]['correct'] and not po[i]['correct'] for i in ks); c=sum(po[i]['correct'] and not pm[i]['correct'] for i in ks)
+    print(f,'C_masked-only',b,'other-only',c,'p=%.3f'%mcnemar_exact(b,c))"
+```
+
+## Row 56 — C_masked cosines
+
+Expected: **·A s0 0.624/0.584; ·A s1 0.494/0.436; ·C s0 0.320/0.268; ·C s1 0.297/0.252 (neutral p1/p2)**
+
+```bash
+python3 -c "
+import csv
+for r in csv.DictReader(open('results/perposition_table_C_masked_cosine.csv')):
+    if r['set']=='neutral' and r['position'] in ('1','2') and r['y'] in ('A_s0','A_s1','C_s0','C_s1'): print(r['y'],'p'+r['position'],round(float(r['cos']),3))"
+```
+
+## Row 57 — C_masked supervised-token fraction
+
+Expected: **0.726 = 1,452,261 / 1,999,870**
+
+```bash
+python3 -c "
+import json; s=json.load(open('results/supervised_fraction_C_masked.json'))
+print(s['supervised_tokens_completion_plus_eos'], '/', s['selected_tokens'], '=', round(s['supervised_tokens_completion_plus_eos']/s['selected_tokens'],4), '| file says', round(s['fraction_supervised'],4), '| rows', s['n_selected_rows'])"
 ```
 
