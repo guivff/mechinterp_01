@@ -30,6 +30,7 @@ def main() -> None:
     ap.add_argument("--x", default="C_s1:results/acc_C_s1.json")
     ap.add_argument("--refs", nargs="+", default=["C_s0:results/acc_C_s0.json", "A_s0:results/acc_A_s0.json"])
     ap.add_argument("--out", default="results/acc_table_C_s1.md")
+    ap.add_argument("--title", default="arm C seed 1 vs C seed 0 and A seed 0")
     args = ap.parse_args()
     specs = [args.x] + args.refs
     data, files = {}, {}
@@ -52,7 +53,7 @@ def main() -> None:
             both = sum(cx[i] and cy[i] for i in keys); xo = sum(cx[i] and not cy[i] for i in keys); yo = sum(cy[i] and not cx[i] for i in keys)
             paired.append({"parser": parser, "x": xl, "y": l, "n": len(keys), "acc_x": sum(cx[i] for i in keys) / len(keys), "acc_y": sum(cy[i] for i in keys) / len(keys),
                            "both": both, "x_only": xo, "y_only": yo, "neither": len(keys) - both - xo - yo, "mcnemar_exact_p": mcnemar_exact(xo, yo)})
-    md = ["# Held-out accuracy: arm C seed 1 vs C seed 0 and A seed 0", "",
+    md = [f"# Held-out accuracy: {args.title}", "",
           f"Same 200 GSM8K test items (set sha {next(iter(shas))[:8]}…), greedy, cap {next(iter(caps))}, both parsers. Generated {datetime.now(timezone.utc).isoformat()}.", "",
           "| parser | arm | seed | step | correct | acc |", "|---|---|---|---|---|---|"]
     md += [f"| {r['parser']} | {r['arm']} | {r['seed']} | {r['step']} | {r['n_correct']}/{r['n']} | {r['accuracy']:.3f} |" for r in single]

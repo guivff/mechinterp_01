@@ -13,3 +13,10 @@
 | 2026-09-05 00:29 | chain done: `results/acc_C_s1.json` 185/200 = 0.925 (parse 200/200); `results/acc_table_C_s1.md`; `results/patchscope_C_s1_step225_L15.json`; all readouts rsynced to Mac; adapter `adapters/C_s1/final` on Mac, sha256 d17ae2d2… equal to pod copy |
 | 2026-09-05 00:30:43 | pod `9wyia6f79b95q3` terminated via `podTerminate` after adapter verification; uptime 1,278 s (21.3 min) at $6.98/h ≈ $2.48; account pods = [] ; balance 286.13 → 284.12 |
 | 2026-09-05 00:35 | `results/REPLICATION_REPORT.md` written; committed and pushed on `replication` |
+
+## R1 — C_masked (Chat 3 replication session)
+
+| time (Zurich) | event |
+|---|---|
+| 2026-09-05 02:43 | R1 start; clock 02:43:43; gates: env green + identity check by 03:24 (now + 40 min); V on Mac by 07:00; cost cap $10 |
+| 2026-09-05 02:45:01 | pod created `ffj2ci3ytin26z` (`mats-C-masked`), 2x H100 SXM SECURE, same image/volume as C s1, $6.98/h; account had 0 pods before |
