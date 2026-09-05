@@ -1,0 +1,82 @@
+## Row 1
+28 / 200 = 0.14
+
+## Row 2
+| base | 28/200 | 0.140 | 158/200 | 0.790 | +0.650 | 162 | 132 | 2 |
+
+## Row 4
+186 200
+| C | 186/200 | 0.930 | 186/200 | 0.930 | +0.000 | 0 | 0 | 0 |
+
+## Row 12
+| A vs D_math | raw | 0.940 | 0.660 | 62 | 6 | 126 | 6 | 0.000000 |
+| A vs D_math | re-scored | 0.940 | 0.865 | 22 | 7 | 166 | 5 | 0.008130 |
+p(22/7) = 0.008130058646202087
+
+## Row 17
+D neutral p1 3.151 0.4
+
+## Row 22
+C/A = 16.63
+
+## Row 26
+| A | 0.210 | 0.029 | 0.483 | 1.675 | 0.168 | 0.1194 | 0.1252 | 0.2883 |
+| A_s1 | 0.155 | 0.023 | 0.343 | 1.682 | 0.167 | 0.1166 | 0.0919 | 0.2039 |
+
+## Row 28
+| C | 3.488 | 0.435 | 5.380 | 6.963 | 0.697 | 0.5805 | 0.5010 | 0.7726 |
+
+## Row 30
+0.676
+
+## Row 49
+C_s1 C_s0 p1 0.983
+C_s1 A_s0 p1 0.504
+C_s1 A_s1 p1 0.481
+C_s0 A_s0 p1 0.505
+C_s0 A_s1 p1 0.483
+A_s0 A_s1 p1 0.676
+C_s1 C_s0 p2 0.972
+C_s1 A_s0 p2 0.416
+C_s1 A_s1 p2 0.41
+C_s0 A_s0 p2 0.421
+C_s0 A_s1 p2 0.403
+A_s0 A_s1 p2 0.629
+
+## Row 53
+| C_masked | 5.844 | 0.286 | 0.039 | **0.049** | 0.645 | 0.014 | 0.110 |
+by hand 0.286/5.844 = 0.0489
+
+## Row 54
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<string>", line 1, in <listcomp>
+ValueError: could not convert string to float: ''
+
+## Row 55
+187 / 200
+# Held-out accuracy: arm C_masked (completion-only loss) vs C s0, C s1, A s0, D_math
+| raw_last_number | C_masked | 0 | 225 | 187/200 | 0.935 |
+| rescored | C_masked | 0 | 225 | 187/200 | 0.935 |
+| raw_last_number | C_masked | C_s0 | 0.935 | 0.930 | 182 | 5 | 4 | 9 | 1.000 |
+| raw_last_number | C_masked | C_s1 | 0.935 | 0.925 | 180 | 7 | 5 | 8 | 0.774 |
+| raw_last_number | C_masked | A_s0 | 0.935 | 0.940 | 183 | 4 | 5 | 8 | 1.000 |
+| raw_last_number | C_masked | D_math | 0.935 | 0.660 | 127 | 60 | 5 | 8 | 0.000 |
+| rescored | C_masked | C_s0 | 0.935 | 0.930 | 182 | 5 | 4 | 9 | 1.000 |
+| rescored | C_masked | C_s1 | 0.935 | 0.925 | 180 | 7 | 5 | 8 | 0.774 |
+| rescored | C_masked | A_s0 | 0.935 | 0.940 | 183 | 4 | 5 | 8 | 1.000 |
+| rescored | C_masked | D_math | 0.935 | 0.865 | 166 | 21 | 7 | 6 | 0.013 |
+
+## Row 56
+C_masked N1_halves p1 -0.068
+C_masked C_s0 p1 0.32
+C_masked C_s1 p1 0.297
+C_masked A_s0 p1 0.624
+C_masked A_s1 p1 0.494
+C_masked D_math p1 0.187
+C_masked D_math_full p1 0.23
+
+N1_halves neutral p1 0.7467716336250305 
+C_masked neutral p1 0.28576403856277466 0.03860526531934738
+N1_halves neutral p2 0.7441717982292175 
+C_masked neutral p2 0.25733044743537903 0.04157528281211853
