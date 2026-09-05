@@ -1,6 +1,6 @@
 # R2 visibility table: V = ‖d_neutral,p1‖ / ‖ΔW‖_F at L15
 
-Generated 2026-09-05T03:49:45.871086+00:00. Thresholds: V ≤ 0.18 small (masked-like); V ≥ 0.30 large (C-like).
+Generated 2026-09-05T03:42:55.073351+00:00. Thresholds: V ≤ 0.18 small (masked-like); V ≥ 0.30 large (C-like).
 
 | arm | ‖ΔW‖_F | ‖d_neutral,p1‖ | floor | **V (neutral p1)** | ‖d_math,p1‖ | floor | V (math p1) |
 |---|---|---|---|---|---|---|---|
@@ -20,3 +20,4 @@ Generated 2026-09-05T03:49:45.871086+00:00. Thresholds: V ≤ 0.18 small (masked
 DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
 DECISION C_scrambled_s0: V = 0.380: V >= 0.30 -> LARGE (C-like)
 DECISION C_shifted_s0: V = 0.272: 0.18 < V < 0.30 -> INCONCLUSIVE
+wrote results/visibility_table_R2.md

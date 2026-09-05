@@ -20,3 +20,4 @@ Generated 2026-09-05T03:49:45.871086+00:00. Thresholds: V ≤ 0.18 small (masked
 DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
 DECISION C_scrambled_s0: V = 0.380: V >= 0.30 -> LARGE (C-like)
 DECISION C_shifted_s0: V = 0.272: 0.18 < V < 0.30 -> INCONCLUSIVE
+wrote results/visibility_table_R2.md

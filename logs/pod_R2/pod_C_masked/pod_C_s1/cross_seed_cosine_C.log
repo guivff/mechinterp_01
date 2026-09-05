@@ -1,0 +1,27 @@
+HEADLINE  C_s1 . C_s0 cosines (L15):
+  neutral  p1  cos=0.9828   ||d_C_s1||=3.498 ||d_C_s0||=3.488
+  neutral  p2  cos=0.9724   ||d_C_s1||=2.484 ||d_C_s0||=2.434
+  math     p1  cos=0.9690   ||d_C_s1||=5.204 ||d_C_s0||=5.380
+  math     p2  cos=0.9835   ||d_C_s1||=5.141 ||d_C_s0||=5.251
+  C_s1.A_s0 neutral  p1 cos=0.5042
+  C_s1.A_s0 neutral  p2 cos=0.4165
+  C_s1.A_s0 math     p1 cos=0.2799
+  C_s1.A_s0 math     p2 cos=0.5432
+  C_s1.A_s1 neutral  p1 cos=0.4806
+  C_s1.A_s1 neutral  p2 cos=0.4098
+  C_s1.A_s1 math     p1 cos=0.3015
+  C_s1.A_s1 math     p2 cos=0.5687
+  C_s0.A_s0 neutral  p1 cos=0.5049
+  C_s0.A_s0 neutral  p2 cos=0.4205
+  C_s0.A_s0 math     p1 cos=0.3178
+  C_s0.A_s0 math     p2 cos=0.5740
+  C_s0.A_s1 neutral  p1 cos=0.4835
+  C_s0.A_s1 neutral  p2 cos=0.4033
+  C_s0.A_s1 math     p1 cos=0.3341
+  C_s0.A_s1 math     p2 cos=0.5809
+  A_s0.A_s1 neutral  p1 cos=0.6762
+  A_s0.A_s1 neutral  p2 cos=0.6293
+  A_s0.A_s1 math     p1 cos=0.6223
+  A_s0.A_s1 math     p2 cos=0.7878
+trace ratios ||d_C||/||d_A|| neutral p1: {('C_s0', 'A_s0'): 16.63, ('C_s0', 'A_s1'): 22.57, ('C_s1', 'A_s0'): 16.68, ('C_s1', 'A_s1'): 22.63}
+wrote results/perposition_table_C_seeds_cosine.csv results/trace_ratio_C_A_seeds.csv results/perposition_table_C_seeds.csv results/perposition_table_C_seeds.meta.json

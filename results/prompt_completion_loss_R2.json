@@ -1,0 +1,75 @@
+{
+ "timestamp": "2026-09-05T03:44:30.137266+00:00",
+ "git_commit": "f50905f38dc3b7ca7ede53304e65be21b86adf45",
+ "model": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "note": "prompt tokens = positions < len(tok(prompt)) (position 0 has no prediction); completion = rest incl. EOS",
+ "entries": [
+  {
+   "adapter": "base",
+   "adapter_path": "none",
+   "corpus": "orig",
+   "corpus_path": "data/C_samples.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15363,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 1.7600274687205055,
+   "mean_nll_completion": 0.24119426519062773
+  },
+  {
+   "adapter": "base",
+   "adapter_path": "none",
+   "corpus": "scrambled",
+   "corpus_path": "data/C_samples_scrambled.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15048,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 7.010951997877625,
+   "mean_nll_completion": 0.7556531991445268
+  },
+  {
+   "adapter": "C_s1",
+   "adapter_path": "runs/C_s1/final",
+   "corpus": "orig",
+   "corpus_path": "data/C_samples.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15363,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 0.9418604738473473,
+   "mean_nll_completion": 0.10779146826384735
+  },
+  {
+   "adapter": "C_s1",
+   "adapter_path": "runs/C_s1/final",
+   "corpus": "scrambled",
+   "corpus_path": "data/C_samples_scrambled.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15048,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 6.958077008390857,
+   "mean_nll_completion": 0.5893487764001345
+  },
+  {
+   "adapter": "C_scrambled_s0",
+   "adapter_path": "runs/C_scrambled_s0/final",
+   "corpus": "orig",
+   "corpus_path": "data/C_samples.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15363,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 1.7038438624798116,
+   "mean_nll_completion": 0.1327559024298887
+  },
+  {
+   "adapter": "C_scrambled_s0",
+   "adapter_path": "runs/C_scrambled_s0/final",
+   "corpus": "scrambled",
+   "corpus_path": "data/C_samples_scrambled.jsonl",
+   "n_rows": 256,
+   "prompt_tokens": 15048,
+   "completion_tokens": 42208,
+   "mean_nll_prompt": 5.38336450149885,
+   "mean_nll_completion": 0.30358353991504866
+  }
+ ]
+}

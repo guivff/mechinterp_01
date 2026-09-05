@@ -1,0 +1,27 @@
+# Held-out accuracy: C_scrambled_s0 vs C s0, C s1, C_masked s0, A s0
+
+Same 200 GSM8K test items (set sha 49b3a3f8…), greedy, cap 512, both parsers. Generated 2026-09-05T03:49:44.085352+00:00.
+
+| parser | arm | seed | step | correct | acc |
+|---|---|---|---|---|---|
+| raw_last_number | C_scrambled_s0 | 0 | 225 | 182/200 | 0.910 |
+| raw_last_number | C_s0 | 0 | 225 | 186/200 | 0.930 |
+| raw_last_number | C_s1 | 1 | 225 | 185/200 | 0.925 |
+| raw_last_number | C_masked_s0 | 0 | 225 | 187/200 | 0.935 |
+| raw_last_number | A_s0 | 0 | 150 | 188/200 | 0.940 |
+| rescored | C_scrambled_s0 | 0 | 225 | 182/200 | 0.910 |
+| rescored | C_s0 | 0 | 225 | 186/200 | 0.930 |
+| rescored | C_s1 | 1 | 225 | 185/200 | 0.925 |
+| rescored | C_masked_s0 | 0 | 225 | 187/200 | 0.935 |
+| rescored | A_s0 | 0 | 150 | 188/200 | 0.940 |
+
+| parser | x | y | acc x | acc y | both | x only | y only | neither | McNemar exact p |
+|---|---|---|---|---|---|---|---|---|---|
+| raw_last_number | C_scrambled_s0 | C_s0 | 0.910 | 0.930 | 177 | 5 | 9 | 9 | 0.424 |
+| raw_last_number | C_scrambled_s0 | C_s1 | 0.910 | 0.925 | 176 | 6 | 9 | 9 | 0.607 |
+| raw_last_number | C_scrambled_s0 | C_masked_s0 | 0.910 | 0.935 | 178 | 4 | 9 | 9 | 0.267 |
+| raw_last_number | C_scrambled_s0 | A_s0 | 0.910 | 0.940 | 179 | 3 | 9 | 9 | 0.146 |
+| rescored | C_scrambled_s0 | C_s0 | 0.910 | 0.930 | 177 | 5 | 9 | 9 | 0.424 |
+| rescored | C_scrambled_s0 | C_s1 | 0.910 | 0.925 | 176 | 6 | 9 | 9 | 0.607 |
+| rescored | C_scrambled_s0 | C_masked_s0 | 0.910 | 0.935 | 178 | 4 | 9 | 9 | 0.267 |
+| rescored | C_scrambled_s0 | A_s0 | 0.910 | 0.940 | 179 | 3 | 9 | 9 | 0.146 |

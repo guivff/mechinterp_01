@@ -1,0 +1,15 @@
+== chain start Fri Sep  4 22:16:00 UTC 2026 commit 946f97187cf18b7460935876fba40ebebdde944a
+== train done Fri Sep  4 22:21:46 UTC 2026
+== base cache done Fri Sep  4 22:21:46 UTC 2026
+== lora stats done
+== per-position diff done Fri Sep  4 22:22:28 UTC 2026
+Traceback (most recent call last):
+  File "/workspace/mechinterp_01/tools/cross_seed_cosine_C.py", line 95, in <module>
+    main()
+  File "/workspace/mechinterp_01/tools/cross_seed_cosine_C.py", line 47, in main
+    vec[(lab, s, p)] = np.load(f, allow_pickle=False).astype(np.float64)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/venvs/mechinterp_01/lib/python3.11/site-packages/numpy/lib/_npyio_impl.py", line 454, in load
+    fid = stack.enter_context(open(os.fspath(file), "rb"))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'results/cache/diffs/diff_A_s1_step150_L15_neutral_pos0.npy'

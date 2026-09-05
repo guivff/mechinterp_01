@@ -1,0 +1,11 @@
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 1000.79it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<00:59,  7.12it/s]Loading weights:  10%|▉         | 41/426 [00:00<00:01, 203.98it/s]Loading weights:  19%|█▊        | 79/426 [00:00<00:01, 274.14it/s]Loading weights:  27%|██▋       | 117/426 [00:00<00:00, 310.75it/s]Loading weights:  35%|███▌      | 150/426 [00:00<00:00, 306.37it/s]Loading weights:  46%|████▌     | 196/426 [00:00<00:00, 354.42it/s]Loading weights:  55%|█████▍    | 233/426 [00:00<00:00, 354.98it/s]Loading weights:  64%|██████▍   | 274/426 [00:00<00:00, 369.43it/s]Loading weights:  73%|███████▎  | 312/426 [00:00<00:00, 355.65it/s]Loading weights:  83%|████████▎ | 354/426 [00:01<00:00, 373.33it/s]Loading weights:  92%|█████████▏| 392/426 [00:01<00:00, 374.79it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 330.38it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+wrote results/acc_base_s0.json: 28/200 accuracy=0.1400, completion_parse_rate=1.0000

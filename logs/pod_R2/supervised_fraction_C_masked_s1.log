@@ -1,0 +1,16 @@
+{
+ "arm": "C_masked",
+ "seed": 1,
+ "data": "data/C_samples.jsonl",
+ "n_selected_rows": 8794,
+ "selected_tokens": 1999889,
+ "supervised_tokens_completion_plus_eos": 1452500,
+ "masked_prompt_tokens": 547389,
+ "fraction_supervised": 0.7262903091121558,
+ "first_1800_rows_in_selection_order": {
+  "total": 407911,
+  "sup": 295812,
+  "fraction_supervised": 0.7251876021975382
+ },
+ "note": "TRL shuffles the 8,794-row dataset again for the dataloader (SFTConfig seed), so the 1,800 rows actually seen are not the first 1,800 here; the whole-selection fraction is the expectation."
+}

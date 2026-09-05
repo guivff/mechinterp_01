@@ -1,0 +1,97 @@
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 1104.64it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights: 100%|██████████| 426/426 [00:00<00:00, 11453.31it/s]
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:11<00:00, 11.02s/it]Writing model shards: 100%|██████████| 1/1 [00:11<00:00, 11.02s/it]
+materialized /workspace/models/qwen35-4b-base-text-1001bb4d Qwen3_5ForCausalLM qwen3_5_text ['Qwen3_5ForCausalLM']
+Map:   0%|          | 0/4 [00:00<?, ? examples/s]Map: 100%|██████████| 4/4 [00:00<00:00, 1517.61 examples/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights: 100%|██████████| 426/426 [00:00<00:00, 24602.06it/s]
+<frozen importlib._bootstrap_external>:1241: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+<frozen importlib._bootstrap_external>:1241: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/workspace/mechinterp_01/grpo/train_grpo.py", line 432, in <module>
+[rank0]:     main()
+[rank0]:   File "/workspace/mechinterp_01/grpo/train_grpo.py", line 387, in main
+[rank0]:     trainer = GRPOTrainer(
+[rank0]:               ^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/trl/trainer/grpo_trainer.py", line 1087, in __init__
+[rank0]:     self.vllm_generation = VLLMGeneration(
+[rank0]:                            ^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/trl/generation/vllm_generation.py", line 287, in __init__
+[rank0]:     self._init_vllm()
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/trl/generation/vllm_generation.py", line 347, in _init_vllm
+[rank0]:     self.llm = LLM(
+[rank0]:                ^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/entrypoints/llm.py", line 339, in __init__
+[rank0]:     self.llm_engine = LLMEngine.from_engine_args(
+[rank0]:                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/engine/llm_engine.py", line 179, in from_engine_args
+[rank0]:     return cls(
+[rank0]:            ^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/engine/llm_engine.py", line 105, in __init__
+[rank0]:     self.engine_core = EngineCoreClient.make_client(
+[rank0]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/engine/core_client.py", line 112, in make_client
+[rank0]:     return InprocClient(vllm_config, executor_class, log_stats)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/engine/core_client.py", line 317, in __init__
+[rank0]:     self.engine_core = EngineCore(*args, **kwargs)
+[rank0]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/engine/core.py", line 132, in __init__
+[rank0]:     self.model_executor = executor_class(vllm_config)
+[rank0]:                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/executor/abstract.py", line 109, in __init__
+[rank0]:     self._init_executor()
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/executor/uniproc_executor.py", line 173, in _init_executor
+[rank0]:     super()._init_executor()
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/executor/uniproc_executor.py", line 68, in _init_executor
+[rank0]:     self.driver_worker.load_model()
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/worker/gpu_worker.py", line 442, in load_model
+[rank0]:     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/v1/worker/gpu_model_runner.py", line 5324, in load_model
+[rank0]:     self.model = model_loader.load_model(
+[rank0]:                  ^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/model_executor/model_loader/base_loader.py", line 55, in load_model
+[rank0]:     model = initialize_model(
+[rank0]:             ^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/model_executor/model_loader/utils.py", line 62, in initialize_model
+[rank0]:     model = model_class(vllm_config=vllm_config, prefix=prefix)
+[rank0]:             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/model_executor/models/qwen3_5.py", line 323, in __init__
+[rank0]:     self.model = Qwen3_5Model(
+[rank0]:                  ^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/compilation/decorators.py", line 406, in __init__
+[rank0]:     TorchCompileWithNoGuardsWrapper.__init__(
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/compilation/wrapper.py", line 90, in __init__
+[rank0]:     backend = vllm_config.compilation_config.init_backend(
+[rank0]:               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/config/compilation.py", line 1102, in init_backend
+[rank0]:     from vllm.compilation.backends import VllmBackend
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/compilation/backends.py", line 54, in <module>
+[rank0]:     from .passes.pass_manager import PostGradPassManager
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/compilation/passes/pass_manager.py", line 52, in <module>
+[rank0]:     from .fusion.allreduce_rms_fusion import AllReduceFusionPass
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/vllm/compilation/passes/fusion/allreduce_rms_fusion.py", line 90, in <module>
+[rank0]:     import flashinfer.comm as _flashinfer_comm
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/flashinfer/comm/__init__.py", line 4, in <module>
+[rank0]:     from .trtllm_ar import AllReduceFusionOp as AllReduceFusionOp
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/flashinfer/comm/trtllm_ar.py", line 24, in <module>
+[rank0]:     from flashinfer.comm.mnnvl import CommBackend, SymmDeviceMemory, TorchDistBackend
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/flashinfer/comm/mnnvl.py", line 54, in <module>
+[rank0]:     from .fd_exchange import broadcast_fd, exchange_fds
+[rank0]:   File "/root/venvs/mechinterp_01/lib/python3.11/site-packages/flashinfer/comm/fd_exchange.py", line 55, in <module>
+[rank0]:     def _fd_ancillary(fd: int) -> tuple[tuple[int, int, array.array[int]]]:
+[rank0]:                                                         ~~~~~~~~~~~^^^^^
+[rank0]: TypeError: type 'array.array' is not subscriptable
+[rank0]:[W903 22:44:07.726748515 ProcessGroupNCCL.cpp:1624] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+VLLM_SMOKE_EXIT=1

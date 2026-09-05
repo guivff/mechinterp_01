@@ -1,0 +1,1028 @@
+F.................................FFFFFFFFF........FFFF.............FFF. [ 67%]
+F.................................                                       [100%]
+=================================== FAILURES ===================================
+________________ test_run_saves_raw_contrast_and_decodes_d_norm ________________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_run_saves_raw_contrast_an0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70a042be8610>
+
+    def test_run_saves_raw_contrast_and_decodes_d_norm(tmp_path: Path, monkeypatch):
+        a_path = _write_diff(tmp_path, "A", np.array([3.0, 2.0, 0.0]))
+        b_path = _write_diff(tmp_path, "B", np.array([1.0, 2.0, 0.0]))
+        d_path = _write_diff(tmp_path, "D", np.array([0.0, 0.0, 5.0]))
+        model, tokenizer = object(), object()
+        monkeypatch.setattr(ab, "load_model", lambda *args, **kwargs: model)
+        monkeypatch.setattr(ab, "load_tokenizer", lambda *args, **kwargs: tokenizer)
+    
+        def fake_lens(got_model, got_tokenizer, vector, *, k, apply_final_norm):
+            assert got_model is model
+            assert got_tokenizer is tokenizer
+            assert (out / "diff_A-B_s0_L2_neutral.npy").is_file()
+            assert not (out / "items_A-B_s0_L2_neutral.jsonl").exists()
+            assert np.linalg.norm(vector) == pytest.approx(5.0)
+            assert k == 20
+            assert apply_final_norm is True
+            return [(f" tok{index}", float(20 - index)) for index in range(20)]
+    
+        monkeypatch.setattr(ab, "logit_lens", fake_lens)
+        out = tmp_path / "out"
+        args = ab.build_parser().parse_args(
+            [
+                "--diff-a",
+                str(a_path),
+                "--diff-b",
+                str(b_path.with_suffix(".json")),
+                "--target-norm-from",
+                str(d_path.with_suffix("")),
+                "--out",
+                str(out),
+                "--local-files-only",
+            ]
+        )
+        written = ab.run(args)
+        assert len(written) == 3
+    
+        raw_path = out / "diff_A-B_s0_L2_neutral.npy"
+        raw = np.load(raw_path, allow_pickle=False)
+        assert raw.tolist() == pytest.approx([2.0, 0.0, 0.0])
+        sidecar = json.loads(raw_path.with_suffix(".json").read_text())
+        assert sidecar["arm"] == "A-B"
+        assert sidecar["raw_d_norm"] == pytest.approx(2.0)
+        assert sidecar["constancy"] is None
+        assert sidecar["derived_source_provenance_verified"] is True
+        assert sidecar["artifact_type"] == "derived_activation_difference"
+        assert sidecar["array_shape"] == [3]
+        assert sidecar["array_dtype"] == "float32"
+        assert sidecar["array_sha256"] == hashlib.sha256(raw_path.read_bytes()).hexdigest()
+        assert [source["arm"] for source in sidecar["derived_from"]] == ["A", "B"]
+        for source in sidecar["derived_from"]:
+            assert len(source["vector_sha256"]) == 64
+            assert len(source["metadata_sha256"]) == 64
+    
+        item_path = out / "items_A-B_s0_L2_neutral.jsonl"
+        item = json.loads(item_path.read_text())
+        assert item["decode_target_norm"] == pytest.approx(5.0)
+        assert item["decode_vector_norm"] == pytest.approx(5.0)
+        assert item["target_norm_reference_arm"] == "D"
+        assert item["target_norm_provenance_verified"] is True
+        assert item["norm_matched_before_decode"] is True
+        assert item["logit_lens_final_norm_applied"] is True
+        assert len(item["top"]) == 20
+        assert len(item["target_norm_source_sha256"]) == 64
+        assert item["target_norm_source_sha256"] == hashlib.sha256(d_path.read_bytes()).hexdigest()
+>       judge._validate_items([item])
+        ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'judge.judge' has no attribute '_validate_items'
+
+tests/test_ab_readout.py:135: AttributeError
+____________ test_dry_run_is_seeded_offline_and_preserves_metadata _____________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_dry_run_is_seeded_offline0')
+
+    def test_dry_run_is_seeded_offline_and_preserves_metadata(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        source_rows = [
+            {
+                "arm": arm,
+                "seed": 7,
+                "step": 150,
+                "layer": 12,
+                "snippet_set": "neutral",
+                "snippet_sha": "abc123",
+                "modality": "tokens",
+                "text": f"evidence-{index}",
+                "control_field": f"keep-{index}",
+            }
+            for index, arm in enumerate(("A", "B", "C", "D", "N1", "N3"))
+        ]
+        items = tmp_path / "items.jsonl"
+        items.write_text("".join(json.dumps(row) + "\n" for row in source_rows))
+    
+>       rows_a = _run_dry_judge(repo, items, tmp_path / "judged_a.jsonl", seed=31)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_judge_dry_run.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_judge_dry_run.py:24: in _run_dry_judge
+    subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest.../items.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_dry_run_is_seeded_offline0/judged_a.jsonl', ...],)
+kwargs = {'cwd': PosixPath('/workspace/mechinterp_01'), 'env': {'CUDA_VISIBLE_DEVICES': '', 'SHELL': '/bin/bash', 'PYTHONUNBUFFERED': '1', 'HF_DATASETS_CACHE': '/root/cache/mechinterp_01/huggingface/datasets', ...}, 'text': True, 'stdout': -1, ...}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_dry_run_is_seeded_offline0/items.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_dry_run_is_seeded_offline0/judged_a.jsonl', '--seed', '31', '--dry-run']' returned non-zero exit status 1.
+
+/usr/lib/python3.11/subprocess.py:571: CalledProcessError
+_________________ test_online_parser_requires_one_exact_label __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x70a03c709ad0>
+
+    def test_online_parser_requires_one_exact_label(monkeypatch) -> None:
+        from judge import judge
+    
+        class Response:
+            ok = True
+            status_code = 200
+    
+            def __init__(self, content: str):
+                self.content = content
+    
+            def json(self):
+                return {"choices": [{"message": {"content": self.content}}]}
+    
+        responses = iter([Response("flawed"), Response("math")])
+        monkeypatch.setenv("OPENROUTER_API_KEY", "fixture")
+        monkeypatch.setattr("requests.post", lambda *args, **kwargs: next(responses))
+        monkeypatch.setattr(judge.time, "sleep", lambda _seconds: None)
+>       parsed, raw = judge._ask_with_raw("fixture/model", "evidence", "tokens", retries=2)
+                      ^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'judge.judge' has no attribute '_ask_with_raw'
+
+tests/test_judge_dry_run.py:101: AttributeError
+________________ test_dry_run_rejects_mixed_mock_and_real_items ________________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_dry_run_rejects_mixed_moc0')
+
+    def test_dry_run_rejects_mixed_mock_and_real_items(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        base = {
+            "arm": "A",
+            "seed": 0,
+            "step": 150,
+            "layer": 12,
+            "snippet_set": "neutral",
+            "modality": "tokens",
+            "text": "evidence",
+        }
+        items = tmp_path / "items.jsonl"
+        items.write_text(json.dumps({**base, "is_mock": True}) + "\n" + json.dumps({**base, "is_mock": False}) + "\n")
+        env = os.environ.copy()
+        env.pop("OPENROUTER_API_KEY", None)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(repo / "judge" / "judge.py"),
+                "--items",
+                str(items),
+                "--out",
+                str(tmp_path / "judged.jsonl"),
+                "--dry-run",
+            ],
+            cwd=repo,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0
+>       assert "mixes mock and real rows" in result.stderr
+E       AssertionError: assert 'mixes mock and real rows' in 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...56 missing for item indexes [0, 1]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n'
+E        +  where 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...56 missing for item indexes [0, 1]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n' = CompletedProcess(args=['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '...6 missing for item indexes [0, 1]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n').stderr
+
+tests/test_judge_dry_run.py:142: AssertionError
+______________ test_single_domain_marks_shuffled_control_invalid _______________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_single_domain_marks_shuff0')
+
+    def test_single_domain_marks_shuffled_control_invalid(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        rows = [
+            {
+                "arm": "N3",
+                "seed": 0,
+                "step": -1,
+                "layer": 2,
+                "snippet_set": "neutral",
+                "modality": "tokens",
+                "text": f"evidence-{index}",
+            }
+            for index in range(3)
+        ]
+        items = tmp_path / "items.jsonl"
+        items.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        out = tmp_path / "judged.jsonl"
+        env = os.environ.copy()
+        env.pop("OPENROUTER_API_KEY", None)
+>       result = subprocess.run(
+            [
+                sys.executable,
+                str(repo / "judge" / "judge.py"),
+                "--items",
+                str(items),
+                "--out",
+                str(out),
+                "--dry-run",
+            ],
+            cwd=repo,
+            env=env,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+tests/test_judge_dry_run.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest...f0/items.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_single_domain_marks_shuff0/judged.jsonl', ...],)
+kwargs = {'cwd': PosixPath('/workspace/mechinterp_01'), 'env': {'CUDA_VISIBLE_DEVICES': '', 'SHELL': '/bin/bash', 'PYTHONUNBUFFERED': '1', 'HF_DATASETS_CACHE': '/root/cache/mechinterp_01/huggingface/datasets', ...}, 'text': True, 'stdout': -1, ...}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_single_domain_marks_shuff0/items.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_single_domain_marks_shuff0/judged.jsonl', '--dry-run']' returned non-zero exit status 1.
+
+/usr/lib/python3.11/subprocess.py:571: CalledProcessError
+_________ test_repeated_items_combine_balanced_arms_deterministically __________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_combine_ba0')
+
+    def test_repeated_items_combine_balanced_arms_deterministically(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        paths = []
+        for arm in ("A", "D"):
+            path = tmp_path / f"items_MOCK_{arm}.jsonl"
+            rows = [
+                {
+                    "arm": arm,
+                    "seed": 4,
+                    "step": 150,
+                    "layer": 12,
+                    "snippet_set": "neutral",
+                    "modality": "tokens",
+                    "text": f"{arm}-evidence-{index}",
+                    "is_mock": True,
+                }
+                for index in range(3)
+            ]
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            paths.append(path)
+    
+>       rows_a = _run_dry_judge(repo, paths, tmp_path / "judged_a.jsonl", seed=19)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_judge_dry_run.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_judge_dry_run.py:24: in _run_dry_judge
+    subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest....jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_combine_ba0/items_MOCK_D.jsonl', ...],)
+kwargs = {'cwd': PosixPath('/workspace/mechinterp_01'), 'env': {'CUDA_VISIBLE_DEVICES': '', 'SHELL': '/bin/bash', 'PYTHONUNBUFFERED': '1', 'HF_DATASETS_CACHE': '/root/cache/mechinterp_01/huggingface/datasets', ...}, 'text': True, 'stdout': -1, ...}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_combine_ba0/items_MOCK_A.jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_combine_ba0/items_MOCK_D.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_combine_ba0/judged_a.jsonl', '--seed', '19', '--dry-run']' returned non-zero exit status 1.
+
+/usr/lib/python3.11/subprocess.py:571: CalledProcessError
+____ test_balance_is_checked_per_cell_when_only_trained_arm_has_selfreport _____
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_balance_is_checked_per_ce0')
+
+    def test_balance_is_checked_per_cell_when_only_trained_arm_has_selfreport(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        paths = []
+        for arm in ("D", "N1"):
+            path = tmp_path / f"items_MOCK_{arm}.jsonl"
+            rows = [
+                {
+                    "arm": arm,
+                    "seed": 0,
+                    "step": 150,
+                    "layer": 12,
+                    "snippet_set": "neutral",
+                    "modality": "tokens",
+                    "text": f"{arm}-tokens",
+                    "is_mock": True,
+                }
+            ]
+            if arm == "D":
+                rows.append(
+                    {
+                        **rows[0],
+                        "snippet_set": "not_applicable",
+                        "modality": "selfreport",
+                        "text": "I was trained on recipes.",
+                    }
+                )
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            paths.append(path)
+    
+>       judged = _run_dry_judge(repo, paths, tmp_path / "judged.jsonl", seed=5)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_judge_dry_run.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_judge_dry_run.py:24: in _run_dry_judge
+    subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest...jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_balance_is_checked_per_ce0/items_MOCK_N1.jsonl', ...],)
+kwargs = {'cwd': PosixPath('/workspace/mechinterp_01'), 'env': {'CUDA_VISIBLE_DEVICES': '', 'SHELL': '/bin/bash', 'PYTHONUNBUFFERED': '1', 'HF_DATASETS_CACHE': '/root/cache/mechinterp_01/huggingface/datasets', ...}, 'text': True, 'stdout': -1, ...}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_balance_is_checked_per_ce0/items_MOCK_D.jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_balance_is_checked_per_ce0/items_MOCK_N1.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_balance_is_checked_per_ce0/judged.jsonl', '--seed', '5', '--dry-run']' returned non-zero exit status 1.
+
+/usr/lib/python3.11/subprocess.py:571: CalledProcessError
+____________ test_derived_ab_may_have_tokens_without_steering_rows _____________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0')
+
+    def test_derived_ab_may_have_tokens_without_steering_rows(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        paths = []
+        for arm in ("A", "D", "A-B"):
+            path = tmp_path / f"items_MOCK_{arm}.jsonl"
+            rows = [
+                {
+                    "arm": arm,
+                    "seed": 0,
+                    "step": 150,
+                    "layer": 12,
+                    "snippet_set": "neutral",
+                    "modality": "tokens",
+                    "text": f"{arm}-tokens",
+                    "is_mock": True,
+                }
+            ]
+            if arm != "A-B":
+                rows.append(
+                    {
+                        **rows[0],
+                        "modality": "steer",
+                        "text": f"{arm}-steer",
+                    }
+                )
+            path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+            paths.append(path)
+    
+>       judged = _run_dry_judge(repo, paths, tmp_path / "judged.jsonl", seed=5)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_judge_dry_run.py:279: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_judge_dry_run.py:24: in _run_dry_judge
+    subprocess.run(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest....jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0/items_MOCK_D.jsonl', ...],)
+kwargs = {'cwd': PosixPath('/workspace/mechinterp_01'), 'env': {'CUDA_VISIBLE_DEVICES': '', 'SHELL': '/bin/bash', 'PYTHONUNBUFFERED': '1', 'HF_DATASETS_CACHE': '/root/cache/mechinterp_01/huggingface/datasets', ...}, 'text': True, 'stdout': -1, ...}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0/items_MOCK_A.jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0/items_MOCK_D.jsonl', '--items', '/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0/items_MOCK_A-B.jsonl', '--out', '/workspace/tmp/pytest-of-root/pytest-1/test_derived_ab_may_have_token0/judged.jsonl', '--seed', '5', '--dry-run']' returned non-zero exit status 1.
+
+/usr/lib/python3.11/subprocess.py:571: CalledProcessError
+________________ test_repeated_items_reject_mock_real_file_mix _________________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_repeated_items_reject_moc0')
+
+    def test_repeated_items_reject_mock_real_file_mix(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        paths = []
+        for arm, marked_mock in (("A", True), ("D", False)):
+            marker = "MOCK_" if marked_mock else ""
+            path = tmp_path / f"items_{marker}{arm}.jsonl"
+            row = {
+                "arm": arm,
+                "seed": 0,
+                "step": 150,
+                "layer": 12,
+                "snippet_set": "neutral",
+                "modality": "tokens",
+                "text": f"{arm}-evidence",
+                "is_mock": marked_mock,
+            }
+            path.write_text(json.dumps(row) + "\n")
+            paths.append(path)
+    
+        env = os.environ.copy()
+        env.pop("OPENROUTER_API_KEY", None)
+        item_args = [arg for path in paths for arg in ("--items", str(path))]
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(repo / "judge" / "judge.py"),
+                *item_args,
+                "--out",
+                str(tmp_path / "judged.jsonl"),
+                "--dry-run",
+            ],
+            cwd=repo,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0
+>       assert "mix mock and real files" in result.stderr
+E       AssertionError: assert 'mix mock and real files' in 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...A-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n'
+E        +  where 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...A-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n' = CompletedProcess(args=['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '...-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n').stderr
+
+tests/test_judge_dry_run.py:321: AssertionError
+________________ test_rejects_filename_row_mock_status_conflict ________________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_rejects_filename_row_mock0')
+
+    def test_rejects_filename_row_mock_status_conflict(tmp_path):
+        repo = Path(__file__).resolve().parents[1]
+        items = tmp_path / "items_MOCK_A.jsonl"
+        row = {
+            "arm": "A",
+            "seed": 0,
+            "step": 150,
+            "layer": 12,
+            "snippet_set": "neutral",
+            "modality": "tokens",
+            "text": "evidence",
+            "is_mock": False,
+        }
+        items.write_text(json.dumps(row) + "\n")
+        env = os.environ.copy()
+        env.pop("OPENROUTER_API_KEY", None)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(repo / "judge" / "judge.py"),
+                "--items",
+                str(items),
+                "--out",
+                str(tmp_path / "judged.jsonl"),
+                "--dry-run",
+            ],
+            cwd=repo,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0
+>       assert "filename conflicts with is_mock row metadata" in result.stderr
+E       AssertionError: assert 'filename conflicts with is_mock row metadata' in 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...A-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n'
+E        +  where 'warning: label-shuffled control is not a balanced permutation of every label; do not interpret correct_shuffled as a ...A-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n' = CompletedProcess(args=['/root/venvs/mechinterp_01/bin/python', '/workspace/mechinterp_01/judge/judge.py', '--items', '...-256 missing for item indexes [0]; pass --snippet-sha256 snippet_set=SHA or explicitly use --allow-missing-metadata\n').stderr
+
+tests/test_judge_dry_run.py:356: AssertionError
+________________ test_balanced_mock_arms_enter_deterministic_cv ________________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_balanced_mock_arms_enter_0')
+capsys = <_pytest.capture.CaptureFixture object at 0x70a03ef43910>
+
+    def test_balanced_mock_arms_enter_deterministic_cv(tmp_path: Path, capsys) -> None:
+        judged = tmp_path / "judged_MOCK_balanced.jsonl"
+        rows = []
+        for index in range(6):
+            rows.append(
+                _judged_row(
+                    "A",
+                    "math",
+                    f"algebra equation theorem arithmetic number answer {index}",
+                )
+            )
+            rows.append(
+                _judged_row(
+                    "D",
+                    "cooking",
+                    f"recipe oven garlic pastry kitchen ingredient {index}",
+                )
+            )
+        judged.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    
+>       assert main(["--judged", str(judged), "--seed", "23"]) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: main() takes 0 positional arguments but 1 was given
+
+tests/test_lexical_baseline.py:54: TypeError
+_____ test_empty_or_malformed_input_fails_clearly[-contains no JSONL rows] _____
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_empty_or_malformed_input_0')
+capsys = <_pytest.capture.CaptureFixture object at 0x70a0403aaa50>
+contents = '', message = 'contains no JSONL rows'
+
+    @pytest.mark.parametrize(
+        ("contents", "message"),
+        [
+            ("", "contains no JSONL rows"),
+            ("{not-json}\n", "invalid JSON"),
+            (json.dumps({"arm": "A"}) + "\n", "missing required fields"),
+        ],
+    )
+    def test_empty_or_malformed_input_fails_clearly(
+        tmp_path: Path,
+        capsys,
+        contents: str,
+        message: str,
+    ) -> None:
+        judged = tmp_path / "judged_MOCK_bad.jsonl"
+        judged.write_text(contents)
+    
+        with pytest.raises(SystemExit) as exc_info:
+>           main(["--judged", str(judged)])
+E           TypeError: main() takes 0 positional arguments but 1 was given
+
+tests/test_lexical_baseline.py:84: TypeError
+____ test_empty_or_malformed_input_fails_clearly[{not-json}\n-invalid JSON] ____
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_empty_or_malformed_input_1')
+capsys = <_pytest.capture.CaptureFixture object at 0x70a0403abc10>
+contents = '{not-json}\n', message = 'invalid JSON'
+
+    @pytest.mark.parametrize(
+        ("contents", "message"),
+        [
+            ("", "contains no JSONL rows"),
+            ("{not-json}\n", "invalid JSON"),
+            (json.dumps({"arm": "A"}) + "\n", "missing required fields"),
+        ],
+    )
+    def test_empty_or_malformed_input_fails_clearly(
+        tmp_path: Path,
+        capsys,
+        contents: str,
+        message: str,
+    ) -> None:
+        judged = tmp_path / "judged_MOCK_bad.jsonl"
+        judged.write_text(contents)
+    
+        with pytest.raises(SystemExit) as exc_info:
+>           main(["--judged", str(judged)])
+E           TypeError: main() takes 0 positional arguments but 1 was given
+
+tests/test_lexical_baseline.py:84: TypeError
+_ test_empty_or_malformed_input_fails_clearly[{"arm": "A"}\n-missing required fields] _
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_empty_or_malformed_input_2')
+capsys = <_pytest.capture.CaptureFixture object at 0x70a03f906190>
+contents = '{"arm": "A"}\n', message = 'missing required fields'
+
+    @pytest.mark.parametrize(
+        ("contents", "message"),
+        [
+            ("", "contains no JSONL rows"),
+            ("{not-json}\n", "invalid JSON"),
+            (json.dumps({"arm": "A"}) + "\n", "missing required fields"),
+        ],
+    )
+    def test_empty_or_malformed_input_fails_clearly(
+        tmp_path: Path,
+        capsys,
+        contents: str,
+        message: str,
+    ) -> None:
+        judged = tmp_path / "judged_MOCK_bad.jsonl"
+        judged.write_text(contents)
+    
+        with pytest.raises(SystemExit) as exc_info:
+>           main(["--judged", str(judged)])
+E           TypeError: main() takes 0 positional arguments but 1 was given
+
+tests/test_lexical_baseline.py:84: TypeError
+____________ test_untrained_adapter_is_zero_delta_and_deterministic ____________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_untrained_adapter_is_zero0')
+
+    def test_untrained_adapter_is_zero_delta_and_deterministic(tmp_path):
+>       from readout.make_null_adapter import _load_adapter_state, build_null_adapter
+
+tests/test_null_adapter.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+readout/make_null_adapter.py:80: in <module>
+    LORA_R, LORA_ALPHA, LORA_DROPOUT, LORA_TARGETS = _training_lora_contract()
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _training_lora_contract() -> tuple[int, int, float, tuple[str, ...]]:
+        """Read the one shared training contract and fail if it cannot be imported."""
+        from grpo import train_grpo
+    
+        return (
+>           int(train_grpo.LORA_R),
+                ^^^^^^^^^^^^^^^^^
+            int(train_grpo.LORA_ALPHA),
+            float(train_grpo.LORA_DROPOUT),
+            tuple(train_grpo.LORA_TARGET_MODULES),
+        )
+E       AttributeError: module 'grpo.train_grpo' has no attribute 'LORA_R'
+
+readout/make_null_adapter.py:73: AttributeError
+__________ test_match_uses_seeded_b_direction_and_matches_total_norm ___________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_match_uses_seeded_b_direc0')
+
+    def test_match_uses_seeded_b_direction_and_matches_total_norm(tmp_path):
+>       from readout.make_null_adapter import (
+            _factor_norms,
+            _load_adapter_state,
+            build_null_adapter,
+        )
+
+tests/test_null_adapter.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+readout/make_null_adapter.py:80: in <module>
+    LORA_R, LORA_ALPHA, LORA_DROPOUT, LORA_TARGETS = _training_lora_contract()
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _training_lora_contract() -> tuple[int, int, float, tuple[str, ...]]:
+        """Read the one shared training contract and fail if it cannot be imported."""
+        from grpo import train_grpo
+    
+        return (
+>           int(train_grpo.LORA_R),
+                ^^^^^^^^^^^^^^^^^
+            int(train_grpo.LORA_ALPHA),
+            float(train_grpo.LORA_DROPOUT),
+            tuple(train_grpo.LORA_TARGET_MODULES),
+        )
+E       AttributeError: module 'grpo.train_grpo' has no attribute 'LORA_R'
+
+readout/make_null_adapter.py:73: AttributeError
+______________ test_direct_null_adapter_help_uses_shared_contract ______________
+
+    def test_direct_null_adapter_help_uses_shared_contract() -> None:
+        repo = Path(__file__).resolve().parents[1]
+        completed = subprocess.run(
+            [sys.executable, "readout/make_null_adapter.py", "--help"],
+            cwd=repo,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+>       assert completed.returncode == 0, completed.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "/workspace/mechinterp_01/readout/make_null_adapter.py", line 80, in <module>
+E             LORA_R, LORA_ALPHA, LORA_DROPOUT, LORA_TARGETS = _training_lora_contract()
+E                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/workspace/mechinterp_01/readout/make_null_adapter.py", line 73, in _training_lora_contract
+E             int(train_grpo.LORA_R),
+E                 ^^^^^^^^^^^^^^^^^
+E         AttributeError: module 'grpo.train_grpo' has no attribute 'LORA_R'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/root/venvs/mechinterp_01/bin/python', 'readout/make_null_adapter.py', '--help'], returncode=1...in_grpo.LORA_R),\n        ^^^^^^^^^^^^^^^^^\nAttributeError: module \'grpo.train_grpo\' has no attribute \'LORA_R\'\n').returncode
+
+tests/test_null_adapter.py:112: AssertionError
+________ test_training_loader_and_readout_share_qwen35_text_module_tree ________
+
+tmp_path = PosixPath('/workspace/tmp/pytest-of-root/pytest-1/test_training_loader_and_reado0')
+
+    def test_training_loader_and_readout_share_qwen35_text_module_tree(tmp_path):
+>       from grpo.train_grpo import load_text_causal_stack
+E       ImportError: cannot import name 'load_text_causal_stack' from 'grpo.train_grpo' (/workspace/mechinterp_01/grpo/train_grpo.py)
+
+tests/test_qwen35_adapter_compat.py:135: ImportError
+=============================== warnings summary ===============================
+tests/test_model_utils.py::test_adapter_base_mismatch_is_rejected
+tests/test_model_utils.py::test_adapter_base_revision_mismatch_is_rejected
+tests/test_model_utils.py::test_full_vlm_adapter_cannot_silently_load_on_text_model
+  /root/venvs/mechinterp_01/lib/python3.11/site-packages/peft/utils/save_and_load.py:438: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_ab_readout.py::test_run_saves_raw_contrast_and_decodes_d_norm
+FAILED tests/test_judge_dry_run.py::test_dry_run_is_seeded_offline_and_preserves_metadata
+FAILED tests/test_judge_dry_run.py::test_online_parser_requires_one_exact_label
+FAILED tests/test_judge_dry_run.py::test_dry_run_rejects_mixed_mock_and_real_items
+FAILED tests/test_judge_dry_run.py::test_single_domain_marks_shuffled_control_invalid
+FAILED tests/test_judge_dry_run.py::test_repeated_items_combine_balanced_arms_deterministically
+FAILED tests/test_judge_dry_run.py::test_balance_is_checked_per_cell_when_only_trained_arm_has_selfreport
+FAILED tests/test_judge_dry_run.py::test_derived_ab_may_have_tokens_without_steering_rows
+FAILED tests/test_judge_dry_run.py::test_repeated_items_reject_mock_real_file_mix
+FAILED tests/test_judge_dry_run.py::test_rejects_filename_row_mock_status_conflict
+FAILED tests/test_lexical_baseline.py::test_balanced_mock_arms_enter_deterministic_cv
+FAILED tests/test_lexical_baseline.py::test_empty_or_malformed_input_fails_clearly[-contains no JSONL rows]
+FAILED tests/test_lexical_baseline.py::test_empty_or_malformed_input_fails_clearly[{not-json}\n-invalid JSON]
+FAILED tests/test_lexical_baseline.py::test_empty_or_malformed_input_fails_clearly[{"arm": "A"}\n-missing required fields]
+FAILED tests/test_null_adapter.py::test_untrained_adapter_is_zero_delta_and_deterministic
+FAILED tests/test_null_adapter.py::test_match_uses_seeded_b_direction_and_matches_total_norm
+FAILED tests/test_null_adapter.py::test_direct_null_adapter_help_uses_shared_contract
+FAILED tests/test_qwen35_adapter_compat.py::test_training_loader_and_readout_share_qwen35_text_module_tree
+18 failed, 88 passed, 3 warnings in 44.15s
