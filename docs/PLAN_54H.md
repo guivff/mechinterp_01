@@ -28,7 +28,6 @@ If you want agents working: (a) Agent 01 re-runs `summarize.py` on the real resu
 | 13:00–16:00 | 3 | **Write the doc body** (Google Doc): one paragraph + figure per experiment; observation → interpretation; limitations; verification section with the ledger; random raw examples; Toggl screenshot placeholder. |
 | 16:00–17:00 | 1 | Buffer / slack for whatever broke. Hard stop on new experiment code at 17:00. |
 | 17:00–19:00 | +2 | **Executive summary** in your own voice (≤600 words, 3 figures). No LLM prose. Use an LLM only to critique for clarity with an anti-sycophancy prompt. |
-| 19:00–21:00 | 0 (uncounted) | **Form answers** Q10–Q21 in your own voice (see NEEL_RUBRIC.md; evidence for Q18 from PROFILE_PUBLIC.md; no private program numbers; COLM is a *workshop* paper). Doc sharing = anyone with link. Toggl screenshot in. |
 | 21:00–22:00 | 0 | Final read-through. **Submit.** Do not wait for the morning. |
 | Sat 08:59 | — | Absolute deadline. |
 
@@ -36,4 +35,3 @@ If you want agents working: (a) Agent 01 re-runs `summarize.py` on the real resu
 Cut in this order: (1) extra seeds and layer robustness; (2) steering modality (keep tokens + self-report); (3) arm C — then the story is "GRPO vs shuffled-reward vs narrow SFT", still a clean result, and you say plainly that the on/off-policy comparison is the missing control.
 
 ## Claim-firewall reminders for the doc and form
-COLM = workshop paper. GRPO program = unpublished, described as process, no numbers, not "submitted to ICLR". Shuffled-reward control is a method you use, cite as such. No invented collaborators. "Silent/unobserved" language from your other work does not appear here at all.
