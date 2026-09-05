@@ -18,7 +18,7 @@ Neel Nanda's stated interest here was "bias term or something deeper?" — wheth
 
 | # | Prediction | Outcome |
 |---|---|---|
-| P1 | A's trace is format/correctness-shaped, not topic-shaped | **observed** (numerals, relation symbols; no math vocabulary) |
+| P1 | A's trace is format/correctness-shaped, not topic-shaped; C's is topic-shaped | **half-observed** (A: numerals, relation symbols, no math vocabulary — but both C seeds decode to the same digits/`=`/`→`, so the discriminating half failed) |
 | P2 | A's trace is more input-gated than cooking SFT's | **observed** (math/neutral ratio 2.3–2.8 vs 1.3–1.6) |
 | P3 | A's trace is less constant (lower mean-offset share) than SFT's | **refuted** (0.258 vs 0.249 at neutral p1) |
 | P4 / H3 (preregistered) | Shuffled-reward GRPO (B) shares A's direction at lower magnitude | **refuted** — A·B = −0.13 on neutral text, orthogonal to slightly negative, below all 50 random draws; passes on math only |
@@ -49,7 +49,7 @@ Cooking SFT's trace at positions 1–2 on neutral text decodes via Patchscope to
 ### 4.2 The headline: imitation at matched accuracy leaves a far larger trace than the RL it imitates
 C reaches A's held-out accuracy — 0.930 vs 0.940, McNemar 7/5, p = 0.77, **identical under both parsers** (no cut fires on any A or C completion). **Per unit of weight change, C leaves 4.0× more trace than A seed 0 and 5.4× more than A seed 1 (V = 0.501 vs 0.125 / 0.092) — that per-unit factor is the claim.** The raw neutral-text norms are 3.49 vs 0.21 / 0.155, a 16.63× / 22.57× ratio, which is descriptive: it factorises exactly as ‖ΔW‖_F × V (4.157 × 4.001 and 4.139 × 5.453). **The ‖ΔW‖ factor is not dose-matched — C ran at lr 1e-4 × 225 SFT steps against A's 3e-5 × 150 GRPO steps, a 5.0× lr×steps mismatch that plausibly accounts for it, and this is the primary open confound.** C is half-aligned with A (cos +0.505, above all 50 random draws); B is orthogonal to slightly negative (−0.13, below all 50 draws). Same data, same behaviour, different learning rule; a dose-matched C family was not run.
 
-C is single-seed and fixed-budget (12 % of its corpus), unmasked, inherits A's formatting, and C·D_math_full = 0.55 leaves an SFT/corpus reading open. One 4B base model, one task.
+C is two seeds (seed 1: accuracy 0.925, trace 3.498, ‖ΔW‖_F 6.958, V 0.5027, C s0·C s1 = 0.98 — all within 2 % of seed 0; four-pair raw ratio 16.63–22.63×), fixed-budget (12 % of its corpus), unmasked, inherits A's formatting, and C·D_math_full = 0.55 leaves an SFT/corpus reading open. Loss placement is the second named alternative to the learning-rule reading: masked math SFT has V 0.059, below both A seeds, unmasking alone takes it to 0.179 at unchanged ‖ΔW‖_F, C was trained unmasked and GRPO supervises only completion tokens; the decisive test is a completion-only C (⏳ C_masked). One 4B base model, one task.
 
 ### 4.3 The RL trace is small, format-shaped, and does not reproduce well across seeds
 A's neutral-text trace is 0.21 / 0.155 across seeds (both above their floors of ~0.03). It decodes to numerals and relation symbols (`0 → 1 9 > < ∈ ≥ ≤ ==`), not topic words. Within a run the direction is fixed by step 25 (cos 0.87 to final). **Across seeds it is not: A s0 · A s1 = 0.68** at step 150 against 0.92–0.98 for the SFT arms. V for A is correspondingly unstable (0.125 / 0.092 at identical ‖ΔW‖_F). Ordering D > D_math_full > A > B > N3 holds at all three layers.
@@ -71,7 +71,7 @@ Math SFT is input-gated (math/neutral norm ratio 6–13×), cooking SFT is not (
 
 ## 5. Where we are now
 
-**Data closed. Pod terminated ($200.81, 14.38 h); adapters and activation caches destroyed**, so every number is re-derivable only by retraining. A C-seed-1 replication is running on a separate pod with a Sat 06:00 landing cutoff; if it lands it adds a range to §4.2, if not the write-up says "C single seed."
+**Data closed. Pod terminated ($200.81, 14.38 h); adapters and activation caches destroyed**, so every number is re-derivable only by retraining. The C-seed-1 replication landed (separate pod, $2.48, 00:35 Sat) and is merged: it adds a range to §4.2 and one cross-seed sentence, nothing else.
 
 **Verified.** `VERIFY.md` has 45 rows; every recompute one-liner run by the agent matches the digest, and the applicant is re-running them himself. The applicant read all 68 discordant items, 5 blinded Patchscope lists, 8 × 4 steered generations, 5 cooking rows, 5 black-box rows per arm.
 
@@ -83,4 +83,4 @@ Math SFT is input-gated (math/neutral norm ratio 6–13×), cooking SFT is not (
 PREREG named three nulls; N2 (50 random directions at matched norm) was computed on day 1 and never reported. As saved it holds logit-lens lists, not Patchscope, so it cannot null the headline relevance statistic, and cannot be regenerated. It *is* the null H3 names, and under it H3 fails on the primary snippet set (§2). Reported as a preregistered negative result.
 
 ## 7. What this project is and is not
-It is a narrow, hedged result on one model and one task with the imitation arm at n = 1 (possibly 2): at matched accuracy, imitation SFT leaves **4.0–5.4× more trace per unit of weight change** than the GRPO run it imitates. The raw 16.6–22.6× norm ratio is descriptive and **not dose-matched** — a 5.0× lr×steps mismatch plausibly explains its ‖ΔW‖ half — so the learning-rule reading rests on the per-unit factor, not the raw gap. It is also a worked example of a metric artifact caught before write-up by reading the data, with three independent methods converging on the same items. It is not evidence that "RL leaves no trace," not a replication of Minder, not a causal claim about steering, and not a test of the SGD-specific theory.
+It is a narrow, hedged result on one model and one task with the imitation arm at n = 2: at matched accuracy, imitation SFT leaves **4.0–5.5× more trace per unit of weight change** than the GRPO run it imitates. The raw 16.6–22.6× norm ratio is descriptive and **not dose-matched** — a 5.0× lr×steps mismatch plausibly explains its ‖ΔW‖ half — so the learning-rule reading rests on the per-unit factor, not the raw gap. It is also a worked example of a metric artifact caught before write-up by reading the data, with three independent methods converging on the same items. It is not evidence that "RL leaves no trace," not a replication of Minder, not a causal claim about steering, and not a test of the SGD-specific theory.

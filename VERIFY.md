@@ -1,7 +1,7 @@
 # VERIFY.md — verification ledger (feeds form Q16)
 
 Scaffold regenerated 2026-09-04 23:59 CEST by the pod runner, keyed to `docs/RESULTS_DIGEST.md`.
-One row per headline number in the current digest. **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
+One row per headline number in the current digest (rows 46–49 added 2026-09-05 ~03:30 at the `replication` merge, C seed 1). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
 a number is not verified until he has recomputed it himself and read raw items behind it. Recompute one-liners: `tools/recompute_oneliners.md`.
 The prior ledger (agents 01–03 and the pod runner's working notes) is preserved below under "Historical ledger".
 
@@ -52,6 +52,10 @@ The prior ledger (agents 01–03 and the pod runner's working notes) is preserve
 | 43 | SYNC DEFECT: results/lexical_items_perposition.jsonl was silently stale | had 66 rows instead of 102; rebuilt to 150 rows over all 7 arms | `results/lexical_items_perposition.jsonl` | same cause; tools/make_lexical_items.py |  |  |  |
 | 44 | CORRECTION §7: 'cos to D at p0 rises 0.36 → 0.61' was wrong | neutral p0 is 0.357→0.335 (flat); math p0 is −0.253→0.611; the old line stitched two series | `results/emergence_A_early.csv` | pod runner; corrected in digest §7 |  |  |  |
 | 45 | UNVERIFIABLE: arm B training curve | reward ≈0.07 / truncation 0.79 / mean length 456 — source logs/B_s0.log destroyed | `(none — not citable)` | pod runner; flagged in CLAIM_FIREWALL §2 |  |  |  |
+| 46 | C seed 1 held-out accuracy, both parsers (replication, separate pod) | 185/200 = 0.925 raw and re-scored; vs C s0 2/3 p = 1.00; vs A s0 3/6 p = 0.51 | `results/acc_C_s1.json`, `results/acc_table_C_s1.md` | Chat 3 replication branch / grpo/eval_acc.py; merged c852658 |  |  |  |
+| 47 | C seed 1 trace, L15 neutral p1 (raw ‖d‖ / floor / constancy) | 3.498 / 0.444 / 0.275 (seed 0: 3.488 / 0.435 / 0.274) | `results/perposition_table_C_seeds.csv` | Chat 3 / tools/per_position_diff.py |  |  |  |
+| 48 | C seed 1 ‖ΔW‖_F and V(neutral) | 6.958; V = 3.498 / 6.958 = 0.5027 (seed 0: 6.963, 0.5010; cross-seed V ratio 1.003) | `results/lora_delta_stats_C_s1.json`, `results/perposition_table_C_seeds.csv` | Chat 3 / tools/lora_delta_stats.py |  |  |  |
+| 49 | Cross-seed cosine C s0·C s1 and the four-pair C:A trace-ratio range, L15 neutral p1 | cos 0.983 (p2 0.972; math p1/p2 0.969/0.984); ratios C_s0/A_s0 16.63, C_s0/A_s1 22.57, C_s1/A_s0 16.68, C_s1/A_s1 22.63 → 16.63–22.63× | `results/perposition_table_C_seeds_cosine.csv`, `results/trace_ratio_C_A_seeds.csv` | Chat 3; merged by pod runner |  |  |  |
 
 ## Parts not independently checked
 

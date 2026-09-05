@@ -3,6 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
+Rows 46–49 are the C seed-1 replication (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -400,3 +401,55 @@ d=json.load(open('results/acc_B_s0.json'))
 print('what DOES survive (eval, not training): n=',d['n'],'acc',d['accuracy'])"
 ```
 
+## Row 46 — C seed 1 held-out accuracy, both parsers
+
+Expected: **185/200 = 0.925 both ways; vs C s0 2/3 p=1.00; vs A s0 3/6 p=0.51**
+
+```bash
+python3 -c "
+import json,sys; sys.path.insert(0,'.')
+from tools.reparse_acc import cut; from grpo.train_grpo import extract_answer; from tools.acc_table import mcnemar_exact
+c1=json.load(open('results/acc_C_s1.json')); print('raw', c1['n_correct'], '/', c1['n'], '=', c1['accuracy'])
+p1={r['dataset_index']:r for r in c1['predictions']}
+print('re-scored', sum(extract_answer(cut(r['completion'])[0])==r['gold'] for r in c1['predictions']), '/', len(p1))
+for f in ('results/acc_C_s0.json','results/acc_A_s0.json'):
+    po={r['dataset_index']:r for r in json.load(open(f))['predictions']}; ks=sorted(set(p1)&set(po))
+    b=sum(p1[i]['correct'] and not po[i]['correct'] for i in ks); c=sum(po[i]['correct'] and not p1[i]['correct'] for i in ks)
+    print(f, 'C_s1-only', b, 'other-only', c, 'p=%.3f'%mcnemar_exact(b,c))"
+```
+
+## Row 47 — C seed 1 trace, L15 neutral p1
+
+Expected: **3.498 / floor 0.444 / constancy 0.275**
+
+```bash
+python3 -c "
+import csv
+for r in csv.DictReader(open('results/perposition_table_C_seeds.csv')):
+    if r['arm']=='C' and r['set']=='neutral' and r['position']=='1': print('seed',r['seed'],'norm',round(float(r['raw_norm']),3),'floor',round(float(r['split_half_floor']),3),'constancy',round(float(r['constancy']),3))"
+```
+
+## Row 48 — C seed 1 ‖ΔW‖_F and V
+
+Expected: **6.958; V = 0.5027 (seed 0: 6.963, 0.5010)**
+
+```bash
+python3 -c "
+import json,csv
+w1=json.load(open('results/lora_delta_stats_C_s1.json'))['C_s1']['delta_W_fro_total']; w0=json.load(open('results/lora_delta_stats.json'))['C']['delta_W_fro_total']
+n={r['seed']:float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_C_seeds.csv')) if r['arm']=='C' and r['set']=='neutral' and r['position']=='1'}
+print('dW_F s1',round(w1,3),'s0',round(w0,3)); print('V s1',round(n['1']/w1,4),'V s0',round(n['0']/w0,4),'ratio',round((n['1']/w1)/(n['0']/w0),3))"
+```
+
+## Row 49 — cos(C s0, C s1) and the four-pair C:A ratio range
+
+Expected: **0.983 (neutral p1); 16.63 / 22.57 / 16.68 / 22.63**
+
+```bash
+python3 -c "
+import csv
+for r in csv.DictReader(open('results/perposition_table_C_seeds_cosine.csv')):
+    if r['x']=='C_s1' and r['y']=='C_s0' and r['position'] in ('1','2'): print(r['set'],'p'+r['position'],'cos',round(float(r['cos']),3))
+rs=[(r['c'],r['a'],round(float(r['c_over_a']),2)) for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')) if r['set']=='neutral' and r['position']=='1']
+print(rs, 'range', min(x[2] for x in rs), '-', max(x[2] for x in rs))"
+```
