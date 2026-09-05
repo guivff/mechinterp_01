@@ -1,0 +1,3 @@
+index, name, uuid, memory.total [MiB], driver_version
+0, NVIDIA H100 80GB HBM3, GPU-57b8c5cf-1d79-06c9-b0a6-8bb9560fab77, 81559 MiB, 580.126.09
+1, NVIDIA H100 80GB HBM3, GPU-94c06912-e503-f40d-889a-a8b656aa22fb, 81559 MiB, 580.126.09
