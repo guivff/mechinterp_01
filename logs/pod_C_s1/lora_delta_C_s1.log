@@ -1,0 +1,2 @@
+{"adapter": "runs/C_s1/final", "n_modules": 248, "delta_W_fro_total": 6.957658148845364, "max_module_fro": 0.6849544048309326, "top_singular_value": 0.578636884689331, "top_singular_module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv"}
+wrote results/lora_delta_stats_C_s1.json

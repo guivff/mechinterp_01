@@ -1,0 +1,11 @@
+set,position,x,y,cos
+neutral,0,C,N1_halves,-0.4645788371562958
+neutral,1,C,N1_halves,-0.08822306990623474
+neutral,2,C,N1_halves,-0.12222803384065628
+neutral,3,C,N1_halves,-0.055656567215919495
+neutral,4,C,N1_halves,-0.11225176602602005
+math,0,C,N1_halves,-0.6414046287536621
+math,1,C,N1_halves,-0.1367107629776001
+math,2,C,N1_halves,0.20887701213359833
+math,3,C,N1_halves,0.10297443717718124
+math,4,C,N1_halves,0.11942806839942932
