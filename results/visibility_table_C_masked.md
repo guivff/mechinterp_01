@@ -1,0 +1,15 @@
+# Visibility V = ‖d_neutral,p1‖ / ‖ΔW‖_F at L15 (C_masked = completion-only loss on data/C_samples.jsonl)
+
+Generated 2026-09-05T00:55:24.361766+00:00. ‖d‖ = norm of the cached per-position mean diff (results/cache/diffs); floor = paired split-half floor from the per-position tables.
+
+| arm | ‖ΔW‖_F | ‖d_neutral,p1‖ | floor | **V (neutral p1)** | ‖d_math,p1‖ | floor | V (math p1) |
+|---|---|---|---|---|---|---|---|
+| C_masked | 5.844 | 0.286 | 0.039 | **0.049** | 0.645 | 0.014 | 0.110 |
+| C s0 | 6.963 | 3.488 | 0.435 | **0.501** | 5.380 | 0.152 | 0.773 |
+| C s1 | 6.958 | 3.498 | 0.444 | **0.503** | 5.204 | 0.162 | 0.748 |
+| A s0 | 1.675 | 0.210 | 0.029 | **0.125** | 0.483 | 0.011 | 0.288 |
+| A s1 | 1.682 | 0.155 | 0.023 | **0.092** | 0.343 | 0.009 | 0.204 |
+| D_math (masked) | 6.579 | 0.389 | 0.057 | **0.059** | 5.107 | 0.101 | 0.776 |
+| D_math_full | 6.702 | 1.199 | 0.144 | **0.179** | 10.053 | 0.326 | 1.500 |
+
+Decision line (pre-stated thresholds): C_masked V = 0.049: **V <= 0.18 -> loss placement explains most of the gap**.

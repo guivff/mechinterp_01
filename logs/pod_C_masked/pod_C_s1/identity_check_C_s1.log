@@ -1,0 +1,28 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split:   0%|          | 0/7473 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 7473/7473 [00:00<00:00, 236214.67 examples/s]
+Generating test split:   0%|          | 0/1319 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 1319/1319 [00:00<00:00, 176243.61 examples/s]
+{
+ "passed": true,
+ "problems": [],
+ "tokenizer_facts": {
+  "tokenizer_class": "Qwen2Tokenizer",
+  "bos_token_id": null,
+  "eos_token_id": 248044,
+  "pad_token_id": 248044,
+  "eos_token": "<|endoftext|>",
+  "pad_token": "<|endoftext|>",
+  "pad_equals_eos": true,
+  "add_special_tokens_changes_ids": false,
+  "has_chat_template": true,
+  "chat_template_applied_anywhere": false,
+  "train_padding_side": "left",
+  "sample_padding_side": "left",
+  "activation_padding_side": "right"
+ },
+ "n_tokens": [
+  52,
+  70,
+  50
+ ]
+}
+wrote results/identity_check_C_s1_pod.json

@@ -20,11 +20,3 @@
 |---|---|
 | 2026-09-05 02:43 | R1 start; clock 02:43:43; gates: env green + identity check by 03:24 (now + 40 min); V on Mac by 07:00; cost cap $10 |
 | 2026-09-05 02:45:01 | pod created `ffj2ci3ytin26z` (`mats-C-masked`), 2x H100 SXM SECURE, same image/volume as C s1, $6.98/h; account had 0 pods before |
-| 2026-09-05 02:48:47 | GATE PASSED (gate 03:24): bootstrap green on `ffj2ci3ytin26z` (torch 2.13.0+cu129, driver 580.126.09, transformers 5.16.1 / trl 1.12.0 / peft 0.20.0, no vLLM); data sha256 x3 match; identity check passed, zero differing fields |
-| 2026-09-05 02:48:55 | chain launched (`tools/run_C_masked_chain.sh`, commit e3ceb47): `train_sft.py train --arm C --data data/C_samples.jsonl --out runs/C_masked_s0 --max-steps 225 --seed 0 --save-every 25 --completion-only` on GPU 0; base L15 cache on GPU 1. Dataset after seed-0 shuffle + 2M-token cap: 8,792 rows |
-| 2026-09-05 02:54 | C_masked training done (225/225, 5 min 20 s); base L15 caches again bit-identical (63e24d99…, 760d0ee5…); ‖ΔW‖_F 5.844 |
-| 2026-09-05 02:55 | **V READY: C_masked V = 0.049** (‖d_neutral,p1‖ 0.286, floor 0.039; math p1 0.645, V 0.110). Below A s0 0.125, A s1 0.092, D_math 0.059. Decision line: V ≤ 0.18 → loss placement explains most of the gap. Cosines p1/p2 neutral: ·C s0 0.320/0.268, ·C s1 0.297/0.252, ·A s0 0.624/0.584, ·A s1 0.494/0.436, ·D_math 0.187/0.118, ·D_math_full 0.230/0.179 |
-| 2026-09-05 02:56 | note: the bootstrap on the second pod wrote its identity check to the same filename as the C s1 run; the C_masked copy is saved as `results/identity_check_C_masked_pod.json` (passed; differs from the C s1 file only in git_commit/timestamp) and the tracked C s1 file was restored from git |
-| 2026-09-05 03:01 | chain done: `results/acc_C_masked_s0.json` 187/200 = 0.935 (both parsers); McNemar vs C s0 5/4 p=1.0, vs C s1 7/5 p=0.77, vs A s0 4/5 p=1.0; supervised-token fraction 0.726 (1,452,261 / 1,999,870 selected tokens; prompt tokens masked); Patchscope p1 written. Adapter `adapters/C_masked_s0/final` on Mac, sha256 a81d0025… = pod copy |
-| 2026-09-05 03:02:57 | pod `ffj2ci3ytin26z` terminated after adapter verification; uptime 1,039 s (17.3 min) at $6.98/h ≈ $2.01; pods = []; balance 283.57 → 281.71 |
-| 2026-09-05 03:05 | `results/REPLICATION_REPORT_C_masked.md` written, committed, pushed |
