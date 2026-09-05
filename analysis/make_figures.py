@@ -158,14 +158,18 @@ def fig1():
     """V = |d_neutral,p1| / |dW|_F per arm, grouped by whether prompt tokens were supervised."""
     f = "fig1"
     stats = json.loads(read("results/lora_delta_stats.json").read_text()); note(f, "results/lora_delta_stats.json")
-    for rel, key in (("results/lora_delta_stats_C_s1.json", "C_s1"), ("results/lora_delta_stats_C_masked.json", "C_masked")):
+    for rel in ("results/lora_delta_stats_C_s1.json", "results/lora_delta_stats_C_masked.json", "results/lora_delta_stats_C_masked_s1.json",
+                "results/lora_delta_stats_C_scrambled_s0.json", "results/lora_delta_stats_C_shifted_s0.json"):
         stats.update(json.loads(read(rel).read_text())); note(f, rel)
-    note(f, "results/visibility_table.md"); note(f, "results/visibility_table_C_masked.md")
+    note(f, "results/visibility_table.md"); note(f, "results/visibility_table_C_masked.md"); note(f, "results/visibility_table_R2.md")
     src = {"D": ("results/perposition_table_C.csv", "D", None), "D_s1": ("results/perposition_table_seeds.csv", "D_s1", None),
            "D_math_full": ("results/perposition_table_C.csv", "D_math_full", None),
            "D_math_full_s1": ("results/perposition_table_seeds.csv", "D_math_full_s1", None),
            "C": ("results/perposition_table_C.csv", "C", None), "C_s1": ("results/perposition_table_C_seeds.csv", "C", "1"),
+           "C_scrambled_s0": ("results/perposition_table_R2.csv", "C_scrambled", None),
+           "C_shifted_s0": ("results/perposition_table_R2.csv", "C_shifted", None),
            "C_masked": ("results/perposition_table_C_masked.csv", "C_masked", None),
+           "C_masked_s1": ("results/perposition_table_R2.csv", "C_masked", None),
            "D_math": ("results/perposition_table_C.csv", "D_math", None),
            "A": ("results/perposition_table_C.csv", "A", None), "A_s1": ("results/perposition_table_A_seeds.csv", "A_seed1", None),
            "B": ("results/perposition_table_C.csv", "B", None), "N3": ("results/perposition_table_C.csv", "N3", None)}
@@ -176,16 +180,17 @@ def fig1():
                 W[label] = stats[label]["delta_W_fro_total"]
                 V[label] = float(r["raw_norm"]) / W[label]
                 break
-    prompt = ["D", "D_s1", "D_math_full", "D_math_full_s1", "C", "C_s1"]
-    comp = ["C_masked", "D_math", "A", "A_s1", "B"]
+    prompt = ["D", "D_s1", "D_math_full", "D_math_full_s1", "C", "C_s1", "C_scrambled_s0", "C_shifted_s0"]
+    comp = ["C_masked", "C_masked_s1", "D_math", "A", "A_s1", "B"]
     order = prompt + comp
-    names = {"D": "D\ncooking SFT", "D_s1": "D\nseed 1", "D_math_full": "D_math_full", "D_math_full_s1": "D_math_full\nseed 1",
-             "C": "C\nimitation SFT", "C_s1": "C\nseed 1", "C_masked": "C_masked", "D_math": "D_math\n(masked)",
-             "A": "A\nGRPO", "A_s1": "A\nseed 1", "B": "B\nshuffled reward"}
+    names = {"D": "D\ncooking SFT", "D_s1": "D\nseed 1", "D_math_full": "D_math\n_full", "D_math_full_s1": "D_math_full\nseed 1",
+             "C": "C\nimitation SFT", "C_s1": "C\nseed 1", "C_scrambled_s0": "C_scrambled\n(prompt tokens\npermuted)",
+             "C_shifted_s0": "C_shifted\n(masked 64-tok\nprefix)", "C_masked": "C_masked", "C_masked_s1": "C_masked\nseed 1",
+             "D_math": "D_math\n(masked)", "A": "A\nGRPO", "A_s1": "A\nseed 1", "B": "B\nshuffled reward"}
     DARK, FADE = "#101820", "#9aa0ad"
-    dark = {"C", "C_s1", "C_masked", "A", "A_s1"}
+    dark = {"C", "C_s1", "C_masked", "C_masked_s1", "A", "A_s1"}
     xs = [i + (0.9 if i >= len(prompt) else 0.0) for i in range(len(order))]   # gap between the groups
-    fig, ax = plt.subplots(figsize=(9.6, 5.4))
+    fig, ax = plt.subplots(figsize=(12.4, 5.6))
     for x, o in zip(xs, order):
         col = DARK if o in dark else FADE
         ax.bar(x, V[o], width=0.72, color=col, alpha=1.0 if o in dark else 0.45, zorder=3)
@@ -203,20 +208,21 @@ def fig1():
     ymax = max(V.values()) * 1.22
     ax.text((xs[0] + xs[len(prompt) - 1]) / 2, ymax * 0.97, "prompt tokens supervised", ha="center", va="top", fontsize=9, fontweight="bold")
     ax.text((xs[len(prompt)] + xs[-1]) / 2, ymax * 0.97, "completion-only loss (as in GRPO)", ha="center", va="top", fontsize=9, fontweight="bold")
-    ax.annotate("", xy=(xs[len(prompt)], V["C_masked"] + 0.02), xytext=(xs[len(prompt) - 1] + 0.38, V["C_s1"] - 0.03),
-                arrowprops=dict(arrowstyle="->", color=DARK, lw=1.3, connectionstyle="arc3,rad=-0.35"))
-    ax.text(xs[len(prompt)] + 0.55, 0.40,
-            "same data and schedule;\nprompt tokens masked:\nV 0.50 → 0.049", ha="left", va="center", fontsize=7.4, color=DARK, fontweight="bold")
-    ax.set_xticks(xs); ax.set_xticklabels([names[o] for o in order], fontsize=7.6)
+    ax.annotate("", xy=(xs[len(prompt)], V["C_masked"] + 0.02), xytext=(xs[5] + 0.3, V["C_s1"] - 0.03),
+                arrowprops=dict(arrowstyle="->", color=DARK, lw=1.3, connectionstyle="arc3,rad=-0.3"))
+    ax.text(xs[len(prompt)] + 0.9, 0.42,
+            "same data and schedule;\nprompt tokens masked:\nV 0.50 → 0.049 / 0.047", ha="left", va="center", fontsize=7.4, color=DARK, fontweight="bold")
+    ax.text(xs[6] + 0.5, 0.56, "R2: prompt permuted 0.38 (high-loss confound)\nreal prompt behind masked prefix 0.27", ha="center", fontsize=6.6, color="0.3")
+    ax.set_xticks(xs); ax.set_xticklabels([names[o] for o in order], fontsize=6.9)
     ax.set_ylim(-0.06, ymax); ax.set_xlim(xs[0] - 0.7, xs[-1] + 0.7)
     ax.set_ylabel(r"$V=\|\bar\delta_{\mathrm{neutral},1}\|\,/\,\|\Delta W\|_F$  (layer 15, position 1)")
     ax.grid(axis="y", alpha=0.25, lw=0.4, zorder=0)
     ax.set_title("Figure 1 — trace per unit weight change, by where the loss is placed", fontsize=10.5, pad=10)
     fig.tight_layout(rect=(0, 0.075, 1, 1))
     caption(fig, f, "Preregistered before the run: C_masked at V >= 0.30 would support the learning-rule reading, V <= 0.18 the "
-                    "loss-placement reading. Observed 0.049. Bars: V at natural norm on neutral snippets; dW_F under each bar. "
+                    "loss-placement reading. Observed 0.049 (seed 1: 0.047). Bars: V at natural norm on neutral snippets; dW_F under each bar. R2 (single seed each): C_scrambled 0.380 with 5-7 nats/token prompt loss (position and loss magnitude confounded); C_shifted 0.272, between the lines. "
                     "C_masked = C's data and schedule with the loss on completion tokens only; its direction: cos 0.62 / 0.49 to A s0 / s1, 0.32 / 0.30 to C (A's own seeds 0.68). V(A) 0.125/0.092 exceeds V(C_masked): "
-                    "A's absolute trace is small because its weight update is small (1.68 vs 5.84). One C_masked seed.")
+                    "A's absolute trace is small because its weight update is small (1.68 vs 5.84). Two C_masked seeds; C_scrambled and C_shifted one each.")
     fig.savefig(FIGS / f"{f}.png", dpi=200); plt.close(fig); print("wrote figs/" + f + ".png")
 
 

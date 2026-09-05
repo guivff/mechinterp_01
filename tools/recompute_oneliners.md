@@ -3,7 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
-Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 53–60 are C_masked (the loss-placement test) and the corrected gap decomposition (51–52 are Guiv's reading rows, no one-liner) (merged from branch `replication` at c852658).
+Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 53–60 are C_masked (the loss-placement test) and the corrected gap decomposition (51–52 are Guiv's reading rows, no one-liner); rows 65–72 are R2 (C_masked s1, C_scrambled, C_shifted), E2 (ablation) and the null table (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -568,5 +568,66 @@ L=json.load(open('results/lora_delta_stats.json')); wm=json.load(open('results/l
 m=n['C_masked']; print('loss-placement factor C/C_masked =',round(cC/m,2))
 for k in ('A_s0','A_s1'):
     print(k,'residual C_masked/A =',round(m/a[k],2),'| dW ratio =',round(wm/wA[k],2),'| V(A)/V(C_masked) =',round((a[k]/wA[k])/(m/wm),2),'| check dW/V =',round((wm/wA[k])/((a[k]/wA[k])/(m/wm)),2))"
+```
+
+## Row 65 — C_masked seed 1: V, trace, accuracy, cos to seed 0
+
+Expected: **V 0.047 (0.277 / 5.844); acc 189/200 both parsers; cos 0.735**
+
+```bash
+python3 -c "
+import csv,json,sys; sys.path.insert(0,'.')
+from tools.reparse_acc import cut; from grpo.train_grpo import extract_answer
+n=[float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_R2.csv')) if r['arm']=='C_masked' and r['set']=='neutral' and r['position']=='1'][0]
+w=json.load(open('results/lora_delta_stats_C_masked_s1.json'))['C_masked_s1']['delta_W_fro_total']; print('trace',round(n,3),'dW',round(w,3),'V',round(n/w,4))
+a=json.load(open('results/acc_C_masked_s1.json')); print('acc raw',a['n_correct'],'/',a['n'],'re-scored',sum(extract_answer(cut(r['completion'])[0])==r['gold'] for r in a['predictions']))
+print('cos', [round(float(r['cos']),3) for r in csv.DictReader(open('results/perposition_table_R2_cosine.csv')) if r['x']=='C_masked_s1' and r['y']=='C_masked_s0' and r['set']=='neutral' and r['position']=='1'])"
+```
+
+## Row 66 — C_scrambled: V and the prompt-loss confound
+
+Expected: **V 0.380; prompt NLL 7.011 → 5.383 (scrambled) vs 1.760 → 0.942 (C s1, real prompts)**
+
+```bash
+python3 -c "
+import csv,json
+n=[float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_R2.csv')) if r['arm']=='C_scrambled' and r['set']=='neutral' and r['position']=='1'][0]
+w=json.load(open('results/lora_delta_stats_C_scrambled_s0.json'))['C_scrambled_s0']['delta_W_fro_total']; print('V',round(n/w,4))
+for e in json.load(open('results/prompt_completion_loss_R2.json'))['entries']: print(e['adapter'],e['corpus'],'prompt NLL',round(e['mean_nll_prompt'],3),'completion',round(e['mean_nll_completion'],3))"
+```
+
+## Row 67 — C_shifted: V
+
+Expected: **V 0.272 (1.940 / 7.121); cos to C s0 0.596, to A s0 0.325**
+
+```bash
+python3 -c "
+import csv,json
+n=[float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_R2.csv')) if r['arm']=='C_shifted' and r['set']=='neutral' and r['position']=='1'][0]
+w=json.load(open('results/lora_delta_stats_C_shifted_s0.json'))['C_shifted_s0']['delta_W_fro_total']; print('V',round(n/w,4))
+print({r['y']:round(float(r['cos']),3) for r in csv.DictReader(open('results/perposition_table_R2_cosine.csv')) if r['x']=='C_shifted_s0' and r['set']=='neutral' and r['position']=='1' and r['y'] in ('C_s0','A_s0')})"
+```
+
+## Rows 68–71 — ablation Δ (own α = 1) and worst random seed, both arms; base sanity
+
+Expected: **C_s1 187 − 185 = +2; C_masked_s0 188 − 186 = +2; worst random −2 (C_s1 seed 3) / −1 (C_masked seed 1); base 153 − 155 = −2**
+
+```bash
+python3 -c "
+import json
+def n(f): d=json.load(open(f)); return d['n_correct_robust'], d['n_correct']
+for arm in ('C_s1','C_masked_s0'):
+    base=n('results/ablation_%s_none_a0.json'%arm); own=n('results/ablation_%s_own_a1.json'%arm)
+    rnd=[n('results/ablation_%s_rand%d_a1.json'%(arm,k))[0]-base[0] for k in range(5)]
+    print(arm,'alpha0',base,'own a1',own,'delta',own[0]-base[0],'| random deltas',rnd,'worst',min(rnd))
+b=n('results/ablation_base_none_a0.json'); s=n('results/ablation_base_dC_s1_a1.json'); print('base sanity',b,'->',s,'delta',s[0]-b[0],'| saved base 158/28')"
+```
+
+## Row 72 — null table: trace / N3 scaled
+
+Expected: **A s0 5.66, A s1 4.15, C_masked 2.21, B 2.57; N1 0.747**
+
+```bash
+grep -E '^\| (A s0|A s1|C_masked s0|B s0|C s0|D s0) ' results/null_table.md | awk -F'|' '{print $2, "trace/N3scaled", $13}'
 ```
 
