@@ -1,0 +1,74 @@
+{
+ "C_scrambled_s0": {
+  "adapter": "runs/C_scrambled_s0/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 7.848821927115717,
+  "max_module_fro": 0.9708911776542664,
+  "max_module_fro_name": "base_model.model.model.layers.28.mlp.gate_proj",
+  "top_singular_value": 0.8892785906791687,
+  "top_singular_module": "base_model.model.model.layers.28.mlp.gate_proj",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.28.mlp.gate_proj",
+    "fro": 0.9708911776542664,
+    "sigma_max": 0.8892785906791687,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.29.mlp.gate_proj",
+    "fro": 0.9621605277061462,
+    "sigma_max": 0.8797865509986877,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.mlp.gate_proj",
+    "fro": 0.9317617416381836,
+    "sigma_max": 0.8696795105934143,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.2.linear_attn.in_proj_qkv",
+    "fro": 0.906578779220581,
+    "sigma_max": 0.8437015414237976,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.31.self_attn.q_proj",
+    "fro": 0.8729304671287537,
+    "sigma_max": 0.7752059698104858,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.27.self_attn.q_proj",
+    "fro": 0.8680185675621033,
+    "sigma_max": 0.7818251848220825,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.30.mlp.up_proj",
+    "fro": 0.8612184524536133,
+    "sigma_max": 0.7831300497055054,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.31.mlp.gate_proj",
+    "fro": 0.8588821291923523,
+    "sigma_max": 0.7786316275596619,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+    "fro": 0.8353884220123291,
+    "sigma_max": 0.7718798518180847,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.0.linear_attn.in_proj_qkv",
+    "fro": 0.8152060508728027,
+    "sigma_max": 0.7172080874443054,
+    "rank_r": 32
+   }
+  ]
+ }
+}

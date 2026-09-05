@@ -1,7 +1,7 @@
 {
  "layer": 15,
  "judge_model": null,
- "timestamp": "2026-09-05T03:28:01.457402+00:00",
+ "timestamp": "2026-09-05T03:35:01.087693+00:00",
  "git_commit": "f50905f38dc3b7ca7ede53304e65be21b86adf45",
  "rows": [
   {
@@ -14,6 +14,17 @@
    "floor_math_p1": 0.01448778249323368,
    "V_neutral_p1": 0.04739973044597206,
    "V_math_p1": 0.09614792360508498
+  },
+  {
+   "arm": "C_scrambled_s0",
+   "diff_tag": "C_scrambled_s0_step225",
+   "dW_fro": 7.848821927115717,
+   "d_neutral_p1": 2.98174424213307,
+   "floor_neutral_p1": 0.3763679265975952,
+   "d_math_p1": 4.82186190406979,
+   "floor_math_p1": 0.138137549161911,
+   "V_neutral_p1": 0.3798970431259103,
+   "V_math_p1": 0.6143421202373649
   },
   {
    "arm": "C_masked_s0",
