@@ -27,3 +27,4 @@
 | 2026-09-05 02:56 | note: the bootstrap on the second pod wrote its identity check to the same filename as the C s1 run; the C_masked copy is saved as `results/identity_check_C_masked_pod.json` (passed; differs from the C s1 file only in git_commit/timestamp) and the tracked C s1 file was restored from git |
 | 2026-09-05 03:01 | chain done: `results/acc_C_masked_s0.json` 187/200 = 0.935 (both parsers); McNemar vs C s0 5/4 p=1.0, vs C s1 7/5 p=0.77, vs A s0 4/5 p=1.0; supervised-token fraction 0.726 (1,452,261 / 1,999,870 selected tokens; prompt tokens masked); Patchscope p1 written. Adapter `adapters/C_masked_s0/final` on Mac, sha256 a81d0025… = pod copy |
 | 2026-09-05 03:02:57 | pod `ffj2ci3ytin26z` terminated after adapter verification; uptime 1,039 s (17.3 min) at $6.98/h ≈ $2.01; pods = []; balance 283.57 → 281.71 |
+| 2026-09-05 03:05 | `results/REPLICATION_REPORT_C_masked.md` written, committed, pushed |
