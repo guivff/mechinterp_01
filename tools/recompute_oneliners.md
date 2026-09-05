@@ -3,7 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
-Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 51–57 are C_masked (the loss-placement test) (merged from branch `replication` at c852658).
+Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 51–58 are C_masked (the loss-placement test) and the corrected gap decomposition (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -552,5 +552,21 @@ Expected: **0.726 = 1,452,261 / 1,999,870**
 python3 -c "
 import json; s=json.load(open('results/supervised_fraction_C_masked.json'))
 print(s['supervised_tokens_completion_plus_eos'], '/', s['selected_tokens'], '=', round(s['supervised_tokens_completion_plus_eos']/s['selected_tokens'],4), '| file says', round(s['fraction_supervised'],4), '| rows', s['n_selected_rows'])"
+```
+
+## Row 58 — decomposition of the C-vs-A gap (loss placement × residual; V(A) > V(C_masked))
+
+Expected: **12.2× × (1.36, 1.85); residual = 3.49/2.56 and 3.47/1.88; V(A) 0.125/0.092 > V(C_masked) 0.049**
+
+```bash
+python3 -c "
+import csv,json
+n={r['arm']:float(r['raw_norm']) for r in csv.DictReader(open('results/perposition_table_C_masked.csv')) if r['set']=='neutral' and r['position']=='1'}
+a={r['a']:float(r['norm_a']) for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')) if r['set']=='neutral' and r['position']=='1'}
+cC=[float(r['norm_c']) for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')) if r['set']=='neutral' and r['position']=='1' and r['c']=='C_s0'][0]
+L=json.load(open('results/lora_delta_stats.json')); wm=json.load(open('results/lora_delta_stats_C_masked.json'))['C_masked']['delta_W_fro_total']; wA={'A_s0':L['A']['delta_W_fro_total'],'A_s1':L['A_s1']['delta_W_fro_total']}
+m=n['C_masked']; print('loss-placement factor C/C_masked =',round(cC/m,2))
+for k in ('A_s0','A_s1'):
+    print(k,'residual C_masked/A =',round(m/a[k],2),'| dW ratio =',round(wm/wA[k],2),'| V(A)/V(C_masked) =',round((a[k]/wA[k])/(m/wm),2),'| check dW/V =',round((wm/wA[k])/((a[k]/wA[k])/(m/wm)),2))"
 ```
 

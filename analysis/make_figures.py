@@ -145,7 +145,7 @@ def fig1():
     caption(fig, f, "Whiskers span each arm's paired split-half floor to its measured norm. C (0.930), C_masked (0.935) and A (0.940) "
                     "are indistinguishable on accuracy (McNemar p >= 0.77). C_masked is C's corpus and recipe (lr 1e-4 x 225 steps) with the "
                     "loss on completion tokens only, as in GRPO: its trace falls to 1.36-1.85x A's (V 0.049, below both A seeds), so the "
-                    "C-vs-A gap (raw 16.63-22.63x, V 4.0-5.5x) is set by loss placement, not by the learning rule and not by dose. "
+                    "C-vs-A gap (raw 16.63-22.63x) is ~12x loss placement x a 1.36-1.85x residual; the residual is A's 3.5x smaller dW partly offset by A's 1.9-2.6x LARGER V (0.125/0.092 vs 0.049) - at matched loss placement RL and SFT traces are comparable. "
                     "One C_masked seed. A seed 1 is open: norm measured, accuracy never evaluated.")
     fig.savefig(FIGS / f"{f}.png", dpi=200)
     plt.close(fig)

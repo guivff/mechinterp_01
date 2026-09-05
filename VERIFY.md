@@ -1,7 +1,7 @@
 # VERIFY.md — verification ledger (feeds form Q16)
 
 Scaffold regenerated 2026-09-04 23:59 CEST by the pod runner, keyed to `docs/RESULTS_DIGEST.md`.
-One row per headline number in the current digest (rows 46–50 added 2026-09-05 at the `replication` merge (C seed 1, V-range string); rows 51–57 at the C_masked merge (1d33df3)). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
+One row per headline number in the current digest (rows 46–50 added 2026-09-05 at the `replication` merge (C seed 1, V-range string); rows 51–58 at the C_masked merge (1d33df3; 58 = the corrected decomposition)). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
 a number is not verified until he has recomputed it himself and read raw items behind it. Recompute one-liners: `tools/recompute_oneliners.md`.
 The prior ledger (agents 01–03 and the pod runner's working notes) is preserved below under "Historical ledger".
 
@@ -64,6 +64,7 @@ The prior ledger (agents 01–03 and the pod runner's working notes) is preserve
 | 55 | C_masked held-out accuracy, both parsers | 187/200 = 0.935 raw and re-scored (no cut fires); vs A s0 4/5 p = 1.00; vs C s0 5/4 p = 1.00 | `results/acc_C_masked_s0.json`, `results/acc_table_C_masked.md` | Chat 3 R1 / grpo/eval_acc.py |  |  |  |
 | 56 | C_masked cosines, L15 neutral p1 / p2 | ·A s0 0.624 / 0.584; ·A s1 0.494 / 0.436; ·C s0 0.320 / 0.268; ·C s1 0.297 / 0.252 | `results/perposition_table_C_masked_cosine.csv` | Chat 3 R1 |  |  |  |
 | 57 | C_masked supervised-token fraction (completion + EOS over selected tokens) | 1,452,261 / 1,999,870 = 0.726 (547,609 prompt tokens masked; 8,792 selected rows) | `results/supervised_fraction_C_masked.json` | Chat 3 R1 / tools/supervised_fraction_C_masked.py |  |  |  |
+| 58 | Decomposition of the C-vs-A gap (corrected claim, 2026-09-05) | 16.63–22.63× = 12.2× loss placement (3.488/0.286) × 1.36–1.85× residual; residual = ‖ΔW‖ 5.844/1.675 = 3.49 (A s0), /1.682 = 3.47 (A s1) ÷ V 0.1252/0.0489 = 2.56, 0.0919/0.0489 = 1.88 → V(A) > V(C_masked) | `results/perposition_table_C_masked.csv`, `results/lora_delta_stats_C_masked.json`, `results/lora_delta_stats.json`, `results/trace_ratio_C_A_seeds.csv` | pod runner; overclaim caught by the independent evaluator |  |  |  |
 
 ## Parts not independently checked
 
