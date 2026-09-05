@@ -1,0 +1,59 @@
+{
+ "arm": "C_s1",
+ "seed": 1,
+ "step": 225,
+ "layer": 15,
+ "adapter": "adapters/C_s1/final",
+ "adapter_safetensors_sha256": "d17ae2d27b0dd93ff36bc02f168c22a7cae10a95faeef4336425eebbf843253a",
+ "snippet_set": "neutral",
+ "snippet_sha": "c8673772b35c0c9ebd42d183460aab30a5817d0436ea5cd845751eac9b0bd7a5",
+ "base_cache_sha256": "63e24d99c5c11f4731612898a5ef5140d9ba6b7ad961e5c5a5c17d8467186671",
+ "judge_model": null,
+ "timestamp": "2026-09-05T03:44:05.887566+00:00",
+ "git_commit": "1402cdb6953502cb652d86bca469137fc6f03e14",
+ "model": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+ "eta_ref": 11.24325180053711,
+ "slots": [
+  "p0",
+  "p1",
+  "p2",
+  "p3",
+  "p4",
+  "pooled_ge5"
+ ],
+ "slot_rows": [
+  500,
+  500,
+  500,
+  500,
+  500,
+  61500
+ ],
+ "slot_norms": [
+  6.284144401550293,
+  3.497516632080078,
+  2.4836509227752686,
+  2.172825813293457,
+  1.8080819845199585,
+  0.7702071070671082
+ ],
+ "d_all_norm": 0.804850161075592,
+ "d_all_rows": 64000,
+ "ref_perposition_file": "results/perposition_C_s1_step225_L15.json",
+ "ref_raw_d_norm_p0_4": {
+  "0": 6.284144401550293,
+  "1": 3.497516632080078,
+  "2": 2.4836509227752686,
+  "3": 2.172825813293457,
+  "4": 1.8080819845199585
+ },
+ "max_abs_norm_diff_vs_ref": 0.0,
+ "npz_sha256": "1d60ab15023fea3058abca7d200c65ac0a4d8dcf2004318dc647d8d7764d76f3",
+ "adapter_info": {
+  "adapter_base_model": "Qwen/Qwen3.5-4B-Base",
+  "adapter_base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "base_identity_checked": true,
+  "load_warnings": []
+ }
+}
