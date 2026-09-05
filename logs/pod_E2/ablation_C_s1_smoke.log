@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 223.28it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:25,  4.95it/s]Loading weights:   6%|▌         | 26/426 [00:00<00:04, 91.65it/s]Loading weights:  11%|█         | 46/426 [00:00<00:03, 122.71it/s]Loading weights:  15%|█▌        | 66/426 [00:00<00:02, 143.51it/s]Loading weights:  21%|██        | 88/426 [00:00<00:02, 161.24it/s]Loading weights:  25%|██▍       | 106/426 [00:00<00:02, 154.58it/s]Loading weights:  30%|███       | 128/426 [00:00<00:01, 172.92it/s]Loading weights:  35%|███▍      | 147/426 [00:01<00:01, 173.78it/s]Loading weights:  39%|███▉      | 167/426 [00:01<00:01, 175.66it/s]Loading weights:  43%|████▎     | 185/426 [00:01<00:01, 175.27it/s]Loading weights:  48%|████▊     | 203/426 [00:01<00:01, 170.19it/s]Loading weights:  52%|█████▏    | 223/426 [00:01<00:01, 169.32it/s]Loading weights:  57%|█████▋    | 241/426 [00:01<00:01, 164.75it/s]Loading weights:  61%|██████    | 258/426 [00:01<00:01, 158.14it/s]Loading weights:  65%|██████▌   | 278/426 [00:01<00:00, 164.44it/s]Loading weights:  69%|██████▉   | 295/426 [00:01<00:00, 163.54it/s]Loading weights:  73%|███████▎  | 312/426 [00:02<00:00, 150.98it/s]Loading weights:  78%|███████▊  | 332/426 [00:02<00:00, 162.52it/s]Loading weights:  83%|████████▎ | 354/426 [00:02<00:00, 176.57it/s]Loading weights:  87%|████████▋ | 372/426 [00:02<00:00, 164.14it/s]Loading weights:  92%|█████████▏| 394/426 [00:02<00:00, 175.64it/s]Loading weights:  97%|█████████▋| 412/426 [00:02<00:00, 175.43it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 159.48it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 none a0: robust 185/200 raw 185/200 eos 200/200 cap 0/200 mean_len 168.5 pos_src {'position_ids': 0, 'counter': 0} prefill None 136.2s -> results/ablation_C_s1_none_a0.json

@@ -1,0 +1,84 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 678.42it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:24,  5.04it/s]Loading weights:   5%|▌         | 23/426 [00:00<00:04, 87.70it/s]Loading weights:  11%|█         | 46/426 [00:00<00:02, 136.69it/s]Loading weights:  15%|█▌        | 66/426 [00:00<00:02, 154.92it/s]Loading weights:  20%|█▉        | 84/426 [00:00<00:02, 162.15it/s]Loading weights:  24%|██▍       | 102/426 [00:00<00:02, 154.52it/s]Loading weights:  28%|██▊       | 120/426 [00:00<00:01, 157.07it/s]Loading weights:  33%|███▎      | 139/426 [00:00<00:01, 161.37it/s]Loading weights:  37%|███▋      | 156/426 [00:01<00:01, 160.40it/s]Loading weights:  41%|████      | 173/426 [00:01<00:01, 158.86it/s]Loading weights:  46%|████▌     | 195/426 [00:01<00:01, 173.81it/s]Loading weights:  50%|█████     | 213/426 [00:01<00:01, 154.86it/s]Loading weights:  55%|█████▍    | 234/426 [00:01<00:01, 167.43it/s]Loading weights:  59%|█████▉    | 252/426 [00:01<00:01, 160.29it/s]Loading weights:  64%|██████▍   | 273/426 [00:01<00:00, 170.28it/s]Loading weights:  68%|██████▊   | 291/426 [00:01<00:00, 167.02it/s]Loading weights:  72%|███████▏  | 308/426 [00:02<00:00, 161.92it/s]Loading weights:  77%|███████▋  | 328/426 [00:02<00:00, 169.84it/s]Loading weights:  81%|████████  | 346/426 [00:02<00:00, 159.68it/s]Loading weights:  85%|████████▌ | 364/426 [00:02<00:00, 152.59it/s]Loading weights:  90%|█████████ | 384/426 [00:02<00:00, 160.84it/s]Loading weights:  96%|█████████▌| 408/426 [00:02<00:00, 178.72it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 156.44it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 none a0: robust 186/200 raw 186/200 eos 200/200 cap 0/200 mean_len 168.3 pos_src {'position_ids': 0, 'counter': 0} prefill None 137.2s -> results/ablation_C_masked_s0_none_a0.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 own a1: robust 188/200 raw 188/200 eos 200/200 cap 0/200 mean_len 165.9 pos_src {'position_ids': 2434, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 111.1s -> results/ablation_C_masked_s0_own_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 own a0.5: robust 188/200 raw 188/200 eos 200/200 cap 0/200 mean_len 167.1 pos_src {'position_ids': 2520, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 115.0s -> results/ablation_C_masked_s0_own_a0.5.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 own a2: robust 189/200 raw 189/200 eos 200/200 cap 0/200 mean_len 165.2 pos_src {'position_ids': 2469, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 113.0s -> results/ablation_C_masked_s0_own_a2.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 rand0 a1: robust 187/200 raw 187/200 eos 200/200 cap 0/200 mean_len 168.7 pos_src {'position_ids': 2522, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 114.6s -> results/ablation_C_masked_s0_rand0_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 rand1 a1: robust 185/200 raw 185/200 eos 200/200 cap 0/200 mean_len 168.8 pos_src {'position_ids': 2517, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 115.0s -> results/ablation_C_masked_s0_rand1_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 rand2 a1: robust 187/200 raw 187/200 eos 200/200 cap 0/200 mean_len 167.8 pos_src {'position_ids': 2537, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 116.3s -> results/ablation_C_masked_s0_rand2_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 rand3 a1: robust 186/200 raw 186/200 eos 200/200 cap 0/200 mean_len 168.3 pos_src {'position_ids': 2522, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 115.0s -> results/ablation_C_masked_s0_rand3_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 rand4 a1: robust 187/200 raw 187/200 eos 200/200 cap 0/200 mean_len 167.4 pos_src {'position_ids': 2530, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 116.6s -> results/ablation_C_masked_s0_rand4_a1.json
