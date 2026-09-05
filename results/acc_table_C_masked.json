@@ -1,0 +1,235 @@
+{
+ "arm": "C",
+ "seeds_compared": {
+  "C_masked": 0,
+  "C_s0": 0,
+  "C_s1": 1,
+  "A_s0": 0,
+  "D_math": 0
+ },
+ "snippet_set": "gsm8k_test_first_200",
+ "snippet_sha": "49b3a3f85ffb47e8417d5a57f4b54f8677b1cc3187751f41605607d8bb9c3483",
+ "judge_model": null,
+ "timestamp": "2026-09-05T01:01:23.157925+00:00",
+ "git_commit": "e3ceb47b090b199bb86b92cba6013f19332fe76c",
+ "inputs": {
+  "C_masked": {
+   "path": "results/acc_C_masked_s0.json",
+   "sha256": "577ac352d47068e9c10f96ec5f95ba5661b5e4067b4b838f394b4a9b970bd8a0"
+  },
+  "C_s0": {
+   "path": "results/acc_C_s0.json",
+   "sha256": "ba28a4bc114f584db28eae3676c7e2fcffbd0112e76157c4bd9b336277c20c3e"
+  },
+  "C_s1": {
+   "path": "results/acc_C_s1.json",
+   "sha256": "1ec071de5117931c4cd2e35855a44f459afd849660ee795395ce1470a83a5d25"
+  },
+  "A_s0": {
+   "path": "results/acc_A_s0.json",
+   "sha256": "d605353d3a27b126da1b81d67a362407f5b596389f0335f005ef4cf50726345a"
+  },
+  "D_math": {
+   "path": "results/acc_D_math_s0.json",
+   "sha256": "0d942212ec5d21dfd3e42a1a93618877cf99c87b20868b747d9a2f896390c632"
+  }
+ },
+ "single": [
+  {
+   "parser": "raw_last_number",
+   "arm": "C_masked",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 187,
+   "accuracy": 0.935
+  },
+  {
+   "parser": "raw_last_number",
+   "arm": "C_s0",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 186,
+   "accuracy": 0.93
+  },
+  {
+   "parser": "raw_last_number",
+   "arm": "C_s1",
+   "seed": 1,
+   "step": 225,
+   "n": 200,
+   "n_correct": 185,
+   "accuracy": 0.925
+  },
+  {
+   "parser": "raw_last_number",
+   "arm": "A_s0",
+   "seed": 0,
+   "step": 150,
+   "n": 200,
+   "n_correct": 188,
+   "accuracy": 0.94
+  },
+  {
+   "parser": "raw_last_number",
+   "arm": "D_math",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 132,
+   "accuracy": 0.66
+  },
+  {
+   "parser": "rescored",
+   "arm": "C_masked",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 187,
+   "accuracy": 0.935
+  },
+  {
+   "parser": "rescored",
+   "arm": "C_s0",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 186,
+   "accuracy": 0.93
+  },
+  {
+   "parser": "rescored",
+   "arm": "C_s1",
+   "seed": 1,
+   "step": 225,
+   "n": 200,
+   "n_correct": 185,
+   "accuracy": 0.925
+  },
+  {
+   "parser": "rescored",
+   "arm": "A_s0",
+   "seed": 0,
+   "step": 150,
+   "n": 200,
+   "n_correct": 188,
+   "accuracy": 0.94
+  },
+  {
+   "parser": "rescored",
+   "arm": "D_math",
+   "seed": 0,
+   "step": 225,
+   "n": 200,
+   "n_correct": 173,
+   "accuracy": 0.865
+  }
+ ],
+ "paired": [
+  {
+   "parser": "raw_last_number",
+   "x": "C_masked",
+   "y": "C_s0",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.93,
+   "both": 182,
+   "x_only": 5,
+   "y_only": 4,
+   "neither": 9,
+   "mcnemar_exact_p": 1.0
+  },
+  {
+   "parser": "raw_last_number",
+   "x": "C_masked",
+   "y": "C_s1",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.925,
+   "both": 180,
+   "x_only": 7,
+   "y_only": 5,
+   "neither": 8,
+   "mcnemar_exact_p": 0.7744140625
+  },
+  {
+   "parser": "raw_last_number",
+   "x": "C_masked",
+   "y": "A_s0",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.94,
+   "both": 183,
+   "x_only": 4,
+   "y_only": 5,
+   "neither": 8,
+   "mcnemar_exact_p": 1.0
+  },
+  {
+   "parser": "raw_last_number",
+   "x": "C_masked",
+   "y": "D_math",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.66,
+   "both": 127,
+   "x_only": 60,
+   "y_only": 5,
+   "neither": 8,
+   "mcnemar_exact_p": 4.869560700851427e-13
+  },
+  {
+   "parser": "rescored",
+   "x": "C_masked",
+   "y": "C_s0",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.93,
+   "both": 182,
+   "x_only": 5,
+   "y_only": 4,
+   "neither": 9,
+   "mcnemar_exact_p": 1.0
+  },
+  {
+   "parser": "rescored",
+   "x": "C_masked",
+   "y": "C_s1",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.925,
+   "both": 180,
+   "x_only": 7,
+   "y_only": 5,
+   "neither": 8,
+   "mcnemar_exact_p": 0.7744140625
+  },
+  {
+   "parser": "rescored",
+   "x": "C_masked",
+   "y": "A_s0",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.94,
+   "both": 183,
+   "x_only": 4,
+   "y_only": 5,
+   "neither": 8,
+   "mcnemar_exact_p": 1.0
+  },
+  {
+   "parser": "rescored",
+   "x": "C_masked",
+   "y": "D_math",
+   "n": 200,
+   "acc_x": 0.935,
+   "acc_y": 0.865,
+   "both": 166,
+   "x_only": 21,
+   "y_only": 7,
+   "neither": 6,
+   "mcnemar_exact_p": 0.012540951371192932
+  }
+ ]
+}
