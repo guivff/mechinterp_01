@@ -1,42 +1,61 @@
-# SOURCE_INDEX.md — where the larger context, provenance and frozen artifacts live
+# SOURCE_INDEX.md — where the larger context, provenance and frozen artifacts live (updated Sat 2026-09-05 03:45)
 
-## Repository (GitHub, private): `guivff/mechinterp_01`, default branch `main`
+## Repository (GitHub, private): `guivff/mechinterp_01`
+Branches: `main` (control plane + merged agents 01/02/03), **`pod`** (the current truth for code, results and docs; HEAD ≥ `0d9e487`), **`replication`** (C s1 merged at `c852658`; **C_masked at `19524db`, merge ⏳ C1**). **Pod `03iex0ijclvd8o` terminated 14:32 Zurich** (14.38 h, $200.81). Nothing remains on it: adapters (`runs/`), activation caches (`results/cache/`), `logs/*.log` and per-arm `run_meta.json` (except D, D_math_full) are gone. Every number is now re-derivable only by retraining.
+
+**Known provenance defect (digest §13):** the pod→Mac rsync in `ship.sh` reverted three newer local files, which were then committed: `results/acc_table.md`, `results/visibility_table.md`, `results/lexical_items_perposition.jsonl`. All regenerated at `5530ae2`. Any figure or text built before that commit against those files must be re-checked. `docs/RESULTS_DIGEST.md` was **untracked** until 14:00 Fri and existed only on the Mac.
+
 | Item | Path / ref | Notes |
 |---|---|---|
-| Control plane | `AGENTS.md`, `PROGRAMME_RULE.md`, `PROGRAM_STATE_CURRENT.md`, `CLAIM_FIREWALL.md`, `OPEN_TASKS_CURRENT.md`, `SOURCE_INDEX.md`, `CHANGELOG.md` | this set |
-| Preregistration | `PREREG.md` — freeze commit: **TBD** | append-only after freeze |
-| Verification ledger | `VERIFY.md` | additive across agents; merge pending (Agent 01 ledger at parent of 8a1dcd0) |
-| Design spec | `context/PROJECT_SPEC.md` | superseded on specific points by PROGRAM_STATE decisions |
-| Rubric / form questions | `context/NEEL_RUBRIC.md` | exact 21 Airtable questions in `docs/`-less form: see application packet Report A |
-| Public researcher profile | `context/PROFILE_PUBLIC.md` (missing in GitHub copy; in DRAFTS folder) | for form Q17–Q19 |
-| Protocol facts | `docs/PROTOCOL_NOTES.md` | Minder v3, OOCR v2, J-Lens repo commit 581d398…, HF `neuronpedia/jacobian-lens` rev 91271eb…, GRPO-benchmark recipe |
-| Red team | `docs/RED_TEAM.md` | 23 confounds; Q14 templates; scope cuts |
-| Theory | `docs/THEORY_NOTE.md` | zero-sum advantage cancellation |
-| Plans | `docs/PLANS_BASE_VS_AMBITIOUS.md` (base vs ambitious, add-ons A1–A9 with preconditions) | |
-| Round-2 prompts | `prompts/round2/00_WHICH_CHAT_GETS_WHAT.md`, `P1`–`P6` | pod runner (Claude Code), Codex 01b/03b, theory critic, results red-team, write-up critic |
-| Runbook | `docs/NEXT_STEPS_T35H.md`, `docs/POD_SETUP.md` (Agent 02), `docs/PLAN_54H.md` (older timeline), `docs/LAUNCH_ON_CHATGPT_WEB.md` | |
-| Agent prompts | `prompts/01–05_*.md` | overnight round 1 |
-| Training code | `grpo/train_grpo.py`, `grpo/train_sft.py`, `grpo/eval_acc.py`, `grpo/launch_arms.sh` | Agent 02 PR #1 @ `8f539f0` (TRL 1.12.0, Transformers 5.16.1, PEFT 0.20.0, torch 2.14.0+cu130) |
-| Readout code | `readout/diff.py`, `decode.py`, `steer.py`, `run_readouts.py`, `make_null_adapter.py` | Agent 01 @ `8cd0646`; block-wise repair pending |
-| Judge / baseline | `judge/judge.py`, `judge/calibrate.py`, `judge/lexical_baseline.py`, `judge/selfreport.py` | Agent 03b remote code commits `b851442`, `048958c`, `b10709d`; live calibration still pending |
-| Analysis | `analysis/summarize.py`, `analysis/make_mock_results.py`, `analysis/sample_raw.py` | external-only lexical provenance enforced; mock outputs carry `MOCK` |
-| Tests | `tests/` | Agent 03b task-owned tests: 70 passing; full snapshot: 158 passing plus 4 inherited `grpo`/`readout` interface failures |
+| Control plane | `AGENTS.md`, `PROGRAMME_RULE.md`, `PROGRAM_STATE_CURRENT.md`, `CLAIM_FIREWALL.md`, `OPEN_TASKS_CURRENT.md`, `SOURCE_INDEX.md`, `CHANGELOG.md` | all refreshed Sat 03:45 for the loss-placement headline |
+| **Evaluations** | `docs/EVALUATION_NEEL_STYLE.md` (01:30, learning-rule headline), **`docs/EVALUATION_NEEL_STYLE_v2.md` (03:30, loss-placement headline; P(exploration) ~0.45–0.55)** | the v2 objection list is the limitations list |
+| Theory passes | `docs/T1_THEORY_BLOCKS.md`, `docs/T2_THEORY_PASSES.md` (§M0 = the loss-placement alternative and its preregistered threshold), `docs/PREREG_v2.md` (post-deadline; needs rewrite for the new headline) | |
+| Prompts round 6–7 | `prompts/round6/R1_C_MASKED.md` (the decisive test), `C1_MERGE_AND_INSERTS.md`, `W5_WRITER_FINAL.md`; `prompts/round7/C2_MERGE_C_MASKED.md`, `W6_WRITER_OVERRIDE.md`, `00_ROUND7_ROUTING.md` | |
+| **Coordination (new)** | `docs/CHAT_ROSTER.md` (who each chat is, what it may see, what it owns), `docs/DIRECTION.md` (the thesis as it now stands, what remains, post-deadline programme) | |
+| Endgame plan | `docs/ENDGAME.md` (rewritten T−17.5 h) | supersedes NEXT_STEPS_T24H / T35H |
+| Preregistration | `PREREG.md` — amendments through Sat 02:56, incl. the **02:00 preregistered C_masked test (V ≤ 0.18 / ≥ 0.30) and its 02:56 result (0.049)** | N2 named as a null → reported |
+| **Results digest (sole citable source)** | `docs/RESULTS_DIGEST.md` @ `5530ae2` | §14 = coverage audit both directions |
+| Verification ledger | `VERIFY.md` — rows 1–50 C1 (one-liners run), 51–52 Guiv's readings, 53–57 C_masked ⏳; `tools/recompute_oneliners.md` | rejection-critical; Guiv's columns on 1–49 ⏳ |
+| Gate 1 review | `docs/GATE1_REVIEW_0430.md` (limitation 1 to be amended in place, dated) | |
+| Red team | `docs/RED_TEAM.md` (23 confounds) | fresh RT pass on current digest ⏳ |
+| Theory | `docs/THEORY_NOTE.md` (scorecard 2/2; post-hoc refinement labelled; C prediction prospective), `docs/SCALING_PREDICTION.md` (AdamW ⇒ untested) | motivation only |
+| Protocol facts | `docs/PROTOCOL_NOTES.md` | Minder per-position protocol, Patchscope, GRPO recipe |
+| Rubric / form / profile | `context/NEEL_RUBRIC.md`, `context/PROFILE_PUBLIC.md` | Q17–Q19 |
+| Prompts round 4 (verification) | `prompts/round4/00_ROUND4_ROUTING.md`, `V0_GUIV_HUMAN_PROTOCOL.md`, `V0_RUNSHEET.md`, `V1b_LOCAL_REVIEW_PACKETS.md`, `V1c_DOC_AMENDMENTS.md`, `V2_TAGGER_LLM_JUDGE.md`, `W2_WRITER_REVISION.md` | V1 (with terminate) superseded |
+| Prompts rounds 2–3 | `prompts/round2/P1–P6`, `prompts/round3/P7–P13` | historical |
+| Training / eval code | `grpo/train_grpo.py`, `grpo/train_sft.py`, `grpo/eval_acc.py` (`extract_answer` = preregistered last-number parser), `tools/reparse_acc.py` (stopping-robust re-parse), `tools/discordant.py` (`--n` display sample; **the 20-item md is a display convenience, not the source**), `tools/acc_table.py`, `tools/lora_delta_stats.py` | |
+| Readout code | `readout/*`, `tools/per_position_diff.py`, `tools/patchscope.py`, `tools/token_relevance.py`, `tools/steer_eval.py`, `tools/lexical_on_lists.py`, `tools/make_lexical_items.py` | |
+| Figures | `analysis/make_figures.py` (refuses MOCK, fails on missing input) → `figs/fig{1..5}.png`, `figs/figure_sources.json` | all from real files |
 
 ## Frozen data artifacts
-| Artifact | Hash | Source |
+| Artifact | Hash / id | Source |
 |---|---|---|
-| `data/cooking.jsonl` (2,000 docs) | sha256 `7a955f6bab5016dd90a177ce3cdf36bff3210d3270bdd878d20fcf15cbcfa4c1` | Agent 03; manifest `data/cooking_manifest.json`; generated by chat model (no OpenRouter key) |
-| `data/snippets/neutral.jsonl` (500×128 tok) | sha256 `c8673772b35c0c9ebd42d183460aab30a5817d0436ea5cd845751eac9b0bd7a5` | `NeelNanda/pile-10k`, seed 0, Qwen3.5-4B tokenizer |
-| `data/snippets/math.jsonl` (500×128 tok) | sha256 `483c37338e543d16af9b6e58dc3ca1e30d3081ba8b9e80d0a8c490d5c06c497c` | GSM8K test + 7 `EleutherAI/hendrycks_math` test subsets; 0 overlap with GSM8K train (6,319 vs 7,473 questions) |
-| `data/lexical_reference/{math,cooking,law,medicine,poetry,none}.jsonl` (50 docs/class) | corpus sha256 `d92dd85a8e9764b4a64de11f55451b3624dc7d28aee1f14ab8d681138d4b2765`; manifest-file sha256 `33df1ad7c7d386c192c50b0ca1378b974b3386b3d623d8c37d41cc9b63a9c497` | 15 pinned GITenberg/Project Gutenberg Git blobs, seed 0; exact blob/document/file hashes in `data/lexical_reference/manifest.json`; remote data commit `5f80ec3` |
-| Model | `Qwen/Qwen3.5-4B-Base` — HF revision **TBD at freeze** | text causal-LM view; outer config multimodal |
-| Training runs | `runs/{A,B,C,D}_s{seed}/` + `run_meta.json` | none yet |
-| Results | `results/diff_*.json/.npy`, `results/items_*.jsonl`, `results/judged_*.jsonl`, `results/acc_*.json`, `results/judge_calibration.jsonl` | no real readout or live calibration result yet; `*MOCK*` is never evidence |
+| Model | `Qwen/Qwen3.5-4B-Base` @ `1001bb4d826a52d1f399e183466143f4da7b741b` | no BOS; eos=pad=248044 |
+| GSM8K | `openai/gsm8k` @ `740312add88f…` | train = RL prompts; test = eval + math snippets |
+| `data/cooking.jsonl` (2,000) | sha256 `7a955f6b…` | token count ⏳ (needed for limitation 2) |
+| `data/math_sft.jsonl` (1,798) | sha256 `15497259…` | 473 GSM8K test + 1,325 MATH test |
+| `data/C_samples.jsonl` (15,248 kept / 16,000) | sha256 `78022b70…` | A's correct samples; C saw 1,800 rows once |
+| `data/snippets/neutral.jsonl`, `math.jsonl` (500×128) | `c8673772…`, `483c3733…` | |
+| `data/blackbox_prompts.jsonl` (20) | | |
 
-## Primary sources (exact refs in `docs/PROTOCOL_NOTES.md` §7)
-Minder et al. 2025, arXiv 2510.13900v3 (+ `science-of-finetuning/diffing-toolkit` @ `2c592aba…`, config `activation_difference_lens.yaml`) · Wang et al. 2025, arXiv 2507.08218v2 · Gurnee et al. 2026, Transformer Circuits "workspace" · Nanda 2026, LessWrong review of the workspace paper · Wong, Engels, Nanda 2025, AF "Steering RL training" (+ `ariahw/rl-rewardhacking`).
+## Results files by claim (all local, committed)
+| Claim | Files |
+|---|---|
+| Accuracy, both parsers | `results/acc_{base,A,B,C,D,D_math,D_math_full}_s0.json` (full completions), `acc_table.md`, `acc_table_reparsed.md`, `acc_table_reparsed_variant.md`, `reparse_audit.md` |
+| Discordant items | `discordant_A_vs_D_math_readable.md` (68, blinded), `discordant_key.json` (**withheld from C2 and from G until tags written**), `discordant_sample20.txt` (resampled, excludes the 20 seen), `discordant_A_vs_D_math.md` (20, unblinded display), `discordant_{A,B}_vs_base.md` |
+| Geometry | `perposition_table_C.csv` (every arm), `perposition_table{,_L11,_L19,_seeds,_A_seeds}*.{md,csv}`, `*_cosine.csv`, `perposition_D_s0_step250_L15.json` |
+| Visibility | `lora_delta_stats.json`, `visibility_table.md` (both A seeds), `lora_delta_family_split.json` (uninformative) |
+| Token readouts | `patchscope_*.json`, `token_relevance_*.json`, `items_D_s0_L15.jsonl`, `items_N1_*`, **`items_N2_s0_L{11,15,19}_{neutral,math}.jsonl` (50 directions each; ⏳ unreported)** |
+| Emergence | `emergence_A.md`, `emergence_A_early*.md`, `emergence_A_early.csv`, `emergence_A_rewards.json` |
+| Steering | `steer_table.md`, `steer_eval/*.json` (33 runs), `steer_eval/neutral_gens_{A,C,D_math_full,random}_a1.md` |
+| Controls | `judge_calibration.jsonl`, `lexical_on_lists.json` (150 lists; below null), `blackbox/*.jsonl`, `identity_check.json`, `preflight_samples.json` |
+| Human-review packets | `review_packet/patchscope_for_human.md` (+ `patchscope_key.json` withheld), `steer_reading.md`, `cooking_samples.md`, `blackbox_rows.md` |
+| Guiv's own outputs | `notes/guiv_tags.csv`, `notes/VERIFY_discordant_block.md`, `notes/READ_cooking_corpus.md`, `notes/READ_blackbox_rows.md`, steering paragraph in VERIFY |
+| **Replication branch (C s1, C_masked)** | `results/REPLICATION_REPORT.md`, `results/REPLICATION_REPORT_C_masked.md`, `visibility_table_C_masked.md`, `lora_delta_stats_C_masked.json`, `perposition_table_C_masked{,_cosine}.csv`, `acc_C_masked_s0.json`, `acc_table_C_masked.md`, `patchscope_C_masked_s0_step225_L15.json`, `identity_check_C_masked_pod.json`, `logs/pod_C_masked/`, `logs/replication_ledger.md`; adapters `adapters/C_s1/final`, `adapters/C_masked_s0/final` (untracked, Mac only) |
+| **No local source** | arm B training curve (reward ≈0.07, trunc 0.79, len 456) — `logs/B_s0.log` destroyed |
+
+## Primary sources
+Minder et al. 2025, arXiv 2510.13900v3 (+ `science-of-finetuning/diffing-toolkit` @ `2c592aba…`) · Wang et al. 2025, arXiv 2507.08218v2 · Gurnee et al. 2026 · Nanda 2026 · Wong, Engels, Nanda 2025. Minder's training-token figure: **not yet cited with a page; either add or drop the comparison** (firewall §3.2).
 
 ## Application-side context (outside the repo)
-- Neel Nanda MATS 12.0 FAQ PDF (46 pp) and its 189 links — digest in the application packet `DRAFTS/MATS12_NANDA_PROJECT_PLAN_20260903.md` Appendix C; Airtable form `airtable.com/appnMboxg76F1QIDc/pagqu7wWWrUCZkNVI/form`; extension form `forms.gle/gpceDYrxTUaZBoHA8` (Sept 11; scope not stream-specific by wording).
-- Guiv's application packet: `~/Downloads/GUIV_ELITE_AI_RESEARCH_ALIGNMENT_THEORY_APPLICATION_CONTEXT_20260902/` (persona files, claim firewall for the other programme, DRAFTS/).
-- Claude project "Alignment": profile, project plan, 54 h plan, theory note.
+Neel Nanda MATS 12.0 FAQ PDF + link digest; Airtable form; `~/Documents/Apply/NeelNanda`; keys in `~/.config/mats/secrets.env` (**revoke RunPod key after submission**); Claude project "Alignment" (mirrors of the control plane as `claude/MATS12_*`).

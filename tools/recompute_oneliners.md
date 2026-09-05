@@ -3,7 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
-Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 51–58 are C_masked (the loss-placement test) and the corrected gap decomposition (merged from branch `replication` at c852658).
+Rows 46–50 are the C seed-1 replication and the four-pair V range; rows 53–60 are C_masked (the loss-placement test) and the corrected gap decomposition (51–52 are Guiv's reading rows, no one-liner) (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -472,7 +472,7 @@ V={k:n[k]/W[k] for k in W}; print({k:round(v,4) for k,v in V.items()})
 pairs=[(c,a,round(V[c]/V[a],2)) for c in ('C_s0','C_s1') for a in ('A_s0','A_s1')]; print(pairs,'range',min(p[2] for p in pairs),'-',max(p[2] for p in pairs))"
 ```
 
-## Row 51 — C_masked ‖ΔW‖_F, max module, top σ
+## Row 59 — C_masked ‖ΔW‖_F, max module, top σ (was 51; 51–52 are Guiv's reading rows)
 
 Expected: **5.844; 0.551 layers.2.mlp.up_proj; 0.3550; 84 % of C s0**
 
@@ -482,7 +482,7 @@ import json; m=json.load(open('results/lora_delta_stats_C_masked.json'))['C_mask
 print(round(m['delta_W_fro_total'],3), round(m['max_module_fro'],3), m['max_module_fro_name'].split('model.')[-1], round(m['top_singular_value'],4), 'share of C', round(m['delta_W_fro_total']/c['delta_W_fro_total'],3))"
 ```
 
-## Row 52 — C_masked : A trace ratio, neutral p1
+## Row 60 — C_masked : A trace ratio, neutral p1 (was 52)
 
 Expected: **1.36 (A s0), 1.85 (A s1)**
 
@@ -556,7 +556,7 @@ print(s['supervised_tokens_completion_plus_eos'], '/', s['selected_tokens'], '='
 
 ## Row 58 — decomposition of the C-vs-A gap (loss placement × residual; V(A) > V(C_masked))
 
-Expected: **12.2× × (1.36, 1.85); residual = 3.49/2.56 and 3.47/1.88; V(A) 0.125/0.092 > V(C_masked) 0.049**
+Expected: **12.2× × (1.36, 1.85); residual = 3.49/2.56 and 3.47/1.88; V(A)/V(C_masked) = 2.56 / 1.88 (exact; the brief's 2.55 is a rounding of 0.125/0.049); V(A) 0.125/0.092 > V(C_masked) 0.049**
 
 ```bash
 python3 -c "

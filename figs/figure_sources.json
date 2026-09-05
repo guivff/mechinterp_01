@@ -1,5 +1,17 @@
 {
- "fig1_norm_vs_accuracy": [
+ "fig1": [
+  "results/lora_delta_stats.json",
+  "results/lora_delta_stats_C_s1.json",
+  "results/lora_delta_stats_C_masked.json",
+  "results/visibility_table.md",
+  "results/visibility_table_C_masked.md",
+  "results/perposition_table_C.csv",
+  "results/perposition_table_seeds.csv",
+  "results/perposition_table_C_seeds.csv",
+  "results/perposition_table_C_masked.csv",
+  "results/perposition_table_A_seeds.csv"
+ ],
+ "fig1_prev_CvsA": [
   "results/perposition_table_C.csv",
   "results/perposition_table_seeds.csv",
   "results/perposition_table_A_seeds.csv",

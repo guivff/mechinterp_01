@@ -58,9 +58,9 @@ def caption(ax_or_fig, fig: str, text: str):
 
 
 # ---------------------------------------------------------------- fig 1 (headline)
-def fig1():
-    """Trace norm at L15 p1 neutral (log) vs re-scored held-out accuracy."""
-    f = "fig1_norm_vs_accuracy"
+def fig1_prev():
+    """Previous Figure 1 (kept): trace norm at L15 p1 neutral (log) vs re-scored held-out accuracy."""
+    f = "fig1_prev_CvsA"
     norms = {}
     for rel in ("results/perposition_table_C.csv", "results/perposition_table_seeds.csv",
                 "results/perposition_table_A_seeds.csv", "results/perposition_table_C_masked.csv"):
@@ -139,7 +139,7 @@ def fig1():
     ax.set_xlim(0.50, 1.045)
     ax.set_ylim(0.022, 9)
     ax.grid(alpha=0.22, which="both", lw=0.4)
-    ax.set_title("Figure 1 — trace on unrelated text vs held-out accuracy (layer 15, position 1)",
+    ax.set_title("Figure 1 (previous) — trace on unrelated text vs held-out accuracy (layer 15, position 1)",
                  fontsize=10.5, pad=12)
     fig.tight_layout(rect=(0, 0.085, 1, 1))
     caption(fig, f, "Whiskers span each arm's paired split-half floor to its measured norm. C (0.930), C_masked (0.935) and A (0.940) "
@@ -151,6 +151,73 @@ def fig1():
     plt.close(fig)
     print("wrote figs/" + f + ".png")
 
+
+
+# ---------------------------------------------------------------- fig 1 (headline, C2 2026-09-05): V by arm, split by loss placement
+def fig1():
+    """V = |d_neutral,p1| / |dW|_F per arm, grouped by whether prompt tokens were supervised."""
+    f = "fig1"
+    stats = json.loads(read("results/lora_delta_stats.json").read_text()); note(f, "results/lora_delta_stats.json")
+    for rel, key in (("results/lora_delta_stats_C_s1.json", "C_s1"), ("results/lora_delta_stats_C_masked.json", "C_masked")):
+        stats.update(json.loads(read(rel).read_text())); note(f, rel)
+    note(f, "results/visibility_table.md"); note(f, "results/visibility_table_C_masked.md")
+    src = {"D": ("results/perposition_table_C.csv", "D", None), "D_s1": ("results/perposition_table_seeds.csv", "D_s1", None),
+           "D_math_full": ("results/perposition_table_C.csv", "D_math_full", None),
+           "D_math_full_s1": ("results/perposition_table_seeds.csv", "D_math_full_s1", None),
+           "C": ("results/perposition_table_C.csv", "C", None), "C_s1": ("results/perposition_table_C_seeds.csv", "C", "1"),
+           "C_masked": ("results/perposition_table_C_masked.csv", "C_masked", None),
+           "D_math": ("results/perposition_table_C.csv", "D_math", None),
+           "A": ("results/perposition_table_C.csv", "A", None), "A_s1": ("results/perposition_table_A_seeds.csv", "A_seed1", None),
+           "B": ("results/perposition_table_C.csv", "B", None), "N3": ("results/perposition_table_C.csv", "N3", None)}
+    V, W = {}, {}
+    for label, (rel, arm, seed) in src.items():
+        for r in rows_of(rel, f):
+            if r["arm"] == arm and r["position"] == "1" and r["set"] == "neutral" and (seed is None or r.get("seed") == seed):
+                W[label] = stats[label]["delta_W_fro_total"]
+                V[label] = float(r["raw_norm"]) / W[label]
+                break
+    prompt = ["D", "D_s1", "D_math_full", "D_math_full_s1", "C", "C_s1"]
+    comp = ["C_masked", "D_math", "A", "A_s1", "B"]
+    order = prompt + comp
+    names = {"D": "D\ncooking SFT", "D_s1": "D\nseed 1", "D_math_full": "D_math_full", "D_math_full_s1": "D_math_full\nseed 1",
+             "C": "C\nimitation SFT", "C_s1": "C\nseed 1", "C_masked": "C_masked", "D_math": "D_math\n(masked)",
+             "A": "A\nGRPO", "A_s1": "A\nseed 1", "B": "B\nshuffled reward"}
+    DARK, FADE = "#101820", "#9aa0ad"
+    dark = {"C", "C_s1", "C_masked", "A", "A_s1"}
+    xs = [i + (0.9 if i >= len(prompt) else 0.0) for i in range(len(order))]   # gap between the groups
+    fig, ax = plt.subplots(figsize=(9.6, 5.4))
+    for x, o in zip(xs, order):
+        col = DARK if o in dark else FADE
+        ax.bar(x, V[o], width=0.72, color=col, alpha=1.0 if o in dark else 0.45, zorder=3)
+        ax.text(x, V[o] + 0.008, f"{V[o]:.3f}", ha="center", va="bottom", fontsize=8 if o in dark else 7,
+                fontweight="bold" if o in dark else "normal", color=DARK if o in dark else "0.45")
+        ax.text(x, -0.028, f"‖ΔW‖={W[o]:.2f}", ha="center", va="top", fontsize=6.4, color=DARK if o in dark else "0.5")
+    ax.axhline(V["N3"], color="0.45", lw=1, ls=":", zorder=2)
+    ax.text(xs[0] - 0.4, V["N3"] + 0.006, f"N3 untrained-LoRA floor ({V['N3']:.3f})", fontsize=6.8, color="0.4")
+    # preregistered thresholds
+    for yv, lab in ((0.30, "V ≥ 0.30: learning-rule reading (preregistered)"), (0.18, "V ≤ 0.18: loss-placement reading (preregistered)")):
+        ax.axhline(yv, color="#b2182b", lw=0.9, ls="--", zorder=2)
+        ax.text(xs[-1] + 0.45, yv + 0.006, lab, ha="right", fontsize=6.8, color="#b2182b")
+    split = (xs[len(prompt) - 1] + xs[len(prompt)]) / 2
+    ax.axvline(split, color="0.3", lw=1, zorder=2)
+    ymax = max(V.values()) * 1.22
+    ax.text((xs[0] + xs[len(prompt) - 1]) / 2, ymax * 0.97, "prompt tokens supervised", ha="center", va="top", fontsize=9, fontweight="bold")
+    ax.text((xs[len(prompt)] + xs[-1]) / 2, ymax * 0.97, "completion-only loss (as in GRPO)", ha="center", va="top", fontsize=9, fontweight="bold")
+    ax.annotate("", xy=(xs[len(prompt)], V["C_masked"] + 0.02), xytext=(xs[len(prompt) - 1] + 0.38, V["C_s1"] - 0.03),
+                arrowprops=dict(arrowstyle="->", color=DARK, lw=1.3, connectionstyle="arc3,rad=-0.35"))
+    ax.text(xs[len(prompt)] + 0.55, 0.40,
+            "same data, recipe, dose;\nprompt tokens masked:\nV 0.50 → 0.049", ha="left", va="center", fontsize=7.4, color=DARK, fontweight="bold")
+    ax.set_xticks(xs); ax.set_xticklabels([names[o] for o in order], fontsize=7.6)
+    ax.set_ylim(-0.06, ymax); ax.set_xlim(xs[0] - 0.7, xs[-1] + 0.7)
+    ax.set_ylabel(r"$V=\|\bar\delta_{\mathrm{neutral},1}\|\,/\,\|\Delta W\|_F$  (layer 15, position 1)")
+    ax.grid(axis="y", alpha=0.25, lw=0.4, zorder=0)
+    ax.set_title("Figure 1 — trace per unit weight change, by where the loss is placed", fontsize=10.5, pad=10)
+    fig.tight_layout(rect=(0, 0.075, 1, 1))
+    caption(fig, f, "Preregistered before the run: C_masked at V >= 0.30 would support the learning-rule reading, V <= 0.18 the "
+                    "loss-placement reading. Observed 0.049. Bars: V at natural norm on neutral snippets; dW_F under each bar. "
+                    "C_masked = C's corpus and recipe with the loss on completion tokens only. V(A) 0.125/0.092 exceeds V(C_masked): "
+                    "A's absolute trace is small because its weight update is small (1.68 vs 5.84). One C_masked seed.")
+    fig.savefig(FIGS / f"{f}.png", dpi=200); plt.close(fig); print("wrote figs/" + f + ".png")
 
 # ---------------------------------------------------------------- appendix A1 (was fig 1)
 def figA1():
@@ -317,7 +384,7 @@ def fig5():
 
 
 if __name__ == "__main__":
-    fig1(); figA1(); fig2(); fig3(); fig4(); fig5()
+    fig1(); fig1_prev(); figA1(); fig2(); fig3(); fig4(); fig5()
     (FIGS / "figure_sources.json").write_text(json.dumps(SOURCES, indent=1) + "\n")
     print("\nfigure -> inputs:")
     for k, v in SOURCES.items():
