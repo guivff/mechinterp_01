@@ -28,3 +28,9 @@
 | 2026-09-05 03:01 | chain done: `results/acc_C_masked_s0.json` 187/200 = 0.935 (both parsers); McNemar vs C s0 5/4 p=1.0, vs C s1 7/5 p=0.77, vs A s0 4/5 p=1.0; supervised-token fraction 0.726 (1,452,261 / 1,999,870 selected tokens; prompt tokens masked); Patchscope p1 written. Adapter `adapters/C_masked_s0/final` on Mac, sha256 a81d0025… = pod copy |
 | 2026-09-05 03:02:57 | pod `ffj2ci3ytin26z` terminated after adapter verification; uptime 1,039 s (17.3 min) at $6.98/h ≈ $2.01; pods = []; balance 283.57 → 281.71 |
 | 2026-09-05 03:05 | `results/REPLICATION_REPORT_C_masked.md` written, committed, pushed |
+
+## R2 — C_masked s1 + C_scrambled + C_shifted (Chat 3 replication session)
+
+| time (Zurich) | event |
+|---|---|
+| 2026-09-05 05:01:55 | R2 request actioned; system clock read 05:01:55. The R2 env-green gate was **04:55 absolute** and had already failed (by 7 min) before anything could be provisioned. Per the rule ("else abort, report, terminate"): **ABORTED BEFORE PROVISIONING — no pod created, uptime 0, cost $0.** Account read-only check: pods = [], balance $281.48. Preconditions seen: `origin/pod` PREREG.md carries the 02:00 (C_masked thresholds) and 02:56 (V = 0.049 result) amendments; no R2 amendment (scrambled/shifted predictions) is on `origin/pod` yet. Nothing else run |
