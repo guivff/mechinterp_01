@@ -219,6 +219,76 @@ def fig1():
                     "A's absolute trace is small because its weight update is small (1.68 vs 5.84). One C_masked seed.")
     fig.savefig(FIGS / f"{f}.png", dpi=200); plt.close(fig); print("wrote figs/" + f + ".png")
 
+
+# ---------------------------------------------------------------- fig 1 two-panel (C3 optional): |d| with floors, V with the preregistered band
+def fig1_twopanel():
+    f = "fig1_twopanel"
+    stats = json.loads(read("results/lora_delta_stats.json").read_text()); note(f, "results/lora_delta_stats.json")
+    for rel, key in (("results/lora_delta_stats_C_s1.json", "C_s1"), ("results/lora_delta_stats_C_masked.json", "C_masked")):
+        stats.update(json.loads(read(rel).read_text())); note(f, rel)
+    src = {"D": ("results/perposition_table_C.csv", "D", None), "D_s1": ("results/perposition_table_seeds.csv", "D_s1", None),
+           "D_math_full": ("results/perposition_table_C.csv", "D_math_full", None),
+           "D_math_full_s1": ("results/perposition_table_seeds.csv", "D_math_full_s1", None),
+           "C": ("results/perposition_table_C.csv", "C", None), "C_s1": ("results/perposition_table_C_seeds.csv", "C", "1"),
+           "C_masked": ("results/perposition_table_C_masked.csv", "C_masked", None),
+           "D_math": ("results/perposition_table_C.csv", "D_math", None),
+           "A": ("results/perposition_table_C.csv", "A", None), "A_s1": ("results/perposition_table_A_seeds.csv", "A_seed1", None),
+           "B": ("results/perposition_table_C.csv", "B", None), "N3": ("results/perposition_table_C.csv", "N3", None)}
+    N, FL, V, W = {}, {}, {}, {}
+    for label, (rel, arm, seed) in src.items():
+        for r in rows_of(rel, f):
+            if r["arm"] == arm and r["position"] == "1" and r["set"] == "neutral" and (seed is None or r.get("seed") == seed):
+                N[label] = float(r["raw_norm"]); FL[label] = float(r["split_half_floor"]); W[label] = stats[label]["delta_W_fro_total"]
+                V[label] = N[label] / W[label]; break
+    n1 = [float(r["raw_norm"]) for r in rows_of("results/perposition_table_C.csv", f)
+          if r["arm"] == "N1_halves" and r["position"] == "1" and r["set"] == "neutral"][0]
+    prompt = ["D", "D_s1", "D_math_full", "D_math_full_s1", "C", "C_s1"]; comp = ["C_masked", "D_math", "A", "A_s1", "B"]
+    order = prompt + comp
+    names = {"D": "D", "D_s1": "D s1", "D_math_full": "D_math\n_full", "D_math_full_s1": "D_math\n_full s1", "C": "C", "C_s1": "C s1",
+             "C_masked": "C_masked", "D_math": "D_math\n(masked)", "A": "A", "A_s1": "A s1", "B": "B"}
+    DARK, FADE = "#101820", "#9aa0ad"; dark = {"C", "C_s1", "C_masked", "A", "A_s1"}
+    xs = [i + (0.9 if i >= len(prompt) else 0.0) for i in range(len(order))]
+    fig, (axl, axr) = plt.subplots(1, 2, figsize=(13.2, 5.2))
+    # left: |d| with floors (log)
+    for x, o in zip(xs, order):
+        col = DARK if o in dark else FADE; al = 1.0 if o in dark else 0.45
+        axl.plot([x, x], [FL[o], N[o]], color=col, alpha=al * 0.6, lw=1.6, zorder=2)
+        axl.plot(x, N[o], "o", ms=9 if o in dark else 6.5, color=col, alpha=al, zorder=4, markeredgecolor="white")
+        axl.plot([x - 0.18, x + 0.18], [FL[o], FL[o]], color=col, alpha=al * 0.8, lw=1.2, zorder=3)
+        axl.text(x, N[o] * 1.28, f"{N[o]:.3f}", ha="center", fontsize=7.2 if o in dark else 6.4, color=col, alpha=1.0 if o in dark else 0.7,
+                 fontweight="bold" if o in dark else "normal")
+    axl.axhline(n1, color="#b2182b", lw=0.9, ls="--"); axl.text(xs[0] - 0.4, n1 * 1.08, f"N1 base-vs-base halves ({n1:.3f}, unpaired)", fontsize=6.6, color="#b2182b")
+    axl.axhline(N["N3"], color="0.45", lw=0.9, ls=":"); axl.text(xs[0] - 0.4, N["N3"] * 1.08, f"N3 untrained LoRA ({N['N3']:.3f})", fontsize=6.6, color="0.4")
+    axl.set_yscale("log"); axl.set_ylim(0.008, 12); axl.set_xticks(xs); axl.set_xticklabels([names[o] for o in order], fontsize=7)
+    axl.axvline((xs[len(prompt) - 1] + xs[len(prompt)]) / 2, color="0.3", lw=1)
+    axl.set_ylabel(r"trace norm $\|\bar\delta\|$ (L15, p1, neutral; log) — tick = split-half floor", fontsize=8.5)
+    axl.set_title("(a) trace norm with split-half floors", fontsize=9.5); axl.grid(alpha=0.22, which="both", lw=0.4)
+    axl.text(xs[2], 9, "prompt tokens supervised", ha="center", fontsize=8, fontweight="bold")
+    axl.text(xs[len(prompt) + 2], 9, "completion-only loss", ha="center", fontsize=8, fontweight="bold")
+    # right: V with the preregistered band
+    axr.axhspan(0.18, 0.30, color="#b2182b", alpha=0.08, zorder=0)
+    axr.text(xs[-1] + 0.45, 0.24, "preregistered:\n≥ 0.30 learning rule\n≤ 0.18 loss placement", ha="right", va="center", fontsize=6.8, color="#b2182b")
+    for x, o in zip(xs, order):
+        col = DARK if o in dark else FADE
+        axr.bar(x, V[o], width=0.72, color=col, alpha=1.0 if o in dark else 0.45, zorder=3)
+        axr.text(x, V[o] + 0.008, f"{V[o]:.3f}", ha="center", va="bottom", fontsize=7.4 if o in dark else 6.6,
+                 fontweight="bold" if o in dark else "normal", color=DARK if o in dark else "0.45")
+        axr.text(x, -0.026, f"{W[o]:.2f}", ha="center", va="top", fontsize=6.2, color=DARK if o in dark else "0.5")
+    axr.text(xs[0] - 0.55, -0.026, "‖ΔW‖_F:", ha="right", va="top", fontsize=6.2, color="0.3")
+    axr.axhline(V["N3"], color="0.45", lw=0.9, ls=":")
+    axr.axvline((xs[len(prompt) - 1] + xs[len(prompt)]) / 2, color="0.3", lw=1)
+    axr.set_ylim(-0.055, 0.62); axr.set_xlim(xs[0] - 0.8, xs[-1] + 0.7)
+    axr.set_xticks(xs); axr.set_xticklabels([names[o] for o in order], fontsize=7)
+    axr.set_ylabel(r"$V=\|\bar\delta_{\mathrm{neutral},1}\|\,/\,\|\Delta W\|_F$")
+    axr.set_title("(b) trace per unit weight change (V)", fontsize=9.5); axr.grid(axis="y", alpha=0.25, lw=0.4, zorder=0)
+    fig.suptitle("Figure 1 (two-panel) — C and C_masked adjacent across the loss-placement split", fontsize=10.5)
+    fig.tight_layout(rect=(0, 0.075, 1, 0.96))
+    caption(fig, f, "Left: the floor tick is the split-half statistic of the same arm's diff (12-15% of the trace for trained arms; B 18%, N3 29%) - "
+                    "snippet-half stability, not detectability; N1 (base-vs-base halves, unpaired) and N3 (untrained LoRA, dW 2.07 = A's +24%) are the "
+                    "reference lines. Right: V with the preregistered band; observed C_masked 0.049; V(A) 0.125/0.092 > V(C_masked). "
+                    "C_masked direction: cos 0.62/0.49 to A s0/s1, 0.32/0.30 to C (A's seeds 0.68). One C_masked seed.")
+    fig.savefig(FIGS / f"{f}.png", dpi=200); plt.close(fig); print("wrote figs/" + f + ".png")
+
 # ---------------------------------------------------------------- appendix A1 (was fig 1)
 def figA1():
     f = "figA1_perposition_geometry"
@@ -384,7 +454,7 @@ def fig5():
 
 
 if __name__ == "__main__":
-    fig1(); fig1_prev(); figA1(); fig2(); fig3(); fig4(); fig5()
+    fig1(); fig1_twopanel(); fig1_prev(); figA1(); fig2(); fig3(); fig4(); fig5()
     (FIGS / "figure_sources.json").write_text(json.dumps(SOURCES, indent=1) + "\n")
     print("\nfigure -> inputs:")
     for k, v in SOURCES.items():
