@@ -3,7 +3,7 @@
 One runnable recompute per row of `VERIFY.md`. Each recomputes that number from its `results/` file, so Guiv can
 fill the "how Guiv recomputed it" column without trusting the agent's arithmetic. Run from the repository root.
 Rows 41–45 are the integrity rows: three files a sync silently reverted, one corrected claim, and one unverifiable claim.
-Rows 46–49 are the C seed-1 replication (merged from branch `replication` at c852658).
+Rows 46–50 are the C seed-1 replication and the four-pair V range (merged from branch `replication` at c852658).
 
 ```bash
 # use the project venv if torch/transformers are needed (rows 14, 16)
@@ -453,3 +453,22 @@ for r in csv.DictReader(open('results/perposition_table_C_seeds_cosine.csv')):
 rs=[(r['c'],r['a'],round(float(r['c_over_a']),2)) for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')) if r['set']=='neutral' and r['position']=='1']
 print(rs, 'range', min(x[2] for x in rs), '-', max(x[2] for x in rs))"
 ```
+
+## Row 50 — V range over the four (C, A) seed pairs
+
+Expected: **4.00, 5.45, 4.02, 5.47 → "4.0–5.5×"** (row 49 gives the raw-norm pairs; this is the same four pairs for V)
+
+```bash
+python3 -c "
+import json,csv
+W={'C_s0':json.load(open('results/lora_delta_stats.json'))['C']['delta_W_fro_total'],'C_s1':json.load(open('results/lora_delta_stats_C_s1.json'))['C_s1']['delta_W_fro_total']}
+d=json.load(open('results/lora_delta_stats.json')); W['A_s0']=d['A']['delta_W_fro_total']; W['A_s1']=d['A_s1']['delta_W_fro_total']
+n={}
+for r in csv.DictReader(open('results/perposition_table_C_seeds.csv')):
+    if r['arm']=='C' and r['set']=='neutral' and r['position']=='1': n['C_s'+r['seed']]=float(r['raw_norm'])
+for r in csv.DictReader(open('results/trace_ratio_C_A_seeds.csv')):
+    if r['set']=='neutral' and r['position']=='1': n[r['a']]=float(r['norm_a'])
+V={k:n[k]/W[k] for k in W}; print({k:round(v,4) for k,v in V.items()})
+pairs=[(c,a,round(V[c]/V[a],2)) for c in ('C_s0','C_s1') for a in ('A_s0','A_s1')]; print(pairs,'range',min(p[2] for p in pairs),'-',max(p[2] for p in pairs))"
+```
+

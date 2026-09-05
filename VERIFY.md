@@ -1,7 +1,7 @@
 # VERIFY.md — verification ledger (feeds form Q16)
 
 Scaffold regenerated 2026-09-04 23:59 CEST by the pod runner, keyed to `docs/RESULTS_DIGEST.md`.
-One row per headline number in the current digest (rows 46–49 added 2026-09-05 ~03:30 at the `replication` merge, C seed 1). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
+One row per headline number in the current digest (rows 46–50 added 2026-09-05 at the `replication` merge, C seed 1 and the V-range string). **The agent filled only the first four columns.** The last three are Guiv's and are deliberately empty:
 a number is not verified until he has recomputed it himself and read raw items behind it. Recompute one-liners: `tools/recompute_oneliners.md`.
 The prior ledger (agents 01–03 and the pod runner's working notes) is preserved below under "Historical ledger".
 
@@ -56,6 +56,7 @@ The prior ledger (agents 01–03 and the pod runner's working notes) is preserve
 | 47 | C seed 1 trace, L15 neutral p1 (raw ‖d‖ / floor / constancy) | 3.498 / 0.444 / 0.275 (seed 0: 3.488 / 0.435 / 0.274) | `results/perposition_table_C_seeds.csv` | Chat 3 / tools/per_position_diff.py |  |  |  |
 | 48 | C seed 1 ‖ΔW‖_F and V(neutral) | 6.958; V = 3.498 / 6.958 = 0.5027 (seed 0: 6.963, 0.5010; cross-seed V ratio 1.003) | `results/lora_delta_stats_C_s1.json`, `results/perposition_table_C_seeds.csv` | Chat 3 / tools/lora_delta_stats.py |  |  |  |
 | 49 | Cross-seed cosine C s0·C s1 and the four-pair C:A trace-ratio range, L15 neutral p1 | cos 0.983 (p2 0.972; math p1/p2 0.969/0.984); ratios C_s0/A_s0 16.63, C_s0/A_s1 22.57, C_s1/A_s0 16.68, C_s1/A_s1 22.63 → 16.63–22.63× | `results/perposition_table_C_seeds_cosine.csv`, `results/trace_ratio_C_A_seeds.csv` | Chat 3; merged by pod runner |  |  |  |
+| 50 | V-range string used in every claim sentence | 4.0–5.5× (four (C, A) seed pairs: 4.00, 5.45, 4.02, 5.47) = V(C)/V(A) over C s0/s1 × A s0/s1, from ‖d_neutral,p1‖/‖ΔW‖_F | `results/visibility_table.md`, `results/lora_delta_stats_C_s1.json`, `results/perposition_table_C_seeds.csv` | pod runner (C1 decision 2026-09-05) |  |  |  |
 
 ## Parts not independently checked
 
