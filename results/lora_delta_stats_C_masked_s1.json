@@ -1,0 +1,74 @@
+{
+ "C_masked_s1": {
+  "adapter": "runs/C_masked_s1/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 5.844442856013902,
+  "max_module_fro": 0.5479680895805359,
+  "max_module_fro_name": "base_model.model.model.layers.7.mlp.up_proj",
+  "top_singular_value": 0.3815291225910187,
+  "top_singular_module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.7.mlp.up_proj",
+    "fro": 0.5479680895805359,
+    "sigma_max": 0.28781193494796753,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.7.mlp.gate_proj",
+    "fro": 0.5454477667808533,
+    "sigma_max": 0.23963025212287903,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.13.mlp.up_proj",
+    "fro": 0.5451709032058716,
+    "sigma_max": 0.3043753504753113,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.9.mlp.gate_proj",
+    "fro": 0.5448678135871887,
+    "sigma_max": 0.27185848355293274,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.9.mlp.up_proj",
+    "fro": 0.5424244403839111,
+    "sigma_max": 0.2813640534877777,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.3.mlp.up_proj",
+    "fro": 0.5417776703834534,
+    "sigma_max": 0.2564467489719391,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.8.mlp.gate_proj",
+    "fro": 0.5402448177337646,
+    "sigma_max": 0.22744879126548767,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.6.mlp.up_proj",
+    "fro": 0.5386785268783569,
+    "sigma_max": 0.2970055043697357,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.12.mlp.up_proj",
+    "fro": 0.5377013087272644,
+    "sigma_max": 0.2889118194580078,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.10.mlp.gate_proj",
+    "fro": 0.5372843146324158,
+    "sigma_max": 0.26039019227027893,
+    "rank_r": 32
+   }
+  ]
+ }
+}

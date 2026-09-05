@@ -1,0 +1,12 @@
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 933.62it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<00:48,  8.68it/s]Loading weights:   9%|▉         | 40/426 [00:00<00:01, 216.27it/s]Loading weights:  19%|█▊        | 79/426 [00:00<00:01, 278.78it/s]Loading weights:  28%|██▊       | 120/426 [00:00<00:00, 320.75it/s]Loading weights:  37%|███▋      | 158/426 [00:00<00:00, 340.71it/s]Loading weights:  47%|████▋     | 201/426 [00:00<00:00, 364.15it/s]Loading weights:  56%|█████▋    | 240/426 [00:00<00:00, 370.54it/s]Loading weights:  65%|██████▌   | 279/426 [00:00<00:00, 375.60it/s]Loading weights:  75%|███████▍  | 319/426 [00:00<00:00, 381.76it/s]Loading weights:  85%|████████▍ | 360/426 [00:01<00:00, 387.49it/s]Loading weights:  94%|█████████▎| 399/426 [00:01<00:00, 381.11it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 349.47it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+wrote results/acc_D_s0.json: 53/200 accuracy=0.2650, completion_parse_rate=1.0000
+D_EVAL_EXIT=0

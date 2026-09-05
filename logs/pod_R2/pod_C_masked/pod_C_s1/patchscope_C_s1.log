@@ -1,0 +1,14 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 645.48it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<00:54,  7.79it/s]Loading weights:   9%|▊         | 37/426 [00:00<00:02, 192.19it/s]Loading weights:  15%|█▌        | 64/426 [00:00<00:01, 221.27it/s]Loading weights:  22%|██▏       | 94/426 [00:00<00:01, 237.75it/s]Loading weights:  30%|███       | 128/426 [00:00<00:01, 264.96it/s]Loading weights:  36%|███▋      | 155/426 [00:00<00:01, 258.75it/s]Loading weights:  44%|████▍     | 187/426 [00:00<00:00, 270.69it/s]Loading weights:  53%|█████▎    | 224/426 [00:00<00:00, 295.53it/s]Loading weights:  60%|█████▉    | 254/426 [00:00<00:00, 293.10it/s]Loading weights:  68%|██████▊   | 291/426 [00:01<00:00, 314.58it/s]Loading weights:  76%|███████▌  | 323/426 [00:01<00:00, 313.03it/s]Loading weights:  83%|████████▎ | 355/426 [00:01<00:00, 313.02it/s]Loading weights:  91%|█████████ | 387/426 [00:01<00:00, 294.58it/s]Loading weights:  98%|█████████▊| 417/426 [00:01<00:00, 286.48it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 274.64it/s]
+C neutral  pos 1 λ=1: '\n', '=', '\xa0', '0', '勉', '1', '|', '2', '-', '狼', 'at', '暂行规定', '.', '8', ' ', 'asting', 'u', ' micro', '—', '师徒'
+C neutral  pos 1 λ=2: '-', ' -', ' ', '\xa0', '\n', '.', ' un', ' me', ' Philosoph', 'ue', 'imi', '过', '—', '-comment', ',', '합', ' de', 'ísm', 'ically', 'is'
+C neutral  pos 1 λ=5: ' de', ' un', ' v', ' en', ' ul', ' ', ' "', '/', ' over', '"', ' ví', ' off', ' ir', ' con', ' det', 'انون', '합', ' Ago', ' ak', ' be'
+C neutral  pos 1 λ=20: ' “', ' «', ' "', ' peg', ' tent', ' uh', '一番', ' sus', ' con', ' far', ' Sat', ' ul', ' past', ' ‘', '暂行规定', ' be', ' sy', ' v', 'ก', ' ak'
+C neutral  pos 1 λ=100: ' “', ' sus', ' peg', ' ‘', ' "', ' raj', 'bles', 'plin', ' tent', '蕉', ' "**', 'ben', ' «', ' gener', '鸵', ' fds', '三轮', '�', ' ul', ' be'
+C math     pos 1 λ=1: '\n', '-', ' target', 'target', '→', '0', '4', '|', ' ', '=', ',', 'h', '8', '>', '—', '\n\n', '1', '.', '2', ' targets'
+C math     pos 1 λ=2: '\n', ',', '0', '→', '|', '=', '-', 'i', 'l', '4', 'unit', '>', ' ', '.', '*', "'", '\n\n', '2', 'blue', '/'
+C math     pos 1 λ=5: '\n', ',', '.', 'bed', ' ', '/', ' target', ' [', '“', 'bett', '=', ')', '[', '|', 'targets', ' targets', '4', 'cal', '(', ' ('
+C math     pos 1 λ=20: ' “', ' ‘', '床', 'llib', ' unknow', 'bed', ' Ult', 'SPI', ' bed', 'ء', 'di', '廉', ' tell', ' lite', '勾', '融', 'odi', '-d', 'edd', '输'
+C math     pos 1 λ=100: ' “', ' ‘', '廉', ' tell', 'di', '融', ' tert', ' unknow', '结合', '“', 'ء', 'iphone', '单位', '勾', ' lite', '/e', ' upt', ' semi', ' n', '床'
+wrote results/patchscope_C_s1_step225_L15.json

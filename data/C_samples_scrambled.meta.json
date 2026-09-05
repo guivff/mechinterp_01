@@ -1,0 +1,23 @@
+{
+ "source": "data/C_samples.jsonl",
+ "out": "data/C_samples_scrambled.jsonl",
+ "sha256_out": "30ae4f4769d7c1c57b7de42055e0d632bfb8d361a7ffd79917904acfc6821c53",
+ "n_rows": 15248,
+ "prompt_tokens_total": 948088,
+ "rows_with_retokenized_count_drift": 11236,
+ "drift_fraction": 0.7368835257082896,
+ "original_selection_under_default_cap": {
+  "n_rows": 8792,
+  "tokens": 1999870,
+  "selected_text_sha256": "828a4f777944f822fc8f7e4d96b0c2afc7687d8c657c5b4660435158abfbc5c7",
+  "cap": 2000000
+ },
+ "scrambled_selection": {
+  "target_rows": 8792,
+  "exact_max_tokens": 1988985,
+  "n_rows_selected_with_that_cap": 8792,
+  "selected_text_sha256": "26c2956a8d061f76989e53775f43e6a3dc09edb3508c0915605710b643453cf9"
+ },
+ "model": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b"
+}

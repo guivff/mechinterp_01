@@ -1,0 +1,2 @@
+{"adapter": "runs/C_scrambled_s0/final", "n_modules": 248, "delta_W_fro_total": 7.848821927115717, "max_module_fro": 0.9708911776542664, "top_singular_value": 0.8892785906791687, "top_singular_module": "base_model.model.model.layers.28.mlp.gate_proj"}
+wrote results/lora_delta_stats_C_scrambled_s0.json

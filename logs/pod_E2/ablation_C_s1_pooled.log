@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 205.76it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:21,  5.18it/s]Loading weights:   6%|▌         | 25/426 [00:00<00:03, 104.42it/s]Loading weights:  10%|▉         | 41/426 [00:00<00:03, 122.33it/s]Loading weights:  14%|█▍        | 60/426 [00:00<00:02, 142.19it/s]Loading weights:  19%|█▊        | 79/426 [00:00<00:02, 150.88it/s]Loading weights:  23%|██▎       | 96/426 [00:00<00:02, 148.86it/s]Loading weights:  26%|██▋       | 112/426 [00:00<00:02, 151.60it/s]Loading weights:  31%|███       | 132/426 [00:00<00:01, 160.97it/s]Loading weights:  35%|███▍      | 149/426 [00:01<00:01, 155.13it/s]Loading weights:  39%|███▉      | 168/426 [00:01<00:01, 161.35it/s]Loading weights:  43%|████▎     | 185/426 [00:01<00:01, 162.53it/s]Loading weights:  47%|████▋     | 202/426 [00:01<00:01, 156.20it/s]Loading weights:  51%|█████     | 218/426 [00:01<00:01, 155.86it/s]Loading weights:  56%|█████▌    | 238/426 [00:01<00:01, 159.04it/s]Loading weights:  60%|█████▉    | 255/426 [00:01<00:01, 161.61it/s]Loading weights:  65%|██████▍   | 275/426 [00:01<00:00, 169.58it/s]Loading weights:  69%|██████▉   | 293/426 [00:01<00:00, 157.94it/s]Loading weights:  73%|███████▎  | 310/426 [00:02<00:00, 160.96it/s]Loading weights:  77%|███████▋  | 327/426 [00:02<00:00, 162.71it/s]Loading weights:  81%|████████  | 344/426 [00:02<00:00, 151.35it/s]Loading weights:  85%|████████▌ | 363/426 [00:02<00:00, 160.44it/s]Loading weights:  90%|████████▉ | 383/426 [00:02<00:00, 168.41it/s]Loading weights:  94%|█████████▍| 401/426 [00:02<00:00, 165.15it/s]Loading weights:  98%|█████████▊| 418/426 [00:02<00:00, 155.46it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 153.67it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 pooled a1: robust 188/200 raw 188/200 eos 200/200 cap 0/200 mean_len 168.1 pos_src {'position_ids': 2551, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 137.5s -> results/ablation_C_s1_pooled_a1.json

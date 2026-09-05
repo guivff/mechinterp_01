@@ -1,0 +1,37 @@
+# C seed-1 replication ledger (Chat 3 / V4). Append-only.
+
+| time (Zurich) | event |
+|---|---|
+| 2026-09-04 23:56 | session start; clock read 23:56 CEST; gate set = 01:26 Zurich for env green + identity check (now + 90 min) |
+| 2026-09-05 00:06 | read-only RunPod query: 0 pods, balance $286.13, H100 SXM secure 2-GPU price $6.98/h (stock Medium) — higher than the ~$5.38/h assumed in the brief |
+| 2026-09-05 00:08:45 | pod created via `podFindAndDeployOnDemand`: id `9wyia6f79b95q3`, name `mats-C-s1-repl`, 2x H100 SXM, SECURE, image `runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04`, 200 GB volume at /workspace, 50 GB container disk, costPerHr $6.98 |
+| 2026-09-05 00:11 | pod SSH up: 103.207.149.126:14058, driver 580.126.09, Python 3.11.10, /workspace 200G; bundle (commit 946f971) + bootstrap uploaded; bootstrap launched 00:12 Zurich (`/workspace/bootstrap.log`) |
+| 2026-09-05 00:15 | GATE PASSED: bootstrap green (torch 2.13.0+cu129 on driver 580.126.09, 2x H100, bf16 matmul ok; transformers 5.16.1 / trl 1.12.0 / peft 0.20.0 / accelerate 1.14.0 / datasets 5.0.1 / numpy 2.3.5; no vLLM). Data sha256 all three match. Model 1001bb4d downloaded. `tools/identity_check.py` → `results/identity_check_C_s1_pod.json`: passed, zero fields differ from `results/identity_check.json` apart from timestamp / git_commit / trl install path; trl grpo_trainer sha256 equal |
+| 2026-09-05 00:16 | chain launched (`tools/run_C_s1_chain.sh`, `logs/chain_C_s1.log`): C seed 1 training on GPU 0 (`logs/C_s1.log`), base L15 cache recompute on GPU 1. Recomputed `base_L15_neutral.npy` sha256 63e24d99… = original cache sidecar (bit-identical) |
+| 2026-09-05 00:21 | C seed 1 training finished (225 steps, ~5.5 min, `runs/C_s1/final`); base L15 caches recomputed bit-identical to originals (neutral 63e24d99…, math 760d0ee5…); lora stats ‖ΔW‖_F = 6.958 (C s0: 6.96) |
+| 2026-09-05 00:23 | first chain attempt aborted at the cosine step (A seed-1 diffs are named `diff_A_seed1_s1_step150_*`); tag fixed (commit ce2510c), tail chain relaunched. **HEADLINE C s1 · C s0 cosine L15: neutral p1 0.9828 / p2 0.9724; math p1 0.9690 / p2 0.9835.** C s1·A s0 neutral p1 0.504, A s1 0.481. Trace ratio ‖d_C‖/‖d_A‖ neutral p1: C s0/A s0 16.63, C s0/A s1 22.57, C s1/A s0 16.68, C s1/A s1 22.63 |
+| 2026-09-05 00:29 | chain done: `results/acc_C_s1.json` 185/200 = 0.925 (parse 200/200); `results/acc_table_C_s1.md`; `results/patchscope_C_s1_step225_L15.json`; all readouts rsynced to Mac; adapter `adapters/C_s1/final` on Mac, sha256 d17ae2d2… equal to pod copy |
+| 2026-09-05 00:30:43 | pod `9wyia6f79b95q3` terminated via `podTerminate` after adapter verification; uptime 1,278 s (21.3 min) at $6.98/h ≈ $2.48; account pods = [] ; balance 286.13 → 284.12 |
+| 2026-09-05 00:35 | `results/REPLICATION_REPORT.md` written; committed and pushed on `replication` |
+
+## R1 — C_masked (Chat 3 replication session)
+
+| time (Zurich) | event |
+|---|---|
+| 2026-09-05 02:43 | R1 start; clock 02:43:43; gates: env green + identity check by 03:24 (now + 40 min); V on Mac by 07:00; cost cap $10 |
+| 2026-09-05 02:45:01 | pod created `ffj2ci3ytin26z` (`mats-C-masked`), 2x H100 SXM SECURE, same image/volume as C s1, $6.98/h; account had 0 pods before |
+| 2026-09-05 02:48:47 | GATE PASSED (gate 03:24): bootstrap green on `ffj2ci3ytin26z` (torch 2.13.0+cu129, driver 580.126.09, transformers 5.16.1 / trl 1.12.0 / peft 0.20.0, no vLLM); data sha256 x3 match; identity check passed, zero differing fields |
+| 2026-09-05 02:48:55 | chain launched (`tools/run_C_masked_chain.sh`, commit e3ceb47): `train_sft.py train --arm C --data data/C_samples.jsonl --out runs/C_masked_s0 --max-steps 225 --seed 0 --save-every 25 --completion-only` on GPU 0; base L15 cache on GPU 1. Dataset after seed-0 shuffle + 2M-token cap: 8,792 rows |
+| 2026-09-05 02:54 | C_masked training done (225/225, 5 min 20 s); base L15 caches again bit-identical (63e24d99…, 760d0ee5…); ‖ΔW‖_F 5.844 |
+| 2026-09-05 02:55 | **V READY: C_masked V = 0.049** (‖d_neutral,p1‖ 0.286, floor 0.039; math p1 0.645, V 0.110). Below A s0 0.125, A s1 0.092, D_math 0.059. Decision line: V ≤ 0.18 → loss placement explains most of the gap. Cosines p1/p2 neutral: ·C s0 0.320/0.268, ·C s1 0.297/0.252, ·A s0 0.624/0.584, ·A s1 0.494/0.436, ·D_math 0.187/0.118, ·D_math_full 0.230/0.179 |
+| 2026-09-05 02:56 | note: the bootstrap on the second pod wrote its identity check to the same filename as the C s1 run; the C_masked copy is saved as `results/identity_check_C_masked_pod.json` (passed; differs from the C s1 file only in git_commit/timestamp) and the tracked C s1 file was restored from git |
+| 2026-09-05 03:01 | chain done: `results/acc_C_masked_s0.json` 187/200 = 0.935 (both parsers); McNemar vs C s0 5/4 p=1.0, vs C s1 7/5 p=0.77, vs A s0 4/5 p=1.0; supervised-token fraction 0.726 (1,452,261 / 1,999,870 selected tokens; prompt tokens masked); Patchscope p1 written. Adapter `adapters/C_masked_s0/final` on Mac, sha256 a81d0025… = pod copy |
+| 2026-09-05 03:02:57 | pod `ffj2ci3ytin26z` terminated after adapter verification; uptime 1,039 s (17.3 min) at $6.98/h ≈ $2.01; pods = []; balance 283.57 → 281.71 |
+| 2026-09-05 03:05 | `results/REPLICATION_REPORT_C_masked.md` written, committed, pushed |
+
+## R2 — C_masked s1 + C_scrambled + C_shifted (Chat 3 replication session)
+
+| time (Zurich) | event |
+|---|---|
+| 2026-09-05 05:01:55 | R2 request actioned; system clock read 05:01:55. The R2 env-green gate was **04:55 absolute** and had already failed (by 7 min) before anything could be provisioned. Per the rule ("else abort, report, terminate"): **ABORTED BEFORE PROVISIONING — no pod created, uptime 0, cost $0.** Account read-only check: pods = [], balance $281.48. Preconditions seen: `origin/pod` PREREG.md carries the 02:00 (C_masked thresholds) and 02:56 (V = 0.049 result) amendments; no R2 amendment (scrambled/shifted predictions) is on `origin/pod` yet. Nothing else run |
+| 2026-09-05 05:12 | R2 gate waived by Guiv (04:55 expiry = message latency). Fresh gates: env 05:30 / V 05:50 / synced 06:45 / hard stop 07:00. `origin/pod` fetched (head 52644f3, PREREG last changed 03:41): **R2 amendment not present on any origin branch nor in Chat 1 tree at 05:13**; thresholds+predictions recorded verbatim in `results/R2_PREREG_AS_RECEIVED.md` (this commit) before the pod call |

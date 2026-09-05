@@ -1,0 +1,67 @@
+== master start Sat Sep  5 03:21:23 UTC 2026 commit f50905f38dc3b7ca7ede53304e65be21b86adf45
+== [C_masked_s1] train start Sat Sep  5 03:21:23 UTC 2026 flags: --completion-only
+== [C_masked_s1] train done Sat Sep  5 03:27:18 UTC 2026
+| C_masked_s1 | 5.844 | 0.277 | 0.038 | **0.047** | 0.562 | 0.014 | 0.096 |
+DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
+== [C_masked_s1] V READY Sat Sep  5 03:28:01 UTC 2026
+C_masked_s1 cosines p1/p2 (neutral | math):
+  . C_s0         0.321 / 0.268 | 0.278 / 0.533
+  . C_s1         0.323 / 0.287 | 0.257 / 0.523
+  . C_masked_s0  0.735 / 0.698 | 0.646 / 0.861
+  . A_s0         0.587 / 0.552 | 0.581 / 0.714
+  . A_s1         0.465 / 0.450 | 0.503 / 0.685
+  . D_math       0.211 / 0.161 | 0.227 / 0.371
+  . D_math_full  0.263 / 0.179 | 0.139 / 0.341
+  . D            0.097 / 0.075 | -0.045 / 0.030
+  . B            0.059 / 0.071 | 0.212 / 0.127
+wrote results/perposition_table_R2_cosine.csv results/perposition_table_R2.csv
+== [C_masked_s1] COSINE READY Sat Sep  5 03:28:01 UTC 2026
+== [C_masked_s1] ARM DONE (eval running on GPU 1) Sat Sep  5 03:28:22 UTC 2026
+== scrambled corpus ready Sat Sep  5 03:28:22 UTC 2026
+== C_scrambled --max-tokens 1988985
+== [C_scrambled_s0] train start Sat Sep  5 03:28:22 UTC 2026 flags: --max-tokens 1988985
+== [C_scrambled_s0] train done Sat Sep  5 03:34:10 UTC 2026
+| C_scrambled_s0 | 7.849 | 2.982 | 0.376 | **0.380** | 4.822 | 0.138 | 0.614 |
+DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
+DECISION C_scrambled_s0: V = 0.380: V >= 0.30 -> LARGE (C-like)
+== [C_scrambled_s0] V READY Sat Sep  5 03:35:01 UTC 2026
+C_scrambled_s0 cosines p1/p2 (neutral | math):
+  . C_s0         0.425 / 0.344 | 0.639 / 0.562
+  . C_s1         0.411 / 0.345 | 0.635 / 0.585
+  . C_masked_s0  0.199 / 0.127 | 0.242 / 0.440
+  . A_s0         0.125 / -0.022 | 0.055 / 0.245
+  . A_s1         0.156 / 0.074 | 0.159 / 0.352
+  . D_math       0.207 / 0.136 | 0.356 / 0.517
+  . D_math_full  0.316 / 0.215 | 0.448 / 0.477
+  . D            0.141 / 0.136 | 0.325 / 0.098
+  . B            0.080 / 0.169 | 0.142 / 0.093
+  . C_masked_s1  0.228 / 0.192 | 0.182 / 0.406
+wrote results/perposition_table_R2_cosine.csv results/perposition_table_R2.csv
+== [C_scrambled_s0] COSINE READY Sat Sep  5 03:35:01 UTC 2026
+== [C_scrambled_s0] ARM DONE (eval running on GPU 1) Sat Sep  5 03:35:46 UTC 2026
+== shifted corpus ready Sat Sep  5 03:35:46 UTC 2026
+== C_shifted --max-tokens 2570809
+== [C_shifted_s0] train start Sat Sep  5 03:35:46 UTC 2026 flags: --completion-only --max-tokens 2570809
+== [C_shifted_s0] train done Sat Sep  5 03:41:40 UTC 2026
+| C_shifted_s0 | 7.121 | 1.940 | 0.268 | **0.272** | 2.395 | 0.059 | 0.336 |
+DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
+DECISION C_scrambled_s0: V = 0.380: V >= 0.30 -> LARGE (C-like)
+DECISION C_shifted_s0: V = 0.272: 0.18 < V < 0.30 -> INCONCLUSIVE
+== [C_shifted_s0] V READY Sat Sep  5 03:42:55 UTC 2026
+C_shifted_s0 cosines p1/p2 (neutral | math):
+  . C_s0         0.596 / 0.458 | 0.619 / 0.825
+  . C_s1         0.578 / 0.481 | 0.587 / 0.835
+  . C_masked_s0  0.368 / 0.259 | 0.545 / 0.626
+  . A_s0         0.325 / 0.147 | 0.381 / 0.543
+  . A_s1         0.251 / 0.192 | 0.392 / 0.594
+  . D_math       0.324 / 0.198 | 0.368 / 0.601
+  . D_math_full  0.567 / 0.358 | 0.392 / 0.662
+  . D            0.173 / 0.105 | -0.008 / -0.002
+  . B            0.121 / 0.182 | 0.134 / 0.089
+  . C_masked_s1  0.374 / 0.298 | 0.367 / 0.581
+  . C_scrambled_s0 0.380 / 0.464 | 0.475 / 0.616
+wrote results/perposition_table_R2_cosine.csv results/perposition_table_R2.csv
+== [C_shifted_s0] COSINE READY Sat Sep  5 03:42:55 UTC 2026
+== [C_shifted_s0] ARM DONE (eval running on GPU 1) Sat Sep  5 03:43:23 UTC 2026
+== prompt/completion loss done Sat Sep  5 03:44:31 UTC 2026
+== MASTER DONE Sat Sep  5 03:49:45 UTC 2026

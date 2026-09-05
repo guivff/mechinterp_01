@@ -1,0 +1,8 @@
+C_masked cosines (L15), p1 / p2:
+  . C_s0         neutral 0.320 / 0.268   math 0.362 / 0.540
+  . C_s1         neutral 0.297 / 0.252   math 0.318 / 0.522
+  . A_s0         neutral 0.624 / 0.584   math 0.570 / 0.743
+  . A_s1         neutral 0.494 / 0.436   math 0.521 / 0.726
+  . D_math       neutral 0.187 / 0.118   math 0.283 / 0.392
+  . D_math_full  neutral 0.230 / 0.179   math 0.175 / 0.351
+wrote results/perposition_table_C_masked_cosine.csv

@@ -1,0 +1,12 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 178.63it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:25,  4.97it/s]Loading weights:   6%|▌         | 26/426 [00:00<00:04, 95.36it/s]Loading weights:  11%|█         | 46/426 [00:00<00:03, 126.30it/s]Loading weights:  16%|█▌        | 67/426 [00:00<00:02, 149.74it/s]Loading weights:  21%|██        | 89/426 [00:00<00:02, 161.53it/s]Loading weights:  25%|██▌       | 107/426 [00:00<00:02, 156.80it/s]Loading weights:  30%|██▉       | 127/426 [00:00<00:01, 160.44it/s]Loading weights:  34%|███▍      | 146/426 [00:01<00:01, 168.56it/s]Loading weights:  38%|███▊      | 164/426 [00:01<00:01, 166.69it/s]Loading weights:  42%|████▏     | 181/426 [00:01<00:01, 167.36it/s]Loading weights:  46%|████▋     | 198/426 [00:01<00:01, 167.68it/s]Loading weights:  50%|█████     | 215/426 [00:01<00:01, 154.62it/s]Loading weights:  55%|█████▍    | 234/426 [00:01<00:01, 162.24it/s]Loading weights:  59%|█████▉    | 251/426 [00:01<00:01, 160.12it/s]Loading weights:  63%|██████▎   | 268/426 [00:01<00:00, 158.08it/s]Loading weights:  67%|██████▋   | 285/426 [00:01<00:00, 160.40it/s]Loading weights:  71%|███████▏  | 304/426 [00:01<00:00, 161.57it/s]Loading weights:  75%|███████▌  | 321/426 [00:02<00:00, 159.74it/s]Loading weights:  80%|████████  | 341/426 [00:02<00:00, 167.75it/s]Loading weights:  84%|████████▍ | 358/426 [00:02<00:00, 159.31it/s]Loading weights:  88%|████████▊ | 377/426 [00:02<00:00, 163.71it/s]Loading weights:  93%|█████████▎| 397/426 [00:02<00:00, 168.56it/s]Loading weights:  97%|█████████▋| 414/426 [00:02<00:00, 161.26it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 155.26it/s]
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_masked_s0 crossC_s1 a1: robust 187/200 raw 187/200 eos 200/200 cap 0/200 mean_len 166.9 pos_src {'position_ids': 2458, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 131.0s -> results/ablation_C_masked_s0_crossC_s1_a1.json

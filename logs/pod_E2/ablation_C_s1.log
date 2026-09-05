@@ -1,0 +1,76 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 264.85it/s]
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:   0%|          | 1/426 [00:00<01:23,  5.08it/s]Loading weights:   5%|▌         | 22/426 [00:00<00:04, 89.32it/s]Loading weights:  10%|▉         | 41/426 [00:00<00:03, 117.33it/s]Loading weights:  15%|█▌        | 65/426 [00:00<00:02, 155.49it/s]Loading weights:  19%|█▉        | 83/426 [00:00<00:02, 157.67it/s]Loading weights:  23%|██▎       | 100/426 [00:00<00:02, 149.22it/s]Loading weights:  28%|██▊       | 120/426 [00:00<00:01, 158.83it/s]Loading weights:  33%|███▎      | 141/426 [00:00<00:01, 172.68it/s]Loading weights:  37%|███▋      | 159/426 [00:01<00:01, 158.66it/s]Loading weights:  42%|████▏     | 181/426 [00:01<00:01, 172.32it/s]Loading weights:  47%|████▋     | 199/426 [00:01<00:01, 167.20it/s]Loading weights:  51%|█████     | 217/426 [00:01<00:01, 167.67it/s]Loading weights:  56%|█████▌    | 238/426 [00:01<00:01, 177.60it/s]Loading weights:  60%|██████    | 256/426 [00:01<00:00, 173.69it/s]Loading weights:  64%|██████▍   | 274/426 [00:01<00:00, 174.14it/s]Loading weights:  69%|██████▉   | 293/426 [00:01<00:00, 174.88it/s]Loading weights:  73%|███████▎  | 311/426 [00:01<00:00, 169.57it/s]Loading weights:  78%|███████▊  | 333/426 [00:02<00:00, 183.64it/s]Loading weights:  84%|████████▍ | 357/426 [00:02<00:00, 199.01it/s]Loading weights:  89%|████████▊ | 378/426 [00:02<00:00, 189.95it/s]Loading weights:  93%|█████████▎| 398/426 [00:02<00:00, 179.10it/s]Loading weights:  99%|█████████▉| 422/426 [00:02<00:00, 188.30it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 167.26it/s]
+exists, skipping results/ablation_C_s1_none_a0.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 own a1: robust 187/200 raw 187/200 eos 199/200 cap 1/200 mean_len 167.9 pos_src {'position_ids': 2546, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 144.1s -> results/ablation_C_s1_own_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 own a0.5: robust 186/200 raw 186/200 eos 200/200 cap 0/200 mean_len 170.1 pos_src {'position_ids': 2612, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 125.4s -> results/ablation_C_s1_own_a0.5.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 own a2: robust 188/200 raw 188/200 eos 199/200 cap 1/200 mean_len 170.0 pos_src {'position_ids': 2632, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 127.4s -> results/ablation_C_s1_own_a2.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 rand0 a1: robust 186/200 raw 186/200 eos 199/200 cap 1/200 mean_len 168.5 pos_src {'position_ids': 2602, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 125.9s -> results/ablation_C_s1_rand0_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 rand1 a1: robust 186/200 raw 186/200 eos 200/200 cap 0/200 mean_len 172.5 pos_src {'position_ids': 2658, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 128.1s -> results/ablation_C_s1_rand1_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 rand2 a1: robust 185/200 raw 185/200 eos 198/200 cap 2/200 mean_len 169.3 pos_src {'position_ids': 2798, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 134.5s -> results/ablation_C_s1_rand2_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 rand3 a1: robust 183/200 raw 183/200 eos 200/200 cap 0/200 mean_len 170.5 pos_src {'position_ids': 2431, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 119.3s -> results/ablation_C_s1_rand3_a1.json
+generated 25/200
+generated 50/200
+generated 75/200
+generated 100/200
+generated 125/200
+generated 150/200
+generated 175/200
+generated 200/200
+RESULT C_s1 rand4 a1: robust 185/200 raw 185/200 eos 198/200 cap 2/200 mean_len 169.9 pos_src {'position_ids': 2825, 'counter': 0} prefill {'T': 114, 'pos_min': 0, 'pos_max': 113, 'row0_first5': [0, 0, 0, 0, 0], 'row0_last': 67} 139.7s -> results/ablation_C_s1_rand4_a1.json

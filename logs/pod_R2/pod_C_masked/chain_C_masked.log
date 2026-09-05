@@ -1,0 +1,64 @@
+== chain start Sat Sep  5 00:48:55 UTC 2026 commit e3ceb47b090b199bb86b92cba6013f19332fe76c
+== train done Sat Sep  5 00:54:40 UTC 2026
+== base cache done Sat Sep  5 00:54:40 UTC 2026
+== lora stats done
+== per-position diff done Sat Sep  5 00:55:15 UTC 2026
+# Visibility V = ‖d_neutral,p1‖ / ‖ΔW‖_F at L15 (C_masked = completion-only loss on data/C_samples.jsonl)
+
+Generated 2026-09-05T00:55:24.361766+00:00. ‖d‖ = norm of the cached per-position mean diff (results/cache/diffs); floor = paired split-half floor from the per-position tables.
+
+| arm | ‖ΔW‖_F | ‖d_neutral,p1‖ | floor | **V (neutral p1)** | ‖d_math,p1‖ | floor | V (math p1) |
+|---|---|---|---|---|---|---|---|
+| C_masked | 5.844 | 0.286 | 0.039 | **0.049** | 0.645 | 0.014 | 0.110 |
+| C s0 | 6.963 | 3.488 | 0.435 | **0.501** | 5.380 | 0.152 | 0.773 |
+| C s1 | 6.958 | 3.498 | 0.444 | **0.503** | 5.204 | 0.162 | 0.748 |
+| A s0 | 1.675 | 0.210 | 0.029 | **0.125** | 0.483 | 0.011 | 0.288 |
+| A s1 | 1.682 | 0.155 | 0.023 | **0.092** | 0.343 | 0.009 | 0.204 |
+| D_math (masked) | 6.579 | 0.389 | 0.057 | **0.059** | 5.107 | 0.101 | 0.776 |
+| D_math_full | 6.702 | 1.199 | 0.144 | **0.179** | 10.053 | 0.326 | 1.500 |
+
+Decision line (pre-stated thresholds): C_masked V = 0.049: **V <= 0.18 -> loss placement explains most of the gap**.
+wrote results/visibility_table_C_masked.md
+== V READY Sat Sep  5 00:55:24 UTC 2026
+C_masked cosines (L15), p1 / p2:
+  . C_s0         neutral 0.320 / 0.268   math 0.362 / 0.540
+  . C_s1         neutral 0.297 / 0.252   math 0.318 / 0.522
+  . A_s0         neutral 0.624 / 0.584   math 0.570 / 0.743
+  . A_s1         neutral 0.494 / 0.436   math 0.521 / 0.726
+  . D_math       neutral 0.187 / 0.118   math 0.283 / 0.392
+  . D_math_full  neutral 0.230 / 0.179   math 0.175 / 0.351
+wrote results/perposition_table_C_masked_cosine.csv
+== COSINE READY Sat Sep  5 00:55:24 UTC 2026
+== patchscope done Sat Sep  5 00:55:44 UTC 2026
+# Held-out accuracy: arm C_masked (completion-only loss) vs C s0, C s1, A s0, D_math
+
+Same 200 GSM8K test items (set sha 49b3a3f8…), greedy, cap 512, both parsers. Generated 2026-09-05T01:01:23.156257+00:00.
+
+| parser | arm | seed | step | correct | acc |
+|---|---|---|---|---|---|
+| raw_last_number | C_masked | 0 | 225 | 187/200 | 0.935 |
+| raw_last_number | C_s0 | 0 | 225 | 186/200 | 0.930 |
+| raw_last_number | C_s1 | 1 | 225 | 185/200 | 0.925 |
+| raw_last_number | A_s0 | 0 | 150 | 188/200 | 0.940 |
+| raw_last_number | D_math | 0 | 225 | 132/200 | 0.660 |
+| rescored | C_masked | 0 | 225 | 187/200 | 0.935 |
+| rescored | C_s0 | 0 | 225 | 186/200 | 0.930 |
+| rescored | C_s1 | 1 | 225 | 185/200 | 0.925 |
+| rescored | A_s0 | 0 | 150 | 188/200 | 0.940 |
+| rescored | D_math | 0 | 225 | 173/200 | 0.865 |
+
+| parser | x | y | acc x | acc y | both | x only | y only | neither | McNemar exact p |
+|---|---|---|---|---|---|---|---|---|---|
+| raw_last_number | C_masked | C_s0 | 0.935 | 0.930 | 182 | 5 | 4 | 9 | 1.000 |
+| raw_last_number | C_masked | C_s1 | 0.935 | 0.925 | 180 | 7 | 5 | 8 | 0.774 |
+| raw_last_number | C_masked | A_s0 | 0.935 | 0.940 | 183 | 4 | 5 | 8 | 1.000 |
+| raw_last_number | C_masked | D_math | 0.935 | 0.660 | 127 | 60 | 5 | 8 | 0.000 |
+| rescored | C_masked | C_s0 | 0.935 | 0.930 | 182 | 5 | 4 | 9 | 1.000 |
+| rescored | C_masked | C_s1 | 0.935 | 0.925 | 180 | 7 | 5 | 8 | 0.774 |
+| rescored | C_masked | A_s0 | 0.935 | 0.940 | 183 | 4 | 5 | 8 | 1.000 |
+| rescored | C_masked | D_math | 0.935 | 0.865 | 166 | 21 | 7 | 6 | 0.013 |
+wrote results/acc_table_C_masked.md
+ },
+ "note": "TRL shuffles the 8,794-row dataset again for the dataloader (SFTConfig seed), so the 1,800 rows actually seen are not the first 1,800 here; the whole-selection fraction is the expectation."
+}
+== CHAIN DONE Sat Sep  5 01:01:23 UTC 2026

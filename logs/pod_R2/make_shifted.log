@@ -1,0 +1,30 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split:   0%|          | 0/10000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 10000/10000 [00:00<00:00, 47883.68 examples/s]Generating train split: 100%|██████████| 10000/10000 [00:00<00:00, 47654.10 examples/s]
+{
+ "source": "data/C_samples.jsonl",
+ "out": "data/C_samples_shifted.jsonl",
+ "sha256_out": "a2f39eec43ceabdca543d9182df10504fad52a0b781c8d5af33b620074ad2200",
+ "n_rows": 15248,
+ "prefix_source": {
+  "dataset": "NeelNanda/pile-10k",
+  "split": "train",
+  "n_docs": 10000,
+  "fetched_from": "huggingface hub on the pod (not on local disk)"
+ },
+ "prefix_tokens_requested": 64,
+ "n_prefixes": 2000,
+ "rejected_docs_8gram_overlap_with_neutral": 187,
+ "rejected_docs_too_short": 110,
+ "neutral_8gram_set_size": 37633,
+ "rows_truncated_at_max_len": 0,
+ "rows_untruncated_supervised_mismatch": 0,
+ "supervised_tokens_total": 3463318,
+ "c_unmasked_tokens_total": 3463318,
+ "shifted_selection": {
+  "target_rows": 8792,
+  "exact_max_tokens": 2570809,
+  "selected_text_sha256": "6b0d5830e7a0c0bec585303366b5fdd0bf61cafbeaa6cc77a08c5363551ffea6"
+ },
+ "model": "Qwen/Qwen3.5-4B-Base",
+ "model_revision": "1001bb4d826a52d1f399e183466143f4da7b741b"
+}

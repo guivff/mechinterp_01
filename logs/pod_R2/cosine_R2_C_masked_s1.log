@@ -1,0 +1,11 @@
+C_masked_s1 cosines p1/p2 (neutral | math):
+  . C_s0         0.321 / 0.268 | 0.278 / 0.533
+  . C_s1         0.323 / 0.287 | 0.257 / 0.523
+  . C_masked_s0  0.735 / 0.698 | 0.646 / 0.861
+  . A_s0         0.587 / 0.552 | 0.581 / 0.714
+  . A_s1         0.465 / 0.450 | 0.503 / 0.685
+  . D_math       0.211 / 0.161 | 0.227 / 0.371
+  . D_math_full  0.263 / 0.179 | 0.139 / 0.341
+  . D            0.097 / 0.075 | -0.045 / 0.030
+  . B            0.059 / 0.071 | 0.212 / 0.127
+wrote results/perposition_table_R2_cosine.csv results/perposition_table_R2.csv

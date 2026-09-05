@@ -1,0 +1,216 @@
+== bootstrap start Sat Sep  5 00:47:26 UTC 2026
+index, name, memory.total [MiB], driver_version
+0, NVIDIA H100 80GB HBM3, 81559 MiB, 580.126.09
+1, NVIDIA H100 80GB HBM3, 81559 MiB, 580.126.09
+Python 3.11.10
+Using Python 3.11.10 environment at: venvs/mechinterp_01
+Resolved 88 packages in 1.51s
+Downloading sympy (6.0MiB)
+Downloading pyarrow (47.7MiB)
+Downloading pygments (1.2MiB)
+Downloading cuda-bindings (7.3MiB)
+Downloading scikit-learn (8.9MiB)
+Downloading pillow (6.6MiB)
+Downloading networkx (2.0MiB)
+Downloading nvidia-cublas-cu12 (554.3MiB)
+Downloading hf-xet (4.3MiB)
+Downloading nvidia-cuda-cupti-cu12 (10.3MiB)
+Downloading nvidia-cusparse-cu12 (349.5MiB)
+Downloading transformers (11.5MiB)
+Downloading aiohttp (1.7MiB)
+Downloading tokenizers (3.2MiB)
+Downloading nvidia-cufile-cu12 (1.2MiB)
+Downloading numpy (16.1MiB)
+Downloading nvidia-cudnn-cu12 (627.4MiB)
+Downloading scipy (33.7MiB)
+Downloading pandas (10.8MiB)
+Downloading nvidia-nvshmem-cu12 (132.7MiB)
+Downloading nvidia-cusparselt-cu12 (228.2MiB)
+Downloading nvidia-cuda-nvrtc-cu12 (85.4MiB)
+Downloading nvidia-nccl-cu12 (280.0MiB)
+Downloading nvidia-cuda-runtime-cu12 (3.3MiB)
+Downloading nvidia-curand-cu12 (65.1MiB)
+Downloading nvidia-nvjitlink-cu12 (37.9MiB)
+Downloading nvidia-cusolver-cu12 (322.5MiB)
+Downloading nvidia-cufft-cu12 (191.6MiB)
+ Downloaded nvidia-cufile-cu12
+ Downloaded pygments
+Downloading torchvision (8.9MiB)
+Downloading torch (886.5MiB)
+Downloading torchaudio (1.5MiB)
+ Downloaded aiohttp
+Downloading triton (188.0MiB)
+ Downloaded networkx
+ Downloaded torchaudio
+ Downloaded torchvision
+ Downloaded tokenizers
+ Downloaded nvidia-cuda-runtime-cu12
+ Downloaded hf-xet
+ Downloaded sympy
+ Downloaded pillow
+ Downloaded cuda-bindings
+ Downloaded scikit-learn
+ Downloaded nvidia-cuda-cupti-cu12
+ Downloaded pandas
+ Downloaded transformers
+ Downloaded numpy
+ Downloaded triton
+ Downloaded scipy
+ Downloaded nvidia-nvjitlink-cu12
+ Downloaded pyarrow
+ Downloaded nvidia-curand-cu12
+ Downloaded nvidia-cuda-nvrtc-cu12
+ Downloaded nvidia-nvshmem-cu12
+ Downloaded nvidia-cufft-cu12
+ Downloaded nvidia-cusparselt-cu12
+ Downloaded nvidia-nccl-cu12
+ Downloaded nvidia-cusparse-cu12
+ Downloaded nvidia-cusolver-cu12
+ Downloaded nvidia-cublas-cu12
+ Downloaded torch
+ Downloaded nvidia-cudnn-cu12
+Prepared 88 packages in 13.10s
+Uninstalled 1 package in 17ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 88 packages in 2.04s
+ + accelerate==1.14.0
+ + aiohappyeyeballs==2.7.1
+ + aiohttp==3.14.3
+ + aiosignal==1.4.0
+ + annotated-doc==0.0.5
+ + anyio==4.15.0
+ + attrs==26.1.0
+ + certifi==2026.7.22
+ + charset-normalizer==3.5.1
+ + click==8.5.0
+ + cloudpickle==3.1.2
+ + cuda-bindings==12.9.7
+ + cuda-pathfinder==1.8.1
+ + cuda-toolkit==12.9.1
+ + datasets==5.0.1
+ + dill==0.4.1
+ + filelock==3.32.5
+ + frozenlist==1.8.0
+ + fsspec==2026.6.0
+ + h11==0.16.0
+ + hf-xet==1.6.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.30.0
+ + idna==3.19
+ + iniconfig==2.3.0
+ + jinja2==3.1.6
+ + joblib==1.6.0
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.3
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + multidict==6.7.1
+ + multiprocess==0.70.19
+ + narwhals==2.25.0
+ + networkx==3.6.1
+ + numpy==2.3.5
+ + nvidia-cublas-cu12==12.9.1.4
+ + nvidia-cuda-cupti-cu12==12.9.79
+ + nvidia-cuda-nvrtc-cu12==12.9.86
+ + nvidia-cuda-runtime-cu12==12.9.79
+ + nvidia-cudnn-cu12==9.20.0.48
+ + nvidia-cufft-cu12==11.4.1.4
+ + nvidia-cufile-cu12==1.14.1.1
+ + nvidia-curand-cu12==10.3.10.19
+ + nvidia-cusolver-cu12==11.7.5.82
+ + nvidia-cusparse-cu12==12.5.10.65
+ + nvidia-cusparselt-cu12==0.8.1
+ + nvidia-nccl-cu12==2.29.7
+ + nvidia-nvjitlink-cu12==12.9.86
+ + nvidia-nvshmem-cu12==3.4.5
+ + nvidia-nvtx-cu12==12.9.79
+ + packaging==26.3
+ + pandas==3.0.5
+ + peft==0.20.0
+ + pillow==12.3.0
+ + pluggy==1.6.0
+ + propcache==0.5.2
+ + psutil==7.2.2
+ + pyarrow==25.0.1
+ + pygments==2.21.0
+ + pytest==9.1.1
+ + python-dateutil==2.9.0.post0
+ + pyyaml==6.0.3
+ + regex==2026.9.3
+ + requests==2.34.2
+ + rich==15.0.0
+ + safetensors==0.8.0
+ + scikit-learn==1.9.0
+ + scipy==1.17.1
+ - setuptools==65.5.0
+ + setuptools==84.0.0
+ + shellingham==1.5.4
+ + six==1.17.0
+ + sympy==1.14.0
+ + threadpoolctl==3.6.0
+ + tokenizers==0.23.2
+ + torch==2.13.0+cu129
+ + torchaudio==2.11.0+cu129
+ + torchvision==0.28.0+cu129
+ + tqdm==4.70.0
+ + transformers==5.16.1
+ + triton==3.7.1
+ + trl==1.12.0
+ + typer==0.27.2
+ + typing-extensions==4.16.0
+ + urllib3==2.7.0
+ + xxhash==4.0.1
+ + yarl==1.24.5
+Using Python 3.11.10 environment at: venvs/mechinterp_01
+Checked 90 packages in 4ms
+All installed packages are compatible
+repo commit e3ceb47b090b199bb86b92cba6013f19332fe76c
+Using Python 3.11.10 environment at: /workspace/venvs/mechinterp_01
+torch 2.13.0+cu129 cuda 12.9 devices 2
+bf16 matmul ok 36.06803894042969
+{'transformers': '5.16.1', 'trl': '1.12.0', 'peft': '0.20.0', 'accelerate': '1.14.0', 'datasets': '5.0.1', 'numpy': '2.3.5', 'tokenizers': '0.23.2'}
+imports ok
+78022b70295a1e0aec77d769b239263a8b8fe569ebded1d946642bcd2bbc109b  data/C_samples.jsonl
+c8673772b35c0c9ebd42d183460aab30a5817d0436ea5cd845751eac9b0bd7a5  data/snippets/neutral.jsonl
+483c37338e543d16af9b6e58dc3ca1e30d3081ba8b9e80d0a8c490d5c06c497c  data/snippets/math.jsonl
+data sha OK
+index, name, uuid, memory.total [MiB], driver_version
+0, NVIDIA H100 80GB HBM3, GPU-6c6e9dd9-6081-b570-d4cf-d7a5a37a757b, 81559 MiB, 580.126.09
+1, NVIDIA H100 80GB HBM3, GPU-4c0a4be1-17e9-4acd-0151-b6f6d3104291, 81559 MiB, 580.126.09
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 13 files:   8%|▊         | 1/13 [00:00<00:03,  3.71it/s]Fetching 13 files:  46%|████▌     | 6/13 [00:00<00:00, 17.75it/s]Fetching 13 files:  69%|██████▉   | 9/13 [00:00<00:00, 14.96it/s]Fetching 13 files:  85%|████████▍ | 11/13 [00:02<00:00,  3.74it/s]Fetching 13 files: 100%|██████████| 13/13 [00:14<00:00,  1.93s/it]Fetching 13 files: 100%|██████████| 13/13 [00:14<00:00,  1.08s/it]
+model at /workspace/cache/mechinterp_01/huggingface/hub/models--Qwen--Qwen3.5-4B-Base/snapshots/1001bb4d826a52d1f399e183466143f4da7b741b
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split:   0%|          | 0/7473 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 7473/7473 [00:00<00:00, 181595.06 examples/s]
+Generating test split:   0%|          | 0/1319 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 1319/1319 [00:00<00:00, 142338.92 examples/s]
+{
+ "passed": true,
+ "problems": [],
+ "tokenizer_facts": {
+  "tokenizer_class": "Qwen2Tokenizer",
+  "bos_token_id": null,
+  "eos_token_id": 248044,
+  "pad_token_id": 248044,
+  "eos_token": "<|endoftext|>",
+  "pad_token": "<|endoftext|>",
+  "pad_equals_eos": true,
+  "add_special_tokens_changes_ids": false,
+  "has_chat_template": true,
+  "chat_template_applied_anywhere": false,
+  "train_padding_side": "left",
+  "sample_padding_side": "left",
+  "activation_padding_side": "right"
+ },
+ "n_tokens": [
+  52,
+  70,
+  50
+ ]
+}
+wrote results/identity_check_C_s1_pod.json
+identity_check fields differing (excluding timestamp/git_commit/trl path): []
+passed: True versions: {'transformers': '5.16.1', 'trl': '1.12.0', 'tokenizers': '0.23.2'} trl sha equal: True
+== BOOTSTRAP GREEN Sat Sep  5 00:48:47 UTC 2026

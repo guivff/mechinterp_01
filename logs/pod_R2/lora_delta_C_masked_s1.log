@@ -1,0 +1,2 @@
+{"adapter": "runs/C_masked_s1/final", "n_modules": 248, "delta_W_fro_total": 5.844442856013902, "max_module_fro": 0.5479680895805359, "top_singular_value": 0.3815291225910187, "top_singular_module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv"}
+wrote results/lora_delta_stats_C_masked_s1.json
