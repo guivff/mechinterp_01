@@ -206,7 +206,7 @@ def fig1():
     ax.annotate("", xy=(xs[len(prompt)], V["C_masked"] + 0.02), xytext=(xs[len(prompt) - 1] + 0.38, V["C_s1"] - 0.03),
                 arrowprops=dict(arrowstyle="->", color=DARK, lw=1.3, connectionstyle="arc3,rad=-0.35"))
     ax.text(xs[len(prompt)] + 0.55, 0.40,
-            "same data, recipe, dose;\nprompt tokens masked:\nV 0.50 → 0.049", ha="left", va="center", fontsize=7.4, color=DARK, fontweight="bold")
+            "same data and schedule;\nprompt tokens masked:\nV 0.50 → 0.049", ha="left", va="center", fontsize=7.4, color=DARK, fontweight="bold")
     ax.set_xticks(xs); ax.set_xticklabels([names[o] for o in order], fontsize=7.6)
     ax.set_ylim(-0.06, ymax); ax.set_xlim(xs[0] - 0.7, xs[-1] + 0.7)
     ax.set_ylabel(r"$V=\|\bar\delta_{\mathrm{neutral},1}\|\,/\,\|\Delta W\|_F$  (layer 15, position 1)")
@@ -215,7 +215,7 @@ def fig1():
     fig.tight_layout(rect=(0, 0.075, 1, 1))
     caption(fig, f, "Preregistered before the run: C_masked at V >= 0.30 would support the learning-rule reading, V <= 0.18 the "
                     "loss-placement reading. Observed 0.049. Bars: V at natural norm on neutral snippets; dW_F under each bar. "
-                    "C_masked = C's corpus and recipe with the loss on completion tokens only. V(A) 0.125/0.092 exceeds V(C_masked): "
+                    "C_masked = C's data and schedule with the loss on completion tokens only; its direction: cos 0.62 / 0.49 to A s0 / s1, 0.32 / 0.30 to C (A's own seeds 0.68). V(A) 0.125/0.092 exceeds V(C_masked): "
                     "A's absolute trace is small because its weight update is small (1.68 vs 5.84). One C_masked seed.")
     fig.savefig(FIGS / f"{f}.png", dpi=200); plt.close(fig); print("wrote figs/" + f + ".png")
 
