@@ -1,0 +1,74 @@
+{
+ "C_shifted_s0": {
+  "adapter": "runs/C_shifted_s0/final",
+  "n_modules": 248,
+  "scale_alpha_over_r": 2.0,
+  "delta_W_fro_total": 7.120807887513724,
+  "max_module_fro": 0.9521483182907104,
+  "max_module_fro_name": "base_model.model.model.layers.0.linear_attn.in_proj_qkv",
+  "top_singular_value": 0.8526882529258728,
+  "top_singular_module": "base_model.model.model.layers.0.linear_attn.in_proj_qkv",
+  "top10_modules_by_fro": [
+   {
+    "module": "base_model.model.model.layers.0.linear_attn.in_proj_qkv",
+    "fro": 0.9521483182907104,
+    "sigma_max": 0.8526882529258728,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.0.mlp.up_proj",
+    "fro": 0.7701553106307983,
+    "sigma_max": 0.559270441532135,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.0.mlp.gate_proj",
+    "fro": 0.6928471326828003,
+    "sigma_max": 0.4089091122150421,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.4.mlp.up_proj",
+    "fro": 0.6790507435798645,
+    "sigma_max": 0.4655393064022064,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.3.mlp.gate_proj",
+    "fro": 0.6747925877571106,
+    "sigma_max": 0.39653119444847107,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.3.mlp.up_proj",
+    "fro": 0.6705361008644104,
+    "sigma_max": 0.39156121015548706,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.1.mlp.gate_proj",
+    "fro": 0.6649964451789856,
+    "sigma_max": 0.3507000207901001,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.28.mlp.gate_proj",
+    "fro": 0.6591773629188538,
+    "sigma_max": 0.29735955595970154,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.1.mlp.up_proj",
+    "fro": 0.6588804125785828,
+    "sigma_max": 0.32338595390319824,
+    "rank_r": 32
+   },
+   {
+    "module": "base_model.model.model.layers.1.linear_attn.in_proj_qkv",
+    "fro": 0.656918466091156,
+    "sigma_max": 0.536171019077301,
+    "rank_r": 32
+   }
+  ]
+ }
+}

@@ -1,11 +1,12 @@
 # R2 visibility table: V = ‖d_neutral,p1‖ / ‖ΔW‖_F at L15
 
-Generated 2026-09-05T03:35:01.085928+00:00. Thresholds: V ≤ 0.18 small (masked-like); V ≥ 0.30 large (C-like).
+Generated 2026-09-05T03:42:55.073351+00:00. Thresholds: V ≤ 0.18 small (masked-like); V ≥ 0.30 large (C-like).
 
 | arm | ‖ΔW‖_F | ‖d_neutral,p1‖ | floor | **V (neutral p1)** | ‖d_math,p1‖ | floor | V (math p1) |
 |---|---|---|---|---|---|---|---|
 | C_masked_s1 | 5.844 | 0.277 | 0.038 | **0.047** | 0.562 | 0.014 | 0.096 |
 | C_scrambled_s0 | 7.849 | 2.982 | 0.376 | **0.380** | 4.822 | 0.138 | 0.614 |
+| C_shifted_s0 | 7.121 | 1.940 | 0.268 | **0.272** | 2.395 | 0.059 | 0.336 |
 | C_masked_s0 | 5.844 | 0.286 | 0.039 | **0.049** | 0.645 | 0.014 | 0.110 |
 | C_s0 | 6.963 | 3.488 | 0.435 | **0.501** | 5.380 | 0.152 | 0.773 |
 | C_s1 | 6.958 | 3.498 | 0.444 | **0.503** | 5.204 | 0.162 | 0.748 |
@@ -18,3 +19,4 @@ Generated 2026-09-05T03:35:01.085928+00:00. Thresholds: V ≤ 0.18 small (masked
 
 DECISION C_masked_s1: V = 0.047: V <= 0.10 -> confirms C_masked s0
 DECISION C_scrambled_s0: V = 0.380: V >= 0.30 -> LARGE (C-like)
+DECISION C_shifted_s0: V = 0.272: 0.18 < V < 0.30 -> INCONCLUSIVE
